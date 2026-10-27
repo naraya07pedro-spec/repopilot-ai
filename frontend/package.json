@@ -6,8 +6,11 @@
     "dev": "next dev --hostname 127.0.0.1",
     "build": "next build",
     "start": "next start --hostname 127.0.0.1",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "typecheck": "node scripts/prepare-public.mjs && tsc --noEmit",
+    "test": "vitest run",
+    "prepare:public": "node scripts/prepare-public.mjs",
+    "pretest": "node scripts/prepare-public.mjs",
+    "build:public": "node scripts/prepare-public.mjs && next build public-site"
   },
   "dependencies": {
     "next": "16.4.3",

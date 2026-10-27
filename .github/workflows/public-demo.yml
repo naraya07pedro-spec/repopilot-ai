@@ -1,0 +1,44 @@
+name: Public demo
+on:
+  push:
+    branches: [main, feat/v2-public-private]
+    paths: ["frontend/**", "evidence/**", ".github/workflows/public-demo.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: public-demo
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+        working-directory: frontend
+      - run: npm run build:public
+        working-directory: frontend
+        env:
+          PUBLIC_BASE_PATH: /repopilot-ai
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend/public-site/out
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - uses: actions/deploy-pages@v4
+        id: deployment
+
