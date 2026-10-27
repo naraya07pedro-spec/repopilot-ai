@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "repopilot-ai"
+version = "0.1.0"
+description = "Auditable issue-to-PR engineering for explicitly trusted fixtures"
+requires-python = ">=3.12"
+dependencies = ["fastapi>=0.115,<1", "uvicorn>=0.34,<1", "pydantic>=2.10,<3", "sqlalchemy>=2.0,<3", "httpx>=0.28,<1", "pytest>=8.3,<9", "ruff>=0.11,<1"]
+
+[project.optional-dependencies]
+dev = ["pytest-cov>=6,<8", "ruff>=0.11,<1", "mypy>=1.15,<2", "pip-audit>=2.9,<3"]
+postgres = ["psycopg[binary]>=3.2,<4"]
+
+[project.scripts]
+repopilot = "repopilot.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["repopilot*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["fixtures"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["repopilot"]
+
+[tool.coverage.run]
+source = ["repopilot"]
+omit = ["repopilot/cli.py"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 85
+
+[tool.setuptools.package-data]
+repopilot = ["pytest.ini"]
