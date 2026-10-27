@@ -228,3 +228,5 @@ frontend/.env*
 !frontend/.env.example
 
 .next-*/
+
+.vitest/

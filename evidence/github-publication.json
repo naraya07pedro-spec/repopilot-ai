@@ -1,0 +1,23 @@
+{
+  "issue_url": "https://github.com/naraya07pedro-spec/repopilot-ai/issues/1",
+  "pr_url": "https://github.com/naraya07pedro-spec/repopilot-ai/pull/2",
+  "artifact_digest": "10af6c28acdac312412712bde779d17060e91636686d4f1982f47115136b118b",
+  "publication_method": "connected GitHub integration; exact artifact validated by GitHub.prepare_publish",
+  "base_sha": "62ffdfe2541e05a05a9b1e6f5691da41f5034552",
+  "head_sha": "6753474ea24d28996d48b40fe7c8efb9a6b454eb",
+  "files": [
+    {
+      "sha": "4ec0e486d15dab099c48cc073c56261e08932fd5",
+      "filename": "fixtures/bug/app.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "changes": 2,
+      "blob_url": "https://github.com/naraya07pedro-spec/repopilot-ai/blob/6753474ea24d28996d48b40fe7c8efb9a6b454eb/fixtures%2Fbug%2Fapp.py",
+      "raw_url": "https://github.com/naraya07pedro-spec/repopilot-ai/raw/6753474ea24d28996d48b40fe7c8efb9a6b454eb/fixtures%2Fbug%2Fapp.py",
+      "contents_url": "https://api.github.com/repos/naraya07pedro-spec/repopilot-ai/contents/fixtures%2Fbug%2Fapp.py?ref=6753474ea24d28996d48b40fe7c8efb9a6b454eb",
+      "patch": "@@ -1,4 +1,4 @@\n def mean(values):\n     if not values:\n         raise ValueError(\"values must not be empty\")\n-    return sum(values) // len(values)\n+    return sum(values) / len(values)"
+    }
+  ],
+  "merged": false
+}

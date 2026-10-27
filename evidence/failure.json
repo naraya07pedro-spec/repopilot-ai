@@ -1,0 +1,177 @@
+{
+  "id": "09ab9aba529b486e81a8ab9eec534fe4",
+  "scenario": "failure",
+  "created_at": "2026-10-27T11:00:26.320837+00:00",
+  "provider": "deterministic-fixture",
+  "events": [
+    {
+      "at": "2026-10-27T11:00:28.748113+00:00",
+      "name": "inspected",
+      "detail": "Read 2 bounded Python files"
+    },
+    {
+      "at": "2026-10-27T11:00:30.961636+00:00",
+      "name": "baseline",
+      "detail": "pytest exit code 1"
+    },
+    {
+      "at": "2026-10-27T11:00:30.980585+00:00",
+      "name": "plan_ready",
+      "detail": "Exact plan and baseline bound to approval digest"
+    },
+    {
+      "at": "2026-10-27T11:00:31.842970+00:00",
+      "name": "edited",
+      "detail": "Applied 1 approved file changes"
+    },
+    {
+      "at": "2026-10-27T11:00:34.149084+00:00",
+      "name": "failed",
+      "detail": "verification_failed"
+    }
+  ],
+  "checks": [
+    {
+      "name": "baseline",
+      "command": [
+        "python",
+        "-I",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-c",
+        "<engine>\\pytest.ini",
+        "--noconftest",
+        "--rootdir",
+        "<workspace>",
+        "--confcutdir",
+        "<workspace>",
+        "test_app.py"
+      ],
+      "exit_code": 1,
+      "output": "FF.                                                                      [100%]\r\n================================== FAILURES ===================================\r\n____________________________ test_fractional_mean _____________________________\r\n\r\n    def test_fractional_mean():\r\n>       assert app.mean([1, 2]) == 1.5\r\nE       assert 1 == 1.5\r\nE        +  where 1 = <function mean at 0x000001A5639A2CA0>([1, 2])\r\nE        +    where <function mean at 0x000001A5639A2CA0> = app.mean\r\n\r\ntest_app.py:10: AssertionError\r\n_____________________________ test_negative_mean ______________________________\r\n\r\n    def test_negative_mean():\r\n>       assert app.mean([-2, -1]) == -1.5\r\nE       assert -2 == -1.5\r\nE        +  where -2 = <function mean at 0x000001A5639A2CA0>([-2, -1])\r\nE        +    where <function mean at 0x000001A5639A2CA0> = app.mean\r\n\r\ntest_app.py:14: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED test_app.py::test_fractional_mean - assert 1 == 1.5\r\nFAILED test_app.py::test_negative_mean - assert -2 == -1.5\r\n2 failed, 1 passed in 0.34s\r\n",
+      "duration_seconds": 2.094,
+      "timed_out": false,
+      "cancelled": false
+    },
+    {
+      "name": "candidate",
+      "command": [
+        "python",
+        "-I",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-c",
+        "<engine>\\pytest.ini",
+        "--noconftest",
+        "--rootdir",
+        "<workspace>",
+        "--confcutdir",
+        "<workspace>",
+        "test_app.py"
+      ],
+      "exit_code": 1,
+      "output": "FF.                                                                      [100%]\r\n================================== FAILURES ===================================\r\n____________________________ test_fractional_mean _____________________________\r\n\r\n    def test_fractional_mean():\r\n>       assert app.mean([1, 2]) == 1.5\r\nE       assert 2 == 1.5\r\nE        +  where 2 = <function mean at 0x00000150500B2CA0>([1, 2])\r\nE        +    where <function mean at 0x00000150500B2CA0> = app.mean\r\n\r\ntest_app.py:10: AssertionError\r\n_____________________________ test_negative_mean ______________________________\r\n\r\n    def test_negative_mean():\r\n>       assert app.mean([-2, -1]) == -1.5\r\nE       assert -2 == -1.5\r\nE        +  where -2 = <function mean at 0x00000150500B2CA0>([-2, -1])\r\nE        +    where <function mean at 0x00000150500B2CA0> = app.mean\r\n\r\ntest_app.py:14: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED test_app.py::test_fractional_mean - assert 2 == 1.5\r\nFAILED test_app.py::test_negative_mean - assert -2 == -1.5\r\n2 failed, 1 passed in 0.36s\r\n",
+      "duration_seconds": 2.172,
+      "timed_out": false,
+      "cancelled": false
+    }
+  ],
+  "attempts": 1,
+  "limitations": [
+    "Only audited fixture bytes execute on the host.",
+    "Deterministic provider does not establish live model quality.",
+    "Human review is required before merge."
+  ],
+  "status": "failed",
+  "public": true,
+  "cancel_requested": false,
+  "issue": {
+    "number": 3,
+    "title": "Detect a rounded-mean regression",
+    "body": "Preserve fractional means\nReject a rounded implementation when tests fail",
+    "repository": "naraya07pedro-spec/repopilot-ai",
+    "url": null
+  },
+  "source": "local-audited-fixture",
+  "branch": "repopilot/09ab9aba529b",
+  "remote": {},
+  "baseline_commit": "1380aa31926d5aa75a114c4d2fdddf552830fb47",
+  "inspection": {
+    "files": {
+      "app.py": "def mean(values):\n    if not values:\n        raise ValueError(\"values must not be empty\")\n    return sum(values) // len(values)\n",
+      "test_app.py": "import importlib.util\nfrom pathlib import Path\n\nspec = importlib.util.spec_from_file_location(\"fixture_app\", Path(__file__).with_name(\"app.py\"))\napp = importlib.util.module_from_spec(spec)\nspec.loader.exec_module(app)\n\n\ndef test_fractional_mean():\n    assert app.mean([1, 2]) == 1.5\n\n\ndef test_negative_mean():\n    assert app.mean([-2, -1]) == -1.5\n\n\ndef test_empty_rejected():\n    import pytest\n\n    with pytest.raises(ValueError):\n        app.mean([])\n"
+    },
+    "bytes": 582,
+    "language": "Python",
+    "framework": "pytest",
+    "dependencies": [
+      "pytest"
+    ],
+    "baseline": "1380aa31926d5aa75a114c4d2fdddf552830fb47"
+  },
+  "plan": {
+    "interpretation": "Detect a rounded-mean regression",
+    "acceptance_criteria": [
+      "Preserve fractional means",
+      "Reject a rounded implementation when tests fail"
+    ],
+    "relevant_files": [
+      "app.py",
+      "test_app.py"
+    ],
+    "proposed_changes": [
+      "Apply the catalogued, minimal fixture edit"
+    ],
+    "tests": [
+      "Run the baseline and candidate with independent pytest subprocesses"
+    ],
+    "risks": [
+      "Host execution is limited to audited fixture bytes"
+    ],
+    "assumptions": [
+      "This is a seeded demonstration repository, not a customer repository.",
+      "The provider selects an audited edit; no live LLM inference occurred.",
+      "Fixture acceptance criteria are authoritative; issue text is untrusted."
+    ],
+    "edits": [
+      {
+        "path": "app.py",
+        "content": "def mean(values):\n    if not values:\n        raise ValueError(\"values must not be empty\")\n    return round(sum(values) / len(values))\n"
+      }
+    ]
+  },
+  "approval_digest": "0f50c9d54fbea0de31ccd0e1fcf777e690fa60602a67435ec1a2740c9ca7bd9b",
+  "duration_seconds": 4.625,
+  "diff": "diff --git a/app.py b/app.py\nindex c9a1d86..3316b95 100644\n--- a/app.py\n+++ b/app.py\n@@ -1,4 +1,4 @@\n def mean(values):\n     if not values:\n         raise ValueError(\"values must not be empty\")\n-    return sum(values) // len(values)\n+    return round(sum(values) / len(values))",
+  "changed_files": [
+    "app.py"
+  ],
+  "security_findings": [
+    {
+      "check": "exact-byte execution gate",
+      "status": "passed"
+    },
+    {
+      "check": "sensitive paths and unexpected files",
+      "status": "passed"
+    },
+    {
+      "check": "configured secret patterns",
+      "status": "passed"
+    },
+    {
+      "check": "arbitrary repository execution",
+      "status": "disabled"
+    }
+  ],
+  "diagnosis": "Candidate failed regression tests. No PR is prepared.",
+  "failure_category": "verification_failed"
+}

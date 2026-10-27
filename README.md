@@ -10,6 +10,20 @@ The default provider deterministically selects reviewed edits. An optional OpenA
 planner is implemented and contract-tested; live model quality is not claimed.
 Arbitrary repositories and arbitrary model-generated code cannot execute on the host.
 
+## Verified demonstration
+
+[Issue #1](https://github.com/naraya07pedro-spec/repopilot-ai/issues/1) became
+[draft PR #2](https://github.com/naraya07pedro-spec/repopilot-ai/pull/2) through the actual engine:
+two failing assertions became three passing tests, followed by independent lint/format checks.
+The published diff changes one line. The exact plan, outputs, commits and artifact are
+[inspectable](docs/evidence.md). Publication used the connected GitHub integration;
+no live paid-model or token-publisher result is implied.
+
+[Verified CI](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40492779772):
+72 backend tests, 95.68% statement coverage, 4 frontend tests, production build and Docker smoke.
+See the review branch's latest checks for subsequent documentation and dependency hardening.
+Browser visual QA remains blocked by the authoring environment. No public deployment is claimed.
+
 ## Review in 30 seconds
 
 1. Start the console and select **Bug fix**.
@@ -51,7 +65,7 @@ flowchart LR
 
 ## Local setup — no paid services
 
-Requires Python 3.12+, Git, Node.js 22+, and npm. Run one backend process.
+Requires Python 3.12+, Git, Node.js 22.12+ and npm. Run one backend process.
 
 ```sh
 python -m venv .venv
@@ -105,7 +119,7 @@ cd frontend
 npm run typecheck
 npm test
 npm run build
-npm audit --omit=dev
+npm audit
 ```
 
 CI needs no external AI key or GitHub write token.

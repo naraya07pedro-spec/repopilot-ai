@@ -1,0 +1,40 @@
+{
+  "head_sha": "62ffdfe2541e05a05a9b1e6f5691da41f5034552",
+  "url": "https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40492779772",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 122150611816,
+      "name": "container",
+      "conclusion": "success"
+    },
+    {
+      "id": 122150612186,
+      "name": "backend",
+      "conclusion": "success"
+    },
+    {
+      "id": 122150612270,
+      "name": "frontend",
+      "conclusion": "success"
+    }
+  ],
+  "excerpts": [
+    {
+      "job": "backend",
+      "lines": [
+        "2026-10-27T11:00:46.7561775Z Required test coverage of 85.0% reached. Total coverage: 95.68%",
+        "2026-10-27T11:00:46.7562358Z ======================== 72 passed, 1 warning in 8.11s =========================",
+        "2026-10-27T11:00:56.8451059Z No known vulnerabilities found"
+      ]
+    },
+    {
+      "job": "frontend",
+      "lines": [
+        "2026-10-27T11:00:13.0025493Z \u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m4 passed\u001b[39m\u001b[22m\u001b[90m (4)\u001b[39m",
+        "2026-10-27T11:00:16.2307732Z ✓ Compiled successfully in 2.5s",
+        "2026-10-27T11:00:19.6027163Z found 0 vulnerabilities"
+      ]
+    }
+  ]
+}

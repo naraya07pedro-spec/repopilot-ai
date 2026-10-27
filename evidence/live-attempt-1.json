@@ -1,0 +1,24 @@
+{
+  "id": "049c03100fa548b8bea31d64d63996e1",
+  "scenario": "bug",
+  "created_at": "2026-10-27T10:45:26.650243+00:00",
+  "provider": "deterministic-fixture",
+  "events": [
+    {
+      "at": "2026-10-27T10:45:29.167346+00:00",
+      "name": "failed",
+      "detail": "remote_fixture_not_audited"
+    }
+  ],
+  "checks": [],
+  "attempts": 0,
+  "limitations": [
+    "Only audited fixture bytes execute on the host.",
+    "Deterministic provider does not establish live model quality.",
+    "Human review is required before merge."
+  ],
+  "status": "failed",
+  "public": true,
+  "cancel_requested": false,
+  "failure_category": "remote_fixture_not_audited"
+}

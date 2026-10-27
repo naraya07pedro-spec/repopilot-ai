@@ -23,3 +23,12 @@ separate verification layers.
 CI installs locked dependencies, runs checks/coverage/builds, audits dependencies and tests
 PostgreSQL. Workflow configuration alone is not a passing CI result.
 Optional live GitHub and paid-model tests remain separate from deterministic CI.
+
+Measured local statement scope: 648 statements, 619 covered, 29 missing (95.52%).
+Coverage.py also excludes the Provider protocol method stub and adjacent blank lines
+(four lines) through its default ellipsis rule. There are no custom test-driven coverage exclusions. Linux CI covers one
+additional symlink-path statement (620/648, 95.68%). Local JUnit paths are redacted to
+[repository]; counts, outcomes and timings are unchanged.
+
+Vitest 5.0.5 requires Node 22.12+ (official migration guide:
+https://vitest.dev/guide/migration/). Full npm audit includes development dependencies.

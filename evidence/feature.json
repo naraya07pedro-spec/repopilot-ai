@@ -1,0 +1,245 @@
+{
+  "id": "4c8a5140704d4532a10c3e0cfe22d702",
+  "scenario": "feature",
+  "created_at": "2026-10-27T11:00:11.290417+00:00",
+  "provider": "deterministic-fixture",
+  "events": [
+    {
+      "at": "2026-10-27T11:00:14.178761+00:00",
+      "name": "inspected",
+      "detail": "Read 2 bounded Python files"
+    },
+    {
+      "at": "2026-10-27T11:00:16.472441+00:00",
+      "name": "baseline",
+      "detail": "pytest exit code 0"
+    },
+    {
+      "at": "2026-10-27T11:00:16.505360+00:00",
+      "name": "plan_ready",
+      "detail": "Exact plan and baseline bound to approval digest"
+    },
+    {
+      "at": "2026-10-27T11:00:17.403090+00:00",
+      "name": "edited",
+      "detail": "Applied 2 approved file changes"
+    },
+    {
+      "at": "2026-10-27T11:00:22.194061+00:00",
+      "name": "verified",
+      "detail": "Candidate tests passed; reviewable PR artifact prepared"
+    }
+  ],
+  "checks": [
+    {
+      "name": "baseline",
+      "command": [
+        "python",
+        "-I",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-c",
+        "<engine>\\pytest.ini",
+        "--noconftest",
+        "--rootdir",
+        "<workspace>",
+        "--confcutdir",
+        "<workspace>",
+        "test_app.py"
+      ],
+      "exit_code": 0,
+      "output": ".                                                                        [100%]\r\n1 passed in 0.10s\r\n",
+      "duration_seconds": 2.172,
+      "timed_out": false,
+      "cancelled": false
+    },
+    {
+      "name": "candidate",
+      "command": [
+        "python",
+        "-I",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-c",
+        "<engine>\\pytest.ini",
+        "--noconftest",
+        "--rootdir",
+        "<workspace>",
+        "--confcutdir",
+        "<workspace>",
+        "test_app.py"
+      ],
+      "exit_code": 0,
+      "output": "...                                                                      [100%]\r\n3 passed in 0.09s\r\n",
+      "duration_seconds": 2.735,
+      "timed_out": false,
+      "cancelled": false
+    },
+    {
+      "name": "lint",
+      "command": [
+        "python",
+        "-I",
+        "-B",
+        "-m",
+        "ruff",
+        "check",
+        "--isolated",
+        "--no-cache",
+        "--select",
+        "E,F,I",
+        "--line-length",
+        "100",
+        "app.py",
+        "test_app.py"
+      ],
+      "exit_code": 0,
+      "output": "All checks passed!\n",
+      "duration_seconds": 0.375,
+      "timed_out": false,
+      "cancelled": false
+    },
+    {
+      "name": "format",
+      "command": [
+        "python",
+        "-I",
+        "-B",
+        "-m",
+        "ruff",
+        "format",
+        "--isolated",
+        "--no-cache",
+        "--line-length",
+        "100",
+        "--check",
+        "app.py",
+        "test_app.py"
+      ],
+      "exit_code": 0,
+      "output": "2 files already formatted\n",
+      "duration_seconds": 0.422,
+      "timed_out": false,
+      "cancelled": false
+    }
+  ],
+  "attempts": 1,
+  "limitations": [
+    "Only audited fixture bytes execute on the host.",
+    "Deterministic provider does not establish live model quality.",
+    "Human review is required before merge."
+  ],
+  "status": "verified",
+  "public": true,
+  "cancel_requested": false,
+  "issue": {
+    "number": 2,
+    "title": "Add stable unique tag normalization",
+    "body": "Normalize case and whitespace\nSkip empty tags\nDeduplicate while preserving input order",
+    "repository": "naraya07pedro-spec/repopilot-ai",
+    "url": null
+  },
+  "source": "local-audited-fixture",
+  "branch": "repopilot/4c8a5140704d",
+  "remote": {},
+  "baseline_commit": "0062cea09bc73f02b6bb291940ebb56f24a16fd4",
+  "inspection": {
+    "files": {
+      "app.py": "def normalize_tag(value):\n    return value.strip().lower()\n",
+      "test_app.py": "import importlib.util\nfrom pathlib import Path\n\nspec = importlib.util.spec_from_file_location(\"fixture_app\", Path(__file__).with_name(\"app.py\"))\napp = importlib.util.module_from_spec(spec)\nspec.loader.exec_module(app)\n\n\ndef test_normalize_tag():\n    assert app.normalize_tag(\" PYTHON \") == \"python\"\n"
+    },
+    "bytes": 358,
+    "language": "Python",
+    "framework": "pytest",
+    "dependencies": [
+      "pytest"
+    ],
+    "baseline": "0062cea09bc73f02b6bb291940ebb56f24a16fd4"
+  },
+  "plan": {
+    "interpretation": "Add stable unique tag normalization",
+    "acceptance_criteria": [
+      "Normalize case and whitespace",
+      "Skip empty tags",
+      "Deduplicate while preserving input order"
+    ],
+    "relevant_files": [
+      "app.py",
+      "test_app.py"
+    ],
+    "proposed_changes": [
+      "Apply the catalogued, minimal fixture edit"
+    ],
+    "tests": [
+      "Run the baseline and candidate with independent pytest subprocesses"
+    ],
+    "risks": [
+      "Host execution is limited to audited fixture bytes"
+    ],
+    "assumptions": [
+      "This is a seeded demonstration repository, not a customer repository.",
+      "The provider selects an audited edit; no live LLM inference occurred.",
+      "Fixture acceptance criteria are authoritative; issue text is untrusted."
+    ],
+    "edits": [
+      {
+        "path": "app.py",
+        "content": "def normalize_tag(value):\n    return value.strip().lower()\n\n\ndef unique_tags(values):\n    return list(dict.fromkeys(tag for value in values if (tag := normalize_tag(value))))\n"
+      },
+      {
+        "path": "test_app.py",
+        "content": "import importlib.util\nfrom pathlib import Path\n\nspec = importlib.util.spec_from_file_location(\"fixture_app\", Path(__file__).with_name(\"app.py\"))\napp = importlib.util.module_from_spec(spec)\nspec.loader.exec_module(app)\n\n\ndef test_normalize_tag():\n    assert app.normalize_tag(\" PYTHON \") == \"python\"\n\n\ndef test_unique_tags_preserves_order():\n    assert app.unique_tags([\" AI \", \"python\", \"ai\", \" \"]) == [\"ai\", \"python\"]\n\n\ndef test_unique_tags_empty():\n    assert app.unique_tags([]) == []\n"
+      }
+    ]
+  },
+  "approval_digest": "c1037a9a293cd25c9297f156896155050064be7214155806d25185df72bfefe7",
+  "duration_seconds": 10.766,
+  "diff": "diff --git a/app.py b/app.py\nindex 86ad869..c846b0a 100644\n--- a/app.py\n+++ b/app.py\n@@ -1,2 +1,6 @@\n def normalize_tag(value):\n     return value.strip().lower()\n+\n+\n+def unique_tags(values):\n+    return list(dict.fromkeys(tag for value in values if (tag := normalize_tag(value))))\ndiff --git a/test_app.py b/test_app.py\nindex a62298c..5fc59cd 100644\n--- a/test_app.py\n+++ b/test_app.py\n@@ -8,3 +8,11 @@ spec.loader.exec_module(app)\n \n def test_normalize_tag():\n     assert app.normalize_tag(\" PYTHON \") == \"python\"\n+\n+\n+def test_unique_tags_preserves_order():\n+    assert app.unique_tags([\" AI \", \"python\", \"ai\", \" \"]) == [\"ai\", \"python\"]\n+\n+\n+def test_unique_tags_empty():\n+    assert app.unique_tags([]) == []",
+  "changed_files": [
+    "app.py",
+    "test_app.py"
+  ],
+  "security_findings": [
+    {
+      "check": "exact-byte execution gate",
+      "status": "passed"
+    },
+    {
+      "check": "sensitive paths and unexpected files",
+      "status": "passed"
+    },
+    {
+      "check": "configured secret patterns",
+      "status": "passed"
+    },
+    {
+      "check": "arbitrary repository execution",
+      "status": "disabled"
+    }
+  ],
+  "commit": "175818458d335d3502f0552d588f8075e168e6c4",
+  "pr": {
+    "repository": "naraya07pedro-spec/repopilot-ai",
+    "status": "verified",
+    "title": "Add stable unique tag normalization",
+    "body": "## Add stable unique tag normalization\n\nPrepared from a local seeded fixture issue.\n\nProvider: deterministic-fixture. Source: local-audited-fixture.\n\n### Verified checks\n\n- baseline: exit 0\n- candidate: exit 0\n- lint: exit 0\n- format: exit 0\n\n### Reproduce\n\n`python -m repopilot.cli demo --scenario feature`\n\n### Limits\n\nAudited fixture only. No live LLM quality or general sandbox claim. Human review required; never auto-merge.\n",
+    "branch": "repopilot/4c8a5140704d",
+    "base_ref": null,
+    "base_sha": null,
+    "base_tree": null,
+    "files": {
+      "fixtures/feature/app.py": "def normalize_tag(value):\n    return value.strip().lower()\n\n\ndef unique_tags(values):\n    return list(dict.fromkeys(tag for value in values if (tag := normalize_tag(value))))\n",
+      "fixtures/feature/test_app.py": "import importlib.util\nfrom pathlib import Path\n\nspec = importlib.util.spec_from_file_location(\"fixture_app\", Path(__file__).with_name(\"app.py\"))\napp = importlib.util.module_from_spec(spec)\nspec.loader.exec_module(app)\n\n\ndef test_normalize_tag():\n    assert app.normalize_tag(\" PYTHON \") == \"python\"\n\n\ndef test_unique_tags_preserves_order():\n    assert app.unique_tags([\" AI \", \"python\", \"ai\", \" \"]) == [\"ai\", \"python\"]\n\n\ndef test_unique_tags_empty():\n    assert app.unique_tags([]) == []\n"
+    },
+    "local_commit": "175818458d335d3502f0552d588f8075e168e6c4",
+    "digest": "e567e7fb0a0819525b54e07dc0b8bb97bfe979ceeff56c9acfac46334e9a9455"
+  }
+}

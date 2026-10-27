@@ -1,0 +1,15 @@
+{
+  "repository": "naraya07pedro-spec/repopilot-ai",
+  "status": "verified",
+  "title": "Preserve fractional means",
+  "body": "## Preserve fractional means\n\nPrepared from https://github.com/naraya07pedro-spec/repopilot-ai/issues/1.\n\nProvider: deterministic-fixture. Source: live-github-fixture.\n\n### Verified checks\n\n- baseline: exit 1\n- candidate: exit 0\n- lint: exit 0\n- format: exit 0\n\n### Reproduce\n\n`python -m repopilot.cli demo --scenario bug`\n\n### Limits\n\nAudited fixture only. No live LLM quality or general sandbox claim. Human review required; never auto-merge.\n",
+  "branch": "repopilot/e299ad71ce26",
+  "base_ref": "feat/verified-issue-to-pr",
+  "base_sha": "62ffdfe2541e05a05a9b1e6f5691da41f5034552",
+  "base_tree": "f09ba0f26bd23421a7c5c627ffd8fa71a123d006",
+  "files": {
+    "fixtures/bug/app.py": "def mean(values):\n    if not values:\n        raise ValueError(\"values must not be empty\")\n    return sum(values) / len(values)\n"
+  },
+  "local_commit": "c9f4340b48199971dbf5d842ecbc8ee60ad9d507",
+  "digest": "10af6c28acdac312412712bde779d17060e91636686d4f1982f47115136b118b"
+}
