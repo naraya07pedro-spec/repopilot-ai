@@ -226,3 +226,5 @@ node_modules/
 *.tsbuildinfo
 frontend/.env*
 !frontend/.env.example
+
+.next-*/
