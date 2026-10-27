@@ -1,0 +1,252 @@
+{
+  "result": "passed",
+  "transport": "HTTP through production Next.js proxy",
+  "assertions": [
+    "homepage",
+    "security header",
+    "idempotency",
+    "approval gate",
+    "real baseline and candidate checks",
+    "history",
+    "origin rejection"
+  ],
+  "run": {
+    "id": "b354137a451840c0bf2603a0c4276a51",
+    "scenario": "bug",
+    "created_at": "2026-10-27T11:02:32.311006+00:00",
+    "provider": "deterministic-fixture",
+    "events": [
+      {
+        "at": "2026-10-27T11:02:38.791567+00:00",
+        "name": "inspected",
+        "detail": "Read 2 bounded Python files"
+      },
+      {
+        "at": "2026-10-27T11:02:41.502317+00:00",
+        "name": "baseline",
+        "detail": "pytest exit code 1"
+      },
+      {
+        "at": "2026-10-27T11:02:41.525253+00:00",
+        "name": "plan_ready",
+        "detail": "Exact plan and baseline bound to approval digest"
+      },
+      {
+        "at": "2026-10-27T11:02:42.633522+00:00",
+        "name": "edited",
+        "detail": "Applied 1 approved file changes"
+      },
+      {
+        "at": "2026-10-27T11:02:46.013786+00:00",
+        "name": "verified",
+        "detail": "Candidate tests passed; reviewable PR artifact prepared"
+      }
+    ],
+    "checks": [
+      {
+        "name": "baseline",
+        "command": [
+          "python",
+          "-I",
+          "-B",
+          "-m",
+          "pytest",
+          "-q",
+          "-p",
+          "no:cacheprovider",
+          "-c",
+          "<engine>\\pytest.ini",
+          "--noconftest",
+          "--rootdir",
+          "<workspace>",
+          "--confcutdir",
+          "<workspace>",
+          "test_app.py"
+        ],
+        "exit_code": 1,
+        "output": "FF.                                                                      [100%]\r\n================================== FAILURES ===================================\r\n____________________________ test_fractional_mean _____________________________\r\n\r\n    def test_fractional_mean():\r\n>       assert app.mean([1, 2]) == 1.5\r\nE       assert 1 == 1.5\r\nE        +  where 1 = <function mean at 0x000001BBCA182CA0>([1, 2])\r\nE        +    where <function mean at 0x000001BBCA182CA0> = app.mean\r\n\r\ntest_app.py:10: AssertionError\r\n_____________________________ test_negative_mean ______________________________\r\n\r\n    def test_negative_mean():\r\n>       assert app.mean([-2, -1]) == -1.5\r\nE       assert -2 == -1.5\r\nE        +  where -2 = <function mean at 0x000001BBCA182CA0>([-2, -1])\r\nE        +    where <function mean at 0x000001BBCA182CA0> = app.mean\r\n\r\ntest_app.py:14: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED test_app.py::test_fractional_mean - assert 1 == 1.5\r\nFAILED test_app.py::test_negative_mean - assert -2 == -1.5\r\n2 failed, 1 passed in 0.44s\r\n",
+        "duration_seconds": 2.563,
+        "timed_out": false,
+        "cancelled": false
+      },
+      {
+        "name": "candidate",
+        "command": [
+          "python",
+          "-I",
+          "-B",
+          "-m",
+          "pytest",
+          "-q",
+          "-p",
+          "no:cacheprovider",
+          "-c",
+          "<engine>\\pytest.ini",
+          "--noconftest",
+          "--rootdir",
+          "<workspace>",
+          "--confcutdir",
+          "<workspace>",
+          "test_app.py"
+        ],
+        "exit_code": 0,
+        "output": "...                                                                      [100%]\r\n3 passed in 0.04s\r\n",
+        "duration_seconds": 1.703,
+        "timed_out": false,
+        "cancelled": false
+      },
+      {
+        "name": "lint",
+        "command": [
+          "python",
+          "-I",
+          "-B",
+          "-m",
+          "ruff",
+          "check",
+          "--isolated",
+          "--no-cache",
+          "--select",
+          "E,F,I",
+          "--line-length",
+          "100",
+          "app.py",
+          "test_app.py"
+        ],
+        "exit_code": 0,
+        "output": "All checks passed!\n",
+        "duration_seconds": 0.484,
+        "timed_out": false,
+        "cancelled": false
+      },
+      {
+        "name": "format",
+        "command": [
+          "python",
+          "-I",
+          "-B",
+          "-m",
+          "ruff",
+          "format",
+          "--isolated",
+          "--no-cache",
+          "--line-length",
+          "100",
+          "--check",
+          "app.py",
+          "test_app.py"
+        ],
+        "exit_code": 0,
+        "output": "2 files already formatted\n",
+        "duration_seconds": 0.406,
+        "timed_out": false,
+        "cancelled": false
+      }
+    ],
+    "attempts": 1,
+    "limitations": [
+      "Only audited fixture bytes execute on the host.",
+      "Deterministic provider does not establish live model quality.",
+      "Human review is required before merge."
+    ],
+    "status": "verified",
+    "public": true,
+    "cancel_requested": false,
+    "issue": {
+      "number": 1,
+      "title": "Preserve fractional means",
+      "body": "mean([1, 2]) returns 1.5\nNegative means preserve fractions\nEmpty input raises ValueError",
+      "repository": "naraya07pedro-spec/repopilot-ai",
+      "url": null
+    },
+    "source": "local-audited-fixture",
+    "branch": "repopilot/b354137a4518",
+    "remote": {},
+    "baseline_commit": "c8973b5f8de6c219c39a780deec8a5b601e35ea1",
+    "inspection": {
+      "files": {
+        "app.py": "def mean(values):\n    if not values:\n        raise ValueError(\"values must not be empty\")\n    return sum(values) // len(values)\n",
+        "test_app.py": "import importlib.util\nfrom pathlib import Path\n\nspec = importlib.util.spec_from_file_location(\"fixture_app\", Path(__file__).with_name(\"app.py\"))\napp = importlib.util.module_from_spec(spec)\nspec.loader.exec_module(app)\n\n\ndef test_fractional_mean():\n    assert app.mean([1, 2]) == 1.5\n\n\ndef test_negative_mean():\n    assert app.mean([-2, -1]) == -1.5\n\n\ndef test_empty_rejected():\n    import pytest\n\n    with pytest.raises(ValueError):\n        app.mean([])\n"
+      },
+      "bytes": 582,
+      "language": "Python",
+      "framework": "pytest",
+      "dependencies": [
+        "pytest"
+      ],
+      "baseline": "c8973b5f8de6c219c39a780deec8a5b601e35ea1"
+    },
+    "plan": {
+      "interpretation": "Preserve fractional means",
+      "acceptance_criteria": [
+        "mean([1, 2]) returns 1.5",
+        "Negative means preserve fractions",
+        "Empty input raises ValueError"
+      ],
+      "relevant_files": [
+        "app.py",
+        "test_app.py"
+      ],
+      "proposed_changes": [
+        "Apply the catalogued, minimal fixture edit"
+      ],
+      "tests": [
+        "Run the baseline and candidate with independent pytest subprocesses"
+      ],
+      "risks": [
+        "Host execution is limited to audited fixture bytes"
+      ],
+      "assumptions": [
+        "This is a seeded demonstration repository, not a customer repository.",
+        "The provider selects an audited edit; no live LLM inference occurred.",
+        "Fixture acceptance criteria are authoritative; issue text is untrusted."
+      ],
+      "edits": [
+        {
+          "path": "app.py",
+          "content": "def mean(values):\n    if not values:\n        raise ValueError(\"values must not be empty\")\n    return sum(values) / len(values)\n"
+        }
+      ]
+    },
+    "approval_digest": "ddeeb60d29e071729cc7412349327d7ec17856192c73827a718775afe43e1660",
+    "duration_seconds": 12.110000000000001,
+    "diff": "diff --git a/app.py b/app.py\nindex c9a1d86..4ec0e48 100644\n--- a/app.py\n+++ b/app.py\n@@ -1,4 +1,4 @@\n def mean(values):\n     if not values:\n         raise ValueError(\"values must not be empty\")\n-    return sum(values) // len(values)\n+    return sum(values) / len(values)",
+    "changed_files": [
+      "app.py"
+    ],
+    "security_findings": [
+      {
+        "check": "exact-byte execution gate",
+        "status": "passed"
+      },
+      {
+        "check": "sensitive paths and unexpected files",
+        "status": "passed"
+      },
+      {
+        "check": "configured secret patterns",
+        "status": "passed"
+      },
+      {
+        "check": "arbitrary repository execution",
+        "status": "disabled"
+      }
+    ],
+    "commit": "05d6c0f50275db09efedbd0fdc25c70e9dca1502",
+    "pr": {
+      "repository": "naraya07pedro-spec/repopilot-ai",
+      "status": "verified",
+      "title": "Preserve fractional means",
+      "body": "## Preserve fractional means\n\nPrepared from a local seeded fixture issue.\n\nProvider: deterministic-fixture. Source: local-audited-fixture.\n\n### Verified checks\n\n- baseline: exit 1\n- candidate: exit 0\n- lint: exit 0\n- format: exit 0\n\n### Reproduce\n\n`python -m repopilot.cli demo --scenario bug`\n\n### Limits\n\nAudited fixture only. No live LLM quality or general sandbox claim. Human review required; never auto-merge.\n",
+      "branch": "repopilot/b354137a4518",
+      "base_ref": null,
+      "base_sha": null,
+      "base_tree": null,
+      "files": {
+        "fixtures/bug/app.py": "def mean(values):\n    if not values:\n        raise ValueError(\"values must not be empty\")\n    return sum(values) / len(values)\n"
+      },
+      "local_commit": "05d6c0f50275db09efedbd0fdc25c70e9dca1502",
+      "digest": "6954a32d5b6612c145073c481ca4d319ceae6bfa1f21d4fe908fd0717beb83db"
+    }
+  }
+}

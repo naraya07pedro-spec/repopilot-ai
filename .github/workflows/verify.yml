@@ -1,0 +1,69 @@
+name: Verify
+on: [push, pull_request]
+permissions:
+  contents: read
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: repopilot
+          POSTGRES_PASSWORD: fixture-ci-only
+          POSTGRES_DB: repopilot_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U repopilot -d repopilot_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      TEST_POSTGRES_URL: postgresql+psycopg://repopilot:fixture-ci-only@localhost:5432/repopilot_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -c requirements.lock -e ".[dev,postgres]"
+      - run: python -m ruff check .
+      - run: python -m ruff format --check .
+      - run: python -m mypy
+      - run: python -m pytest --cov --cov-report=term-missing --cov-report=json:evidence/ci-coverage.json --junitxml=evidence/ci-tests.xml
+      - run: python scripts/scan_secrets.py
+      - run: python -m pip_audit -r requirements.lock
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-evidence
+          path: evidence/ci-*
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - run: npm audit
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose build
+      - run: docker compose up -d --wait
+      - run: |
+          for i in $(seq 1 30); do curl --fail http://localhost:8000/health && break || sleep 2; done
+          curl --fail http://localhost:8000/health
+          curl --fail http://localhost:3000/
+      - if: always()
+        run: docker compose down

@@ -1,0 +1,16 @@
+{
+  "repository": "naraya07pedro-spec/repopilot-ai",
+  "status": "verified",
+  "title": "Add stable unique tag normalization",
+  "body": "## Add stable unique tag normalization\n\nPrepared from a local seeded fixture issue.\n\nProvider: deterministic-fixture. Source: local-audited-fixture.\n\n### Verified checks\n\n- baseline: exit 0\n- candidate: exit 0\n- lint: exit 0\n- format: exit 0\n\n### Reproduce\n\n`python -m repopilot.cli demo --scenario feature`\n\n### Limits\n\nAudited fixture only. No live LLM quality or general sandbox claim. Human review required; never auto-merge.\n",
+  "branch": "repopilot/4c8a5140704d",
+  "base_ref": null,
+  "base_sha": null,
+  "base_tree": null,
+  "files": {
+    "fixtures/feature/app.py": "def normalize_tag(value):\n    return value.strip().lower()\n\n\ndef unique_tags(values):\n    return list(dict.fromkeys(tag for value in values if (tag := normalize_tag(value))))\n",
+    "fixtures/feature/test_app.py": "import importlib.util\nfrom pathlib import Path\n\nspec = importlib.util.spec_from_file_location(\"fixture_app\", Path(__file__).with_name(\"app.py\"))\napp = importlib.util.module_from_spec(spec)\nspec.loader.exec_module(app)\n\n\ndef test_normalize_tag():\n    assert app.normalize_tag(\" PYTHON \") == \"python\"\n\n\ndef test_unique_tags_preserves_order():\n    assert app.unique_tags([\" AI \", \"python\", \"ai\", \" \"]) == [\"ai\", \"python\"]\n\n\ndef test_unique_tags_empty():\n    assert app.unique_tags([]) == []\n"
+  },
+  "local_commit": "175818458d335d3502f0552d588f8075e168e6c4",
+  "digest": "e567e7fb0a0819525b54e07dc0b8bb97bfe979ceeff56c9acfac46334e9a9455"
+}

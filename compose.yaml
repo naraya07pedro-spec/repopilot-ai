@@ -1,0 +1,42 @@
+services:
+  database:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: repopilot
+      POSTGRES_PASSWORD: local-demo-only
+      POSTGRES_DB: repopilot
+    volumes: [database:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U repopilot"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  api:
+    build: .
+    environment:
+      DATABASE_URL: postgresql+psycopg://repopilot:local-demo-only@database/repopilot
+      REPOPILOT_DATA: /data
+    depends_on:
+      database:
+        condition: service_healthy
+    ports: ["127.0.0.1:8000:8000"]
+    volumes: [runs:/data]
+    read_only: true
+    tmpfs: ["/tmp:size=64m,mode=1777"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 512m
+    cpus: 1
+    pids_limit: 64
+  web:
+    build: ./frontend
+    environment:
+      REPOPILOT_BACKEND: http://api:8000
+    ports: ["127.0.0.1:3000:3000"]
+    depends_on: [api]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 512m
+volumes:
+  database:
+  runs:
