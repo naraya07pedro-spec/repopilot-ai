@@ -4,7 +4,10 @@ for(const viewport of [{width:1440,height:1000},{width:390,height:844}]){
   await page.setViewportSize(viewport);
   const errors:string[]=[];page.on("pageerror",e=>errors.push(e.message));
   const requests:string[]=[];page.on("request",r=>requests.push(r.url()));
-  await page.goto("http://127.0.0.1:4173/repopilot-ai/");
+  const url=process.env.PUBLIC_DEMO_URL||"http://127.0.0.1:4173/repopilot-ai/";
+  if(process.env.PUBLIC_DEMO_URL)expect(new URL(url).protocol).toBe("https:");
+  const response=await page.goto(url);
+  expect(response?.status()).toBe(200);
   await expect(page.getByRole("status").first()).toContainText("Recorded execution");
   await page.getByRole("tab",{name:"Code diff"}).click();
   await expect(page.getByRole("tabpanel")).toContainText("+    return sum(values) / len(values)");

@@ -1,7 +1,7 @@
 name: Public demo
 on:
   push:
-    branches: [main, feat/v2-public-private]
+    branches: [main]
     paths: ["frontend/**", "evidence/**", ".github/workflows/public-demo.yml"]
   workflow_dispatch:
 permissions:
@@ -29,6 +29,7 @@ jobs:
         with:
           path: frontend/public-site/out
   deploy:
+    if: github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     permissions:
@@ -41,3 +42,25 @@ jobs:
       - uses: actions/configure-pages@v5
       - uses: actions/deploy-pages@v4
         id: deployment
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+        working-directory: frontend
+      - run: npx playwright install --with-deps chromium
+        working-directory: frontend
+      - name: Verify deployed HTTPS demo in Chromium
+        run: npx playwright test --grep "public recording workflow"
+        working-directory: frontend
+        env:
+          PUBLIC_DEMO_URL: ${{ steps.deployment.outputs.page_url }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: deployed-browser-evidence
+          path: |
+            frontend/playwright-report
+            frontend/test-results

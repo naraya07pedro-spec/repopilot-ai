@@ -1,5 +1,14 @@
 # Execution handoff — V2
 
+## Pages integration checkpoint
+
+PR #5 added a generic root-level Next.js workflow. The owner subsequently removed it in
+main commit 71f50020a84a0215af5e6ad292f9e6faeccb66f3; preserve that deletion. Pages is now
+enabled. PR #4 integrates the actual frontend/public-site static export workflow and limits
+deployment to main. The deploy job runs the existing desktop/mobile Chromium interactions
+against its returned HTTPS URL; no local server or owner service is involved in that check.
+Until the merged workflow succeeds, this checkpoint does not claim a deployed URL.
+
 ## Latest verified checkpoint — 28 October 2026
 
 Remote implementation commit: `61c38f154900b59fad569457555b5612db9103ad`.
