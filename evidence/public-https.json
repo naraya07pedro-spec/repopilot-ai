@@ -1,0 +1,56 @@
+{
+  "checked_at": "2026-10-28T05:39:28.479809+00:00",
+  "url": "https://naraya07pedro-spec.github.io/repopilot-ai/",
+  "status": 200,
+  "html_sha256": "b5f0be3eb717daa8ac4dad2d0f5891ab9b7e06eb872a82e9371c77a4535a09d9",
+  "assets": [
+    {
+      "url": "https://naraya07pedro-spec.github.io/repopilot-ai/_next/static/chunks/0cz1d0mv5g_q7.js",
+      "status": 200,
+      "bytes": 112594
+    },
+    {
+      "url": "https://naraya07pedro-spec.github.io/repopilot-ai/_next/static/chunks/0umf92h1sb77c.js",
+      "status": 200,
+      "bytes": 13822
+    },
+    {
+      "url": "https://naraya07pedro-spec.github.io/repopilot-ai/_next/static/chunks/1_0bo3k1iondz.css",
+      "status": 200,
+      "bytes": 9148
+    },
+    {
+      "url": "https://naraya07pedro-spec.github.io/repopilot-ai/_next/static/chunks/2c8c9r-w96s34.js",
+      "status": 200,
+      "bytes": 8208
+    },
+    {
+      "url": "https://naraya07pedro-spec.github.io/repopilot-ai/_next/static/chunks/3cfn99dbrcvvp.js",
+      "status": 200,
+      "bytes": 16898
+    },
+    {
+      "url": "https://naraya07pedro-spec.github.io/repopilot-ai/_next/static/chunks/3wbm-994r45kr.js",
+      "status": 200,
+      "bytes": 229820
+    },
+    {
+      "url": "https://naraya07pedro-spec.github.io/repopilot-ai/_next/static/chunks/42w3zyktpb4q6.js",
+      "status": 200,
+      "bytes": 186069
+    },
+    {
+      "url": "https://naraya07pedro-spec.github.io/repopilot-ai/_next/static/chunks/turbopack-2skd7evhm1k_i.js",
+      "status": 200,
+      "bytes": 10043
+    }
+  ],
+  "private_routes": {
+    "owner/": 404,
+    "api/owner/settings": 404,
+    "api/demo/runs": 404
+  },
+  "recording_label": true,
+  "real_pr_link": true,
+  "method": "Independent HTTPS GETs with default certificate validation; no login or credentials"
+}

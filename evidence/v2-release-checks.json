@@ -14,16 +14,20 @@
     390
   ],
   "browser_test_scope": "Built static export and production owner frontend with actual local FastAPI; synthetic password, no live App/model calls",
-  "public_url_verified": false,
-  "last_public_http_status": 404,
+  "public_url_verified": true,
+  "last_public_http_status": 200,
   "screenshots_source_run": 40608844672,
   "screenshots_source_commit": "ef0b6c8dd5541eed1638fa4dd532f4f4f76f83d8",
   "limitations": [
-    "GitHub Pages site not found despite owner reporting Actions source saved",
     "No live GitHub App credentials",
     "No paid-model credentials or approved budget",
     "No validated isolated worker; private execution and PR publication disabled",
     "No private production deployment",
     "Native Computer Use stopped because current browser URL could not be determined confidently"
-  ]
+  ],
+  "public_url": "https://naraya07pedro-spec.github.io/repopilot-ai/",
+  "public_deployment_commit": "1e79482783675c0b74a980e5cb2714442b66b978",
+  "public_deployment_run": 40639065386,
+  "live_browser_tests": 2,
+  "main_verify_run": 40639065402
 }

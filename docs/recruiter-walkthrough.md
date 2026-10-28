@@ -21,6 +21,11 @@ production reliability, business impact, seniority or employment duration.
 
 ## V2 review
 
+Start at [the public demonstration](https://naraya07pedro-spec.github.io/repopilot-ai/).
+It requires no credentials and was verified over HTTPS with desktop/mobile Chromium flows.
+PR #4 is merged. The separate private control plane remains partial; live model and isolated
+private execution are not claimed. See the current release gates before evaluating readiness.
+
 Use the static viewer to compare the failed baseline, exact one-line diff, passing checks
 and actual draft PR #2. Every run is labeled a recording. PR #4 adds the separate owner
 control plane with security and failure-path tests; it does not establish production
