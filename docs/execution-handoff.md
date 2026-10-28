@@ -11,9 +11,35 @@ root-level Next.js workflow; the owner deleted it in 71f5002. That deletion is p
 Only public-demo.yml publishes, only from main. No reset, force-push or unrelated repo changes.
 Actual fixture Issue #1 -> draft PR #2 remains separate and unmerged.
 
-The current documentation branch is docs/public-release-evidence, based on that main commit.
+Documentation PR #6 merged at c64c0cf548039725f1c53c155c98630198780f6a with green Verify
+40639976253 and Pages 40639976294 (including two live Chromium tests).
+Current development branch: feat/hosting-readiness, based on that main commit.
 Inspect current git status/log and PRs before resuming. Local/API commit metadata may differ;
 publication verifies exact tree equality. Never rewrite histories to reconcile metadata.
+
+## Hosting preparation continuation
+
+The owner selected Netlify for the public export and an accessible existing Supabase project
+for PostgreSQL; no paid provisioning is authorized. The intended Netlify account is not the
+working connected account, and the owner explicitly asked to keep its deployment pending.
+An active Supabase project has other applications' tables. Only table metadata was inspected;
+no rows, schema, role, global settings or existing data were changed.
+
+Prepared netlify.toml for the root-path static export, deploy/render-preview.yaml with two
+free control-plane web services (no database/worker), and exact external steps in
+docs/hosting-setup.md. No resources are provisioned by those files alone.
+Production/Supabase startup now requires a private PostgreSQL schema and verified TLS.
+Private-schema migrations revoke public/browser-role access and enable RLS. Added a real
+PostgreSQL restricted-role, schema-isolation and restart-recovery test for CI.
+
+Local checks so far: 124 backend tests passed, 4 environment skips (three PostgreSQL, one
+Windows symlink), 94.42% statement coverage; affected database/owner checks 43 passed.
+Ruff, formatting and mypy passed. Frontend: 10 tests, TypeScript, owner production build and
+root-path public production build passed. Render configuration passed the official JSON
+schema; Netlify TOML parsed. Three actual local Chromium tests passed (root-path public demo
+at desktop/mobile sizes and private owner login/logout/disabled execution). Both dependency
+audits found no known vulnerabilities; the tracked-file credential-pattern scan passed.
+Final CI, including PostgreSQL, must be checked before integration.
 
 ## Actual verification
 
@@ -38,13 +64,17 @@ verification and PR publication remain disabled (409). Docker is absent locally;
 smoke is not evidence of a hostile-code sandbox. Do not remove the exact-byte host fixture gate.
 No private HTTPS deployment, production recovery, comprehensive accessibility or adversarial
 sandbox review is claimed. A Netlify connection is now reachable, but the intended hosting
-account/backend/worker environment requires owner selection; no hosting resource was created.
+account connection is incorrect for the requested target; publication stays pending by owner
+request. Render is an evaluated free preview option; no hosting resource was created.
 
 ## Next exact actions
 
-1. Finish review/integration of the public-release-evidence documentation PR if still open.
-2. Obtain owner-selected private hosting/worker infrastructure and explicit spending limits.
-   Configure server-only variables listed in docs/private-workspace.md; do not paste keys in chat.
+1. Finish browser checks and review/integration of feat/hosting-readiness; verify CI's real
+   PostgreSQL schema-isolation test. Preserve the working Pages host.
+2. Follow docs/hosting-setup.md: reconnect the intended Netlify account when the owner resumes
+   publication; bootstrap only a private Supabase schema/role in the selected existing project,
+   inject its verified-TLS connection secret, and connect an approved container hosting account.
+   Configure App/model server-only variables and explicit spending limits; never paste keys in chat.
 3. Implement and validate a disposable secret-free VM/microVM worker with denied network,
    filesystem/resource/time limits, cancellation, cleanup and immutable evidence transfer.
    Keep private execution closed until this review passes.

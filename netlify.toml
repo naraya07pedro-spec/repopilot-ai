@@ -1,0 +1,19 @@
+# Public recordings only. Never point this site at the owner Next.js app.
+[build]
+  base = "frontend"
+  command = "npm run build:public"
+  publish = "public-site/out"
+
+[build.environment]
+  NODE_VERSION = "22"
+  PUBLIC_BASE_PATH = ""
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# No API proxy, functions, or catch-all rewrite. Private routes must remain 404.

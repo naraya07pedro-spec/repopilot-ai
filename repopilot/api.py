@@ -33,9 +33,15 @@ def create_app(
     api_key: str | None = None,
     owner_config: OwnerConfig | None = None,
 ) -> FastAPI:
+    config = owner_config or OwnerConfig.from_env()
+    config.validate()
     root = workspace or Path(os.environ.get("REPOPILOT_DATA", ".repopilot")).resolve()
     root.mkdir(parents=True, exist_ok=True)
-    store = Store(database_url or os.environ.get("DATABASE_URL", f"sqlite:///{root / 'runs.db'}"))
+    store = Store(
+        database_url or os.environ.get("DATABASE_URL", f"sqlite:///{root / 'runs.db'}"),
+        schema=os.environ.get("REPOPILOT_DATABASE_SCHEMA") or None,
+        production=os.environ.get("REPOPILOT_ENV") == "production",
+    )
     engine = Engine(store, root / "workspaces")
     key = api_key if api_key is not None else os.environ.get("REPOPILOT_API_KEY", "")
     pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="repopilot")
@@ -52,7 +58,7 @@ def create_app(
 
     app = FastAPI(title="RepoPilot AI", version="0.1.0", lifespan=lifespan)
     app.state.store, app.state.engine = store, engine
-    owner = OwnerRuntime(app, store, pool, slots, owner_config)
+    owner = OwnerRuntime(app, store, pool, slots, config)
     app.state.owner = owner
 
     @app.middleware("http")

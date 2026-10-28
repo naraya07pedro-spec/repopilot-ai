@@ -3,8 +3,9 @@ for(const viewport of [{width:1440,height:1000},{width:390,height:844}]){
  test(`public recording workflow at ${viewport.width}px`,async({page},testInfo)=>{
   await page.setViewportSize(viewport);
   const errors:string[]=[];page.on("pageerror",e=>errors.push(e.message));
+  const failedAssets:string[]=[];page.on("response",r=>{if(["script","stylesheet"].includes(r.request().resourceType())&&r.status()>=400)failedAssets.push(r.url());});
   const requests:string[]=[];page.on("request",r=>requests.push(r.url()));
-  const url=process.env.PUBLIC_DEMO_URL||"http://127.0.0.1:4173/repopilot-ai/";
+  const url=process.env.PUBLIC_DEMO_URL||`http://127.0.0.1:4173${process.env.PUBLIC_BASE_PATH??"/repopilot-ai"}/`;
   if(process.env.PUBLIC_DEMO_URL)expect(new URL(url).protocol).toBe("https:");
   const response=await page.goto(url);
   expect(response?.status()).toBe(200);
@@ -21,6 +22,10 @@ for(const viewport of [{width:1440,height:1000},{width:390,height:844}]){
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
   expect(requests.filter(x=>x.includes("/api/")).length).toBe(0);
   expect(errors).toEqual([]);
+  expect(failedAssets).toEqual([]);
+  for(const path of ["owner/","api/owner/settings","api/demo/runs"]){
+   expect((await page.request.get(new URL(path,url).href)).status()).toBe(404);
+  }
   await page.screenshot({path:testInfo.outputPath(`public-${viewport.width}.png`),fullPage:true});
  });
 }

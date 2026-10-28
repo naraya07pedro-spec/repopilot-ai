@@ -26,6 +26,10 @@ remain disabled until a validated isolated worker exists. This is not production
 [Private setup](docs/private-workspace.md) · [Deployment](docs/deployment.md) ·
 [V2 release gates](docs/v2-gaps.md)
 
+[Hosting setup](docs/hosting-setup.md) covers the prepared Netlify static export,
+private Supabase schema, and optional free Render control-plane preview. These additional
+hosts are not deployed; private execution remains disabled pending validated isolation.
+
 ## Verified demonstration
 
 [Issue #1](https://github.com/naraya07pedro-spec/repopilot-ai/issues/1) became
