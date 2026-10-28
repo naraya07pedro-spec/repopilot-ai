@@ -17,3 +17,11 @@
 
 No general autonomy, production usage, business impact, seniority or experience duration
 is inferred from this project.
+
+## V2: separate static export and fail-closed private planning
+
+A second Next.js app root exports only approved evidence. It shares presentation components
+without including owner routes. Existing fixture execution stays unchanged. Private planning
+uses installation-scoped reads and conservative database-backed spend reservations; uncertain
+requests retain their reservations. Additive schema version 2 preserves existing runs. A real
+isolated worker is a release prerequisite, not a Docker flag or a promise in a prompt.

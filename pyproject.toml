@@ -7,7 +7,7 @@ name = "repopilot-ai"
 version = "0.1.0"
 description = "Auditable issue-to-PR engineering for explicitly trusted fixtures"
 requires-python = ">=3.12"
-dependencies = ["fastapi>=0.115,<1", "uvicorn>=0.34,<1", "pydantic>=2.10,<3", "sqlalchemy>=2.0,<3", "httpx>=0.28,<1", "pytest>=9.0.3,<10", "ruff>=0.11,<1"]
+dependencies = ["fastapi>=0.115,<1", "uvicorn>=0.34,<1", "pydantic>=2.10,<3", "sqlalchemy>=2.0,<3", "httpx>=0.28,<1", "pytest>=9.0.3,<10", "ruff>=0.11,<1", "PyJWT[crypto]>=2.15,<3"]
 
 [project.optional-dependencies]
 dev = ["pytest-cov>=6,<8", "ruff>=0.11,<1", "mypy>=1.15,<2", "pip-audit>=2.9,<3"]

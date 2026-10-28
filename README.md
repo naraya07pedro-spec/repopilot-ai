@@ -10,6 +10,21 @@ The default provider deterministically selects reviewed edits. An optional OpenA
 planner is implemented and contract-tested; live model quality is not claimed.
 Arbitrary repositories and arbitrary model-generated code cannot execute on the host.
 
+## V2 delivery status: PARTIAL
+
+[Review PR #4](https://github.com/naraya07pedro-spec/repopilot-ai/pull/4) adds a separate static
+public evidence viewer and private owner workspace. V1 [PR #3](https://github.com/naraya07pedro-spec/repopilot-ai/pull/3)
+is merged. The public export builds, but Pages deployment is awaiting repository configuration;
+no working public URL is claimed yet.
+
+Private `/owner` supports authentication, installation-scoped repository inspection, budgeted
+real-model planning, approval/rejection, cancellation and persistent history. The adapter is
+contract-tested; live credentials were unavailable. General execution and private PR publication
+remain disabled until a validated isolated worker exists. This is not production-ready.
+
+[Private setup](docs/private-workspace.md) · [Deployment](docs/deployment.md) ·
+[V2 release gates](docs/v2-gaps.md)
+
 ## Verified demonstration
 
 [Issue #1](https://github.com/naraya07pedro-spec/repopilot-ai/issues/1) became

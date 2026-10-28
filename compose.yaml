@@ -29,7 +29,9 @@ services:
     cpus: 1
     pids_limit: 64
   web:
-    build: ./frontend
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
     environment:
       REPOPILOT_BACKEND: http://api:8000
     ports: ["127.0.0.1:3000:3000"]

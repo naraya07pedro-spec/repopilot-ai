@@ -1,0 +1,14 @@
+**
+!frontend/
+!frontend/**
+!evidence/
+!evidence/live-bug.json
+!evidence/feature.json
+!evidence/failure.json
+frontend/node_modules
+frontend/.next*
+frontend/public-site/.next
+frontend/public-site/out
+frontend/public-site/data
+frontend/.env*
+frontend/**/*.tsbuildinfo

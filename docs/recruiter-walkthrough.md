@@ -18,3 +18,10 @@ Skills evidenced: Python/FastAPI, runtime schemas, Git, SQL concurrency/idempote
 bounded subprocesses, HTTP contracts, failure handling, security policy, Next.js/TypeScript
 and reproducible checks. Do not turn fixture results into claims about customers,
 production reliability, business impact, seniority or employment duration.
+
+## V2 review
+
+Use the static viewer to compare the failed baseline, exact one-line diff, passing checks
+and actual draft PR #2. Every run is labeled a recording. PR #4 adds the separate owner
+control plane with security and failure-path tests; it does not establish production
+readiness or live model quality. Read private-workspace.md for the remaining execution gate.
