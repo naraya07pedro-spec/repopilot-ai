@@ -18,7 +18,9 @@ The static public build contains neither the owner page nor its API proxy.
 
 For HTTPS hosting set `REPOPILOT_ENV=production`, `REPOPILOT_MODE=owner`,
 `REPOPILOT_ORIGIN=https://your-owner-host`, and `REPOPILOT_COOKIE_SECURE=true`.
-Use one application process, PostgreSQL and a private backend network.
+Set the same `REPOPILOT_ORIGIN` on both Next.js and FastAPI. The proxy compares this trusted
+external origin rather than Next.js's internally normalized URL. Use one application process,
+PostgreSQL and a private backend network.
 
 ## GitHub App
 
