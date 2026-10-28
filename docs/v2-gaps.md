@@ -5,7 +5,7 @@ as a6ef16f1e6fa8e0c5cd285fc85bd34a0d2426ade after clean review/CI state. PR #2 r
 
 - [x] Preserve fixture engine, evidence, CI, and existing UI.
 - [x] Public static evidence viewer built and tested.
-- [ ] Public HTTPS deployment independently verified.
+- [x] Public HTTPS deployment independently verified (main 1e79482, deployment 40639065386).
 - [x] Owner session authentication, revocation, CSRF and throttling tested.
 - [x] GitHub App repository scoping and token lifecycle contract-tested.
 - [ ] Live GitHub App installation validated (credentials absent).
@@ -15,7 +15,8 @@ as a6ef16f1e6fa8e0c5cd285fc85bd34a0d2426ade after clean review/CI state. PR #2 r
 - [x] Durable private run state, approval, cancellation/recovery verified.
 - [ ] Private production deployment and PostgreSQL migration verified.
 - [x] CI browser E2E: public desktop/mobile and owner authentication; genuine screenshots inspected.
-- [ ] Live hosted URL browser validation and comprehensive accessibility/device review.
+- [x] Live hosted URL browser validation at desktop/mobile widths (2 Chromium tests).
+- [ ] Comprehensive accessibility/device review.
 
 V2 remains PARTIAL until every required release gate has independent evidence.
 No arbitrary repository code will run on this host. No new repository will be created.

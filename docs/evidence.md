@@ -1,5 +1,27 @@
 # Verified execution evidence
 
+## Public release — 28 October 2026
+
+The [public demo](https://naraya07pedro-spec.github.io/repopilot-ai/) is live and verified.
+PR #4 merged normally at 1e79482783675c0b74a980e5cb2714442b66b978 after fresh green
+checks and review of public/private separation. PR #5's generic workflow had already been
+deleted by the owner in 71f5002; its deletion was preserved. Only the correct public-demo
+workflow publishes from main. Demonstration PR #2 remains separate and unmerged.
+
+[Main Verify](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40639065402)
+passed: 114 backend tests, 95.57% coverage, 10 component tests, 3 local Chromium E2E tests,
+PostgreSQL recovery/migrations, Docker smoke, lint/type/build checks and dependency audits.
+[Public deployment](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40639065386)
+also passed 2 Chromium tests against the deployed HTTPS URL at 1440px and 390px. These
+exercised evidence tabs, actual diff/test text, the PR #2 link, rejected regression, no public
+API calls, no browser exceptions and no horizontal overflow. Artifact: 12794941485.
+
+[Independent HTTPS checks](../evidence/public-https.json) recorded homepage 200, eight
+script/style assets 200, and /owner/, /api/owner/settings and /api/demo/runs all 404.
+No token, login or payment was used. The website displays recorded deterministic fixture runs;
+its availability does not establish live model execution or private execution readiness.
+The earlier Pages errors below are preserved historical evidence and are now resolved.
+
 ## V2 verification — 28 October 2026
 
 [CI 40609756593](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40609756593)

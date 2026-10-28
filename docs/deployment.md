@@ -7,17 +7,22 @@ It has no API routes, credentials, login, model calls or code execution. The sep
 Next.js app must never be substituted into this static deployment.
 
 1. In the existing repository, Settings -> Pages -> Source: GitHub Actions.
-2. Run the existing Public demo workflow from `feat/v2-public-private` (later `main` after review).
+2. Run the existing Public demo workflow from `main`; only main may deploy.
 3. The workflow builds with `PUBLIC_BASE_PATH=/repopilot-ai`, uploads `frontend/public-site/out`,
    and deploys with Pages and OIDC permissions. Observe environment restrictions normally.
 4. Verify the deployment's returned HTTPS URL, asset requests and interactive evidence tabs.
 
-The owner reported selecting GitHub Actions source, but fresh metadata still returned
-has_pages=false. The deployment retry again failed at configure-pages with site-not-found,
-and a direct HTTPS request returned 404. This remains a setting/access blocker, not a build failure.
-The intended address is `https://naraya07pedro-spec.github.io/repopilot-ai/`; it is **not a
-verified deployment** until the job and HTTP checks pass. Netlify connections also required
-reauthentication; no Netlify site or paid infrastructure was created.
+[Public URL](https://naraya07pedro-spec.github.io/repopilot-ai/) verified on 28 October 2026:
+HTTP 200, all eight script/style assets 200, and owner/API routes 404.
+[Deployment 40639065386](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40639065386)
+at main commit 1e79482783675c0b74a980e5cb2714442b66b978 passed two Chromium tests against
+the returned HTTPS URL. Reports/screenshots are in its deployed-browser-evidence artifact.
+
+PR #5's generic workflow expected a root package.json and failed. The owner deleted it in
+71f5002; PR #4 preserved that deletion and integrated the correct frontend/public-site workflow.
+Earlier Pages 404 results are historical and resolved. No duplicate deploy workflow remains.
+No Netlify project or paid infrastructure was created. A connected Netlify account is reachable,
+but the intended private hosting account and a backend/worker host still require owner selection.
 
 To reproduce the static build:
 

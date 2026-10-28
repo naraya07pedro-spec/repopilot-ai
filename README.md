@@ -12,10 +12,11 @@ Arbitrary repositories and arbitrary model-generated code cannot execute on the 
 
 ## V2 delivery status: PARTIAL
 
-[Review PR #4](https://github.com/naraya07pedro-spec/repopilot-ai/pull/4) adds a separate static
-public evidence viewer and private owner workspace. V1 [PR #3](https://github.com/naraya07pedro-spec/repopilot-ai/pull/3)
-is merged. The public export builds, but Pages deployment is awaiting repository configuration;
-no working public URL is claimed yet.
+[Open the public demo](https://naraya07pedro-spec.github.io/repopilot-ai/) — no login, API key,
+payment or installation. Explore clearly labeled recordings, actual diffs, checks and PR links.
+[PR #4](https://github.com/naraya07pedro-spec/repopilot-ai/pull/4) is merged, integrating the
+static public viewer and separate private owner workspace. The public product is deployed;
+the private execution product remains partial.
 
 Private `/owner` supports authentication, installation-scoped repository inspection, budgeted
 real-model planning, approval/rejection, cancellation and persistent history. The adapter is
@@ -34,21 +35,22 @@ The published diff changes one line. The exact plan, outputs, commits and artifa
 [inspectable](docs/evidence.md). Publication used the connected GitHub integration;
 no live paid-model or token-publisher result is implied.
 
-[Verified V2 CI](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40609756593)
-at `61c38f154900b59fad569457555b5612db9103ad`: **114 backend tests, 95.57% statement coverage,
+[Verified main CI](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40639065402)
+at `1e79482783675c0b74a980e5cb2714442b66b978`: **114 backend tests, 95.57% statement coverage,
 10 component tests and 3 Chromium browser tests** passed. TypeScript, production builds,
 PostgreSQL owner migration/recovery, Docker HTTP smoke and dependency audits passed.
 The configured secret-pattern scan found no matches. Live App/model validation is still blocked.
 
 ![Actual public evidence viewer captured in CI](docs/images/public-desktop.png)
 
-[Mobile screenshot](docs/images/public-mobile.png). These are actual browser captures of the
-static export, not proof of a hosted deployment. Pages still returns site-not-found and HTTPS
-404 after the owner reported selecting Actions source. No public or private live URL is claimed.
+[Mobile screenshot](docs/images/public-mobile.png). These screenshots show the built static
+export. Separately, [deployment and two live Chromium tests](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40639065386)
+verified the actual HTTPS site at desktop/mobile sizes. [Independent HTTP evidence](evidence/public-https.json)
+confirms the homepage and assets load and private routes are absent. No private deployment is claimed.
 
 ## Review in 30 seconds
 
-For the read-only recordings, build the [static viewer](docs/deployment.md), select **Bug fix**,
+For the read-only recordings, open the [public demo](https://naraya07pedro-spec.github.io/repopilot-ai/), select **Bug fix**,
 then inspect **Code diff**, **Tests**, and the actual **PR #2** link. The following steps run
 the separately bounded fixture demonstration locally.
 
