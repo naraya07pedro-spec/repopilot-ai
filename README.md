@@ -34,12 +34,23 @@ The published diff changes one line. The exact plan, outputs, commits and artifa
 [inspectable](docs/evidence.md). Publication used the connected GitHub integration;
 no live paid-model or token-publisher result is implied.
 
-[Verified CI](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40492779772):
-72 backend tests, 95.68% statement coverage, 4 frontend tests, production build and Docker smoke.
-See the review branch's latest checks for subsequent documentation and dependency hardening.
-Browser visual QA remains blocked by the authoring environment. No public deployment is claimed.
+[Verified V2 CI](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40609756593)
+at `61c38f154900b59fad569457555b5612db9103ad`: **114 backend tests, 95.57% statement coverage,
+10 component tests and 3 Chromium browser tests** passed. TypeScript, production builds,
+PostgreSQL owner migration/recovery, Docker HTTP smoke and dependency audits passed.
+The configured secret-pattern scan found no matches. Live App/model validation is still blocked.
+
+![Actual public evidence viewer captured in CI](docs/images/public-desktop.png)
+
+[Mobile screenshot](docs/images/public-mobile.png). These are actual browser captures of the
+static export, not proof of a hosted deployment. Pages still returns site-not-found and HTTPS
+404 after the owner reported selecting Actions source. No public or private live URL is claimed.
 
 ## Review in 30 seconds
+
+For the read-only recordings, build the [static viewer](docs/deployment.md), select **Bug fix**,
+then inspect **Code diff**, **Tests**, and the actual **PR #2** link. The following steps run
+the separately bounded fixture demonstration locally.
 
 1. Start the console and select **Bug fix**.
 2. **Start live local run**. Inspect the failing baseline and bounded plan.

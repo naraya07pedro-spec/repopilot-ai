@@ -44,8 +44,9 @@ module is excluded. CLI behavior is exercised by demonstrations rather than incl
 The recovered V2 full local suite passed 110 tests with two environment skips and 95.61%
 statement coverage (`evidence/v2-local-tests.xml`, `v2-local-coverage.json`). These files precede
 the additional cancellation/PostgreSQL tests; current CI is authoritative for the published head.
-Eight frontend component tests passed. TypeScript found an unknown-valued conditional in the
-new owner view; it was corrected to an explicit boolean, with a new build required.
+Ten frontend component tests, TypeScript and the production build passed after fixing the
+owner view and configured-origin proxy. CI 40609756593 passed 114 backend tests (95.57%)
+and three actual Chromium end-to-end cases.
 
 CI browser tests use Chromium against the production static export and the production owner
 frontend plus an actual loopback FastAPI test server. No credentials or paid APIs are used.

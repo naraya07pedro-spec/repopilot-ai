@@ -1,5 +1,45 @@
 # Verified execution evidence
 
+## V2 verification — 28 October 2026
+
+[CI 40609756593](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40609756593)
+passed at `61c38f154900b59fad569457555b5612db9103ad`: 114 backend tests, 95.57% statement
+coverage, 10 component tests, 3 actual Chromium end-to-end tests, TypeScript, owner/static
+production builds, PostgreSQL migration/session/recovery tests and Docker HTTP smoke.
+Ruff, mypy, full npm audit, locked Python audit and the configured secret-pattern scan passed.
+Audit results mean no known vulnerabilities found, not proof of complete security.
+
+Browser cases exercised the public evidence tabs at 1440px and 390px, checked no public API
+calls, and exercised owner login/logout, unauthorized access and unavailable-execution controls.
+They ran against production builds with an actual temporary FastAPI server and synthetic
+credentials. No live App/model calls were made. Scope excludes a full accessibility audit.
+
+[Release check record](../evidence/v2-release-checks.json) contains commit/job identifiers.
+[Desktop](images/public-desktop.png) and [mobile](images/public-mobile.png) screenshots came
+from artifact 12781912494 in run 40608844672; public code is unchanged by the later proxy fix.
+They show a genuine rejected-regression view and were visually inspected.
+
+Recovered local full suite: 110 passed, 2 environment skips, 95.61% coverage. These earlier
+measurements remain in v2-local-tests.xml/v2-local-coverage.json. Subsequent affected reruns
+passed 41 owner/App tests and 3 API tests. Ten component tests, TypeScript, production build
+and local dependency audits passed. Final CI includes the newer PostgreSQL/cancellation cases.
+
+Resolved defects: missing container build-context evidence; provider PolicyError misclassification;
+cancellation overwriting a newly completed plan; and a proxy Origin mismatch caused by Next.js
+URL normalization. The proxy now uses the configured external origin; CSRF rejection remains
+tested. The failed browser trace was retained and the corrected real-browser run passed.
+One Windows API test exceeded its polling window during concurrent builds; an isolated rerun
+passed without changing its assertions or timeout.
+
+V2 remains PARTIAL. Pages reports site-not-found and the intended HTTPS URL returned 404 even
+after the owner reported saving Actions source. Private execution/PR publication remains closed
+pending a validated isolated worker. App credentials, model credentials/approved spend and
+private hosting were unavailable. Native Computer Use stopped because it could not determine
+the current browser URL confidently; no safety guard was bypassed.
+
+The historical V1 evidence below remains valid for its stated commit and date. Its browser
+limitation is superseded by the CI browser results above; hosted URL verification is still open.
+
 Recorded on 27 October 2026. This is a working, fixture-bounded reference implementation.
 General repository execution, live model quality and production readiness are not claimed.
 

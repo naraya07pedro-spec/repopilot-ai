@@ -1,5 +1,31 @@
 # Execution handoff — V2
 
+## Latest verified checkpoint — 28 October 2026
+
+Remote implementation commit: `61c38f154900b59fad569457555b5612db9103ad`.
+Local equivalent: `97428d0ac5b5a4cdae816a2afd3e15c7acef575e`; identical tree
+`64c0f70f3988382b3e85a0440a60bdf88aa5788f`. PR #4 remains draft.
+CI 40609756593 passed all Verify jobs: 114 backend tests, 95.57% statement coverage,
+10 component tests, 3 actual Chromium browser tests, TypeScript, production builds,
+PostgreSQL owner migration/recovery, Docker smoke, Ruff/mypy and dependency audits.
+Local affected reruns passed: 41 owner/App tests and 3 API tests. No assertions were weakened.
+
+The browser test found an Origin mismatch caused by Next.js URL normalization. The proxy
+now checks the configured external REPOPILOT_ORIGIN; set it on both Next.js and FastAPI.
+Unauthorized-origin checks remain enforced. CI browser sign-in/logout now passes.
+Genuine public desktop/mobile screenshots from CI were inspected; files are under docs/images.
+The provider exception-handling and cancellation-race fixes are preserved.
+
+Pages still returned site-not-found and HTTPS 404 after the owner reported saving Actions
+source. The fresh deploy retry failed too. No public or private live URL is verified.
+Native Computer Use stopped because the current browser URL could not be determined safely.
+Do not bypass that guard. CI browser tests provide separate functional evidence.
+
+Next: resolve the exact repository Pages setting, retry the failed deployment and verify HTTPS.
+Private execution/PR publication remains closed pending a validated isolated worker, live App
+credentials, an approved model budget and private hosting. No paid-model run is claimed.
+The historical checkpoint below is superseded by this section where results differ.
+
 Status: PARTIAL. Branch `feat/v2-public-private`; existing draft PR #4. V1 PR #3 was normally
 merged at `a6ef16f1e6fa8e0c5cd285fc85bd34a0d2426ade`. Real demo Issue #1 -> draft PR #2 is
 separate and unmerged. No other repository was modified.

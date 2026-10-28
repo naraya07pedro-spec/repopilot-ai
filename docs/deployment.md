@@ -12,7 +12,9 @@ Next.js app must never be substituted into this static deployment.
    and deploys with Pages and OIDC permissions. Observe environment restrictions normally.
 4. Verify the deployment's returned HTTPS URL, asset requests and interactive evidence tabs.
 
-At the latest local check Pages was disabled and the deploy job failed at configure-pages.
+The owner reported selecting GitHub Actions source, but fresh metadata still returned
+has_pages=false. The deployment retry again failed at configure-pages with site-not-found,
+and a direct HTTPS request returned 404. This remains a setting/access blocker, not a build failure.
 The intended address is `https://naraya07pedro-spec.github.io/repopilot-ai/`; it is **not a
 verified deployment** until the job and HTTP checks pass. Netlify connections also required
 reauthentication; no Netlify site or paid infrastructure was created.
