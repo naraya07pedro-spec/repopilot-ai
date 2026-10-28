@@ -1,0 +1,29 @@
+{
+  "verified_at": "2026-10-28",
+  "source_commit": "61c38f154900b59fad569457555b5612db9103ad",
+  "verify_run": 40609756593,
+  "backend_job": 122558145386,
+  "frontend_job": 122558145824,
+  "container_job": 122558145720,
+  "backend_tests": 114,
+  "backend_statement_coverage_percent": 95.57,
+  "frontend_component_tests": 10,
+  "browser_e2e_tests": 3,
+  "public_browser_viewports": [
+    1440,
+    390
+  ],
+  "browser_test_scope": "Built static export and production owner frontend with actual local FastAPI; synthetic password, no live App/model calls",
+  "public_url_verified": false,
+  "last_public_http_status": 404,
+  "screenshots_source_run": 40608844672,
+  "screenshots_source_commit": "ef0b6c8dd5541eed1638fa4dd532f4f4f76f83d8",
+  "limitations": [
+    "GitHub Pages site not found despite owner reporting Actions source saved",
+    "No live GitHub App credentials",
+    "No paid-model credentials or approved budget",
+    "No validated isolated worker; private execution and PR publication disabled",
+    "No private production deployment",
+    "Native Computer Use stopped because current browser URL could not be determined confidently"
+  ]
+}

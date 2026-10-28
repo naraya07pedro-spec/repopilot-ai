@@ -11,7 +11,14 @@
 - Unknown publication outcomes need manual reconciliation; no exactly-once remote-write claim.
 - Secret scanning is incomplete. Catalog authors, host operator and filesystem are trusted.
 - The console is local; no public writable deployment is supported.
-- Browser visual QA is blocked by webview attachment timeouts; no screenshots were fabricated.
-  Component tests and production HTTP workflow checks passed. Device/accessibility QA remains open.
+- Three actual CI Chromium tests passed, covering public desktop/mobile interactions and owner
+  authentication. Genuine screenshots were inspected. Native desktop control later stopped
+  because the browser URL could not be established safely. Full device/accessibility QA remains open.
 - Connected GitHub integration lacks branch-protection administration access.
 - Portfolio integration waits for project acceptance; the existing portfolio remains untouched.
+
+V2 private planning supports only small Python/TypeScript repositories, with strict context
+limits. Live GitHub App authentication and real-model calls await credentials and approved
+budget. Private modification, isolated verification and PR publication are not implemented.
+Private deployment, production PostgreSQL recovery and hostile-code sandbox validation remain
+blocked. Static public export is available; hosting status is tracked in deployment.md.

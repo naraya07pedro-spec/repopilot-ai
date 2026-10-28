@@ -230,3 +230,10 @@ frontend/.env*
 .next-*/
 
 .vitest/
+
+frontend/public-site/data/
+frontend/public-site/out/
+frontend/public-site/next-env.d.ts
+
+frontend/playwright-report/
+frontend/test-results/

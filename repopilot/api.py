@@ -1,16 +1,23 @@
 import hmac
+import json
+import logging
 import os
 import threading
+import time
+import uuid
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Annotated, Any, Literal
 
-from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from pydantic import BaseModel
+from starlette.middleware.base import RequestResponseEndpoint
+from starlette.responses import JSONResponse, Response
 
 from repopilot.engine import Engine
 from repopilot.models import Approval, RunRequest
+from repopilot.owner import OwnerConfig, OwnerRuntime
 from repopilot.policy import PolicyError
 from repopilot.store import Store
 
@@ -24,6 +31,7 @@ def create_app(
     database_url: str | None = None,
     workspace: Path | None = None,
     api_key: str | None = None,
+    owner_config: OwnerConfig | None = None,
 ) -> FastAPI:
     root = workspace or Path(os.environ.get("REPOPILOT_DATA", ".repopilot")).resolve()
     root.mkdir(parents=True, exist_ok=True)
@@ -36,12 +44,44 @@ def create_app(
     @asynccontextmanager
     async def lifespan(app: FastAPI):  # type: ignore[no-untyped-def]
         store.recover()
+        owner.service.recover()
         yield
         pool.shutdown(wait=True)
+        owner.close()
         store.engine.dispose()
 
     app = FastAPI(title="RepoPilot AI", version="0.1.0", lifespan=lifespan)
     app.state.store, app.state.engine = store, engine
+    owner = OwnerRuntime(app, store, pool, slots, owner_config)
+    app.state.owner = owner
+
+    @app.middleware("http")
+    async def boundary(request: Request, call_next: RequestResponseEndpoint) -> Response:
+        request_id, started = uuid.uuid4().hex, time.monotonic()
+        mode = owner.config.mode
+        if mode != "local" and (
+            request.url.path.startswith("/api/runs")
+            or (request.method != "GET" and request.url.path.startswith("/api/demo"))
+        ):
+            return JSONResponse(
+                {"detail": "Local fixture actions disabled in this mode"}, status_code=403
+            )
+        result = await call_next(request)
+        result.headers["X-Request-ID"] = request_id
+        logging.getLogger("repopilot.http").info(
+            json.dumps(
+                {
+                    "request_id": request_id,
+                    "method": request.method,
+                    "path": request.url.path,
+                    "status": result.status_code,
+                    "duration_ms": round((time.monotonic() - started) * 1000, 2),
+                }
+            )
+        )
+        if request.url.path.startswith("/api/owner"):
+            result.headers["Cache-Control"] = "no-store"
+        return result
 
     def authorized(authorization: Annotated[str | None, Header()] = None) -> None:
         if not key or not hmac.compare_digest(authorization or "", "Bearer " + key):

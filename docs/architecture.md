@@ -55,3 +55,11 @@ SQLAlchemy schema v1 has one table. SQLite enables no-service setup; Compose sup
 PostgreSQL. Future schema changes require migrations; create_all is used only for this
 initial additive schema. Run IDs correlate events, workspaces, branches and logs.
 Runtime is measured. Cost and token usage are not invented.
+
+## V2 boundaries
+
+The public static export embeds only approved fixture records and has no API. The owner
+Next.js proxy forwards sessions to FastAPI, which holds App/model credentials and durable
+PostgreSQL-compatible state. Private planning never calls the fixture executor. Approval
+binds a pinned snapshot and proposed edits; execution remains disabled. See
+[private workspace](private-workspace.md) and [deployment](deployment.md).

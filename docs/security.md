@@ -44,3 +44,12 @@ teardown and escape testing. Until then, general execution is disabled.
 
 Never publicly expose the writable demo. A hosted recruiter demo should serve recorded evidence
 read-only with no credentials. Branch-protection integration limits are recorded in evidence.
+
+## Private workspace controls
+
+V2 adds scrypt password hashing, expiring hashed sessions, HttpOnly/SameSite cookies, Origin
+checks, bounded login attempts, allowlisted installation tokens, no-store responses, atomic
+spend reservations and approval digests. Cancellation preserves concurrently completed plan
+evidence. Restart marks uncertain work interrupted. These are single-process controls, not
+production penetration-test evidence. The public export has no privileged routes. Private
+source remains in the protected database. Model-generated code never reaches host execution.

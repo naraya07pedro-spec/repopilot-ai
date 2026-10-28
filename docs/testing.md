@@ -32,3 +32,37 @@ additional symlink-path statement (620/648, 95.68%). Local JUnit paths are redac
 
 Vitest 5.0.5 requires Node 22.12+ (official migration guide:
 https://vitest.dev/guide/migration/). Full npm audit includes development dependencies.
+
+## V2 checks
+
+Owner/GitHub App/provider tests add real RSA signing, mock HTTP boundaries, session expiry,
+CSRF, path policy, conservative budgets, concurrent reservation, idempotency, approval binding,
+cancellation races and restart recovery. These do not count as live provider or App access.
+Coverage includes all `repopilot` modules except the existing CLI exclusion; no V2 service
+module is excluded. CLI behavior is exercised by demonstrations rather than included in coverage.
+
+The recovered V2 full local suite passed 110 tests with two environment skips and 95.61%
+statement coverage (`evidence/v2-local-tests.xml`, `v2-local-coverage.json`). These files precede
+the additional cancellation/PostgreSQL tests; current CI is authoritative for the published head.
+Ten frontend component tests, TypeScript and the production build passed after fixing the
+owner view and configured-origin proxy. CI 40609756593 passed 114 backend tests (95.57%)
+and three actual Chromium end-to-end cases.
+
+CI browser tests use Chromium against the production static export and the production owner
+frontend plus an actual loopback FastAPI test server. No credentials or paid APIs are used.
+They check desktop/mobile evidence interactions, lack of public API calls, login/logout,
+unauthorized access and closed execution gates. Screenshots and traces are CI artifacts.
+Browser assertions do not constitute comprehensive accessibility or visual design review.
+Configuration follows [Playwright's CI documentation](https://playwright.dev/docs/ci-intro).
+
+```sh
+cd frontend
+npm run build
+PUBLIC_BASE_PATH=/repopilot-ai npm run build:public
+npx playwright install --with-deps chromium
+npm run test:browser
+```
+
+Use a Python environment with the locked project dependencies for the browser test server.
+Both test services bind to loopback and use temporary data. CI also runs owner migrations and
+persistence/recovery against PostgreSQL 17; local PostgreSQL tests skip when unconfigured.
