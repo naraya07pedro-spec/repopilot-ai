@@ -39,7 +39,13 @@ root-path public production build passed. Render configuration passed the offici
 schema; Netlify TOML parsed. Three actual local Chromium tests passed (root-path public demo
 at desktop/mobile sizes and private owner login/logout/disabled execution). Both dependency
 audits found no known vulnerabilities; the tracked-file credential-pattern scan passed.
-Final CI, including PostgreSQL, must be checked before integration.
+PR #7 publishes this stage. Verify run 40652011337 at 296bae7e8ef7c7cdd9506453b9121b4b7f4c2658
+passed 128 backend tests with 95.69% coverage, including the restricted PostgreSQL role,
+RLS/private schema and recovery test. Frontend passed 10 component tests and 5 browser flows
+(Pages/owner 3, root-path public 2); container smoke and audits passed.
+A final hostname-normalization regression adds coverage for uppercase/trailing-dot Supabase
+hosts; its 14 database configuration tests passed locally. Check CI on the updated PR head
+before integrating, rather than using an older green run as approval.
 
 ## Actual verification
 
@@ -69,8 +75,8 @@ request. Render is an evaluated free preview option; no hosting resource was cre
 
 ## Next exact actions
 
-1. Finish browser checks and review/integration of feat/hosting-readiness; verify CI's real
-   PostgreSQL schema-isolation test. Preserve the working Pages host.
+1. Check the latest head of PR #7 and finish review/integration if still open, then verify
+   main CI/Pages. Preserve the working Pages host and Netlify publication hold.
 2. Follow docs/hosting-setup.md: reconnect the intended Netlify account when the owner resumes
    publication; bootstrap only a private Supabase schema/role in the selected existing project,
    inject its verified-TLS connection secret, and connect an approved container hosting account.

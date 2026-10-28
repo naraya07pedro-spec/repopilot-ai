@@ -143,3 +143,20 @@ No public deployment was created.
 The authenticated account is naraya07pedro-spec. The original default branch commit
 `c93e6755b21f801dbb1cdc963cd3f018f86970c6` is preserved. Branch-protection access returned HTTP 403;
 the integration lacks administration permission. No other portfolio repository was modified.
+# Hosting preparation evidence — 28 October 2026
+
+[PR #7](https://github.com/naraya07pedro-spec/repopilot-ai/pull/7), revision
+`296bae7e8ef7c7cdd9506453b9121b4b7f4c2658`, passed
+[Verify 40652011337](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40652011337):
+128 backend tests, 95.69% statement coverage, 10 component tests and five local Chromium flows
+across Pages/owner and domain-root public exports. The PostgreSQL service exercised a
+restricted role, schema isolation, public-access revocation, RLS, sessions and restart recovery.
+Container smoke and dependency audits passed. These are CI database results, not a live
+Supabase deployment.
+
+Windows local execution passed 124 backend tests with four environmental skips and 94.42%
+coverage, plus three actual Chromium flows against the domain-root export and owner app.
+Both production builds, TypeScript, Ruff/mypy, ten frontend tests and dependency audits passed.
+The optional Render configuration matched its official JSON schema. Netlify publication is
+pending by owner request; no paid resource or remote database change was made.
+See [hosting setup](hosting-setup.md) for the remaining external actions and worker gap.

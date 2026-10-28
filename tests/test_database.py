@@ -24,7 +24,10 @@ def test_sqlite_is_local_only_and_cannot_ignore_schema(tmp_path):
     assert not (tmp_path / "state.db").exists()
 
 
-@pytest.mark.parametrize("host", ["db.example.supabase.co", "aws-0-region.pooler.supabase.com"])
+@pytest.mark.parametrize(
+    "host",
+    ["db.example.supabase.co", "aws-0-region.pooler.supabase.com", "DB.EXAMPLE.SUPABASE.CO."],
+)
 def test_supabase_requires_private_schema_and_verified_tls(host):
     url = f"postgresql+psycopg://user@{host}/postgres"
     with pytest.raises(ValueError, match="production_requires_private_postgres"):

@@ -15,10 +15,8 @@ def validate_database(url: str, schema: str | None, production: bool = False) ->
         or schema.startswith("pg_")
     ):
         raise ValueError("private_database_schema_required")
-    supabase = bool(
-        parsed.host
-        and (parsed.host.endswith(".supabase.co") or parsed.host.endswith(".supabase.com"))
-    )
+    host = (parsed.host or "").lower().rstrip(".")
+    supabase = host.endswith(".supabase.co") or host.endswith(".supabase.com")
     if production or supabase:
         if not postgres or not schema:
             raise ValueError("production_requires_private_postgres")
