@@ -81,6 +81,7 @@ class PrivateService:
         request = {
             "repository": repository,
             "issue_number": number,
+            "paid_approved": paid_approved,
             "model_profile": model_profile,
             "selection": planner.binding(limit),
         }
@@ -189,7 +190,19 @@ class PrivateService:
     @staticmethod
     def approval_digest(data: dict[str, Any]) -> str:
         return digest(
-            {key: data.get(key) for key in ("snapshot", "plan", "selection", "approval_expires")}
+            {
+                key: data.get(key)
+                for key in (
+                    "id",
+                    "repository",
+                    "issue_number",
+                    "paid_approved",
+                    "snapshot",
+                    "plan",
+                    "selection",
+                    "approval_expires",
+                )
+            }
         )
 
     def approve(self, identity: str, approved: str) -> dict[str, Any]:

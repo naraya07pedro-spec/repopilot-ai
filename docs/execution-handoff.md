@@ -1,4 +1,24 @@
-# V3 recovery checkpoint — 29 October 2026
+# V3 implementation — 29 October 2026
+
+Branch: feat/v3-providers. Published recovery checkpoint: b6e5316240833633f2df4e3862af01a1d1f0296b.
+PR #7 is merged; base main is 68bf412d6451c7982509d7c5c0ca3ba27826db86. Do not reopen it.
+Implemented five provider wire adapters, safe model registry/discovery, owner selector/budget/
+paid consent, immutable selection in idempotency/approval, and one-hour approval expiry.
+The deterministic provider and public viewer are unchanged. No automatic fallback exists.
+
+Fresh local results: 158 backend tests passed, five environment skips, 94.84% coverage;
+33 new provider tests include an actual unavailable loopback endpoint, not a live model.
+Ruff/mypy passed. Twelve component tests, TypeScript, owner/public production builds and
+both dependency audits passed. A small UI retry-consent change is awaiting its affected rerun.
+The final review PR/checks will be linked below after publication; do not infer CI success.
+
+Next executable steps: finish frontend rerun and browser checks; publish reviewed provider
+implementation; implement/test the disabled worker interface and receipt lifecycle if runtime
+isolation remains unavailable. No Docker/Ollama executables or installed WSL were found.
+No API/App credentials exist here. No real-model, hostile-code worker or private-cloud result
+is claimed. Keep /execute at 409 and the exact-byte fixture gate intact. Netlify stays on hold.
+
+## Recovered WIP checkpoint
 
 Active branch: feat/v3-providers, based on merged PR #7 at 68bf412.
 Recovered eight modified/new provider, owner UI and test files. This checkpoint is WIP:

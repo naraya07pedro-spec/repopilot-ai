@@ -126,7 +126,7 @@ class BudgetedPlanner:
                     else 0,
                     "reserved_micro_usd": reservation * (attempt + 1),
                     "attempts": attempt + 1,
-                    "pricing_source": "operator-configured upper-bound rates; not a provider invoice"
+                    "pricing_source": "operator-configured rates; not a provider invoice"
                     if self.profile.paid
                     else "local endpoint; no external API billing",
                 }

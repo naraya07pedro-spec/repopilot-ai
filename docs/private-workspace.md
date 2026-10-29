@@ -1,4 +1,4 @@
-# Private owner workspace (V2, partial)
+# Private owner workspace (V3, partial)
 
 The owner UI at `/owner` supports login, repository validation, issue planning, plan
 approval/rejection, cancellation and durable history. It does **not** execute arbitrary
@@ -46,6 +46,13 @@ small test repository for a future live planning check; approval to access an un
 repository must be obtained separately. Inspection reads a pinned commit and never clones or runs code.
 
 ## Real provider and budgets
+
+The owner model selector now uses the server-side registry described in [providers.md](providers.md).
+It supports OpenAI, Anthropic, Gemini, Ollama and explicit local compatible profiles. All are
+contract-tested; none is presented as live-validated. Paid requests require server opt-in and
+per-run consent. Model/budget selection is included in the approval digest and expires in one hour.
+The legacy single-model configuration below is retained for API clients, with the additional
+required REPOPILOT_ALLOW_PAID_MODELS=true gate; use profiles for the current owner UI.
 
 Set server-only `OPENAI_API_KEY` and `REPOPILOT_MODEL` to a model supporting Chat Completions
 structured JSON-schema output. Set `REPOPILOT_DAILY_USD`, `REPOPILOT_RUN_USD`,

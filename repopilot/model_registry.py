@@ -95,5 +95,7 @@ class ModelRegistry:
                 "discovered": profile.model in names,
                 "capabilities": "operator-configured; discovery alone does not validate generation",
             }
+        except PolicyError:
+            raise
         except (KeyError, IndexError, TypeError, ValueError):
             raise PolicyError("provider_discovery_invalid") from None
