@@ -17,6 +17,12 @@ The [worker job/receipt lifecycle](docs/worker-contract.md) is also contract-tes
 production dispatcher. Live provider execution and a validated isolated worker remain open
 release gates. The public recordings and their deterministic provenance are unchanged.
 
+[PR #8 verification](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40886579341)
+at `4d4768d`: **203 backend tests, 96.05% coverage, 12 component tests and six Chromium cases**
+passed, including PostgreSQL and container smoke checks. Owner plans now include a bounded diff
+before approval. These results validate contracts and controls; they do not establish live-model
+coding or hostile-code isolation. [Current evidence and exact remaining gates](docs/execution-handoff.md).
+
 [Open the public demo](https://naraya07pedro-spec.github.io/repopilot-ai/) — no login, API key,
 payment or installation. Explore clearly labeled recordings, actual diffs, checks and PR links.
 [PR #4](https://github.com/naraya07pedro-spec/repopilot-ai/pull/4) is merged, integrating the

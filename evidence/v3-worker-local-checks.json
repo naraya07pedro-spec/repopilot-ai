@@ -46,13 +46,20 @@
   "live_model": "not run: credentials/local endpoint unavailable",
   "sandbox": "not run: runtime unavailable; dispatch disabled",
   "ci": {
-    "last_verified_head": "49a920fa87789413117448ad1ead382adf37fe19",
-    "run_url": "https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40885395485",
+    "verified_head": "4d4768d7a34c07aeb9440d43edbfaa9be156f1a2",
+    "run_url": "https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40886579341",
     "conclusion": "success",
-    "backend_passed": 201,
-    "coverage_percent": 96.02,
+    "backend_passed": 203,
+    "backend_skipped": 0,
+    "coverage_percent": 96.05,
+    "covered_statements": 1555,
+    "statements": 1619,
+    "component_passed": 12,
     "browser_passed": 6,
-    "note": "This precedes two new private diff regressions; check current-head CI separately."
+    "postgres": "passed",
+    "container_smoke": "passed",
+    "audits": "no known vulnerabilities",
+    "note": "Documentation-only evidence commit follows this tested implementation; inspect PR checks for its own status."
   },
   "private_diff": "Pinned-source unified diff preview tested through real HTTP/Chromium with synthetic model input; no code execution"
 }

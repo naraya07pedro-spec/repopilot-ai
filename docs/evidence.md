@@ -1,6 +1,16 @@
 # Verified execution evidence
 
-## V3 worker contracts — 29 October 2026
+## Final V3 implementation verification — 29 October 2026
+
+[Verify 40886579341](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40886579341)
+passed on `4d4768d7a34c07aeb9440d43edbfaa9be156f1a2`: **203 backend tests, no skips, 96.05%
+statement coverage** (1,555/1,619). Twelve component tests, six Chromium cases, PostgreSQL
+integration, container HTTP smoke, TypeScript, production builds, Ruff/mypy and dependency audits
+passed. The new private diff preview is verified before approval, including no-op/oversize rejection.
+No live model/App or sandbox execution occurred. Public demo checks passed separately as below.
+The [handoff](execution-handoff.md) identifies remaining runtime engineering and credential gates.
+
+## Earlier V3 worker checkpoint — 29 October 2026
 
 Recovery commit `3e49acf56a390f52b6b379d30decdba00bf2e949` preserves the eight interrupted
 files in [PR #8](https://github.com/naraya07pedro-spec/repopilot-ai/pull/8). Its backend and

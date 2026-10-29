@@ -1,40 +1,72 @@
-# V3 worker validation checkpoint — 29 October 2026
+# V3 verified continuation checkpoint — 29 October 2026
 
-Branch: feat/v3-providers; PR https://github.com/naraya07pedro-spec/repopilot-ai/pull/8 (open).
-Recovery published as 3e49acf56a390f52b6b379d30decdba00bf2e949, including all eight files.
-Both branch-reference repairs preserved binary backups under work/ and used verified reflogs;
-no working-tree, index or history reset occurred. Source is preserved locally and on GitHub.
+Branch: `feat/v3-providers`. Existing [PR #8](https://github.com/naraya07pedro-spec/repopilot-ai/pull/8)
+is open and unmerged. Latest verified implementation commit:
+`4d4768d7a34c07aeb9440d43edbfaa9be156f1a2`. This documentation commit follows it without
+changing runtime code. Recovery checkpoint `3e49acf56a390f52b6b379d30decdba00bf2e949`
+contains all eight interrupted files; `49a920f` adds the validated worker security corrections.
+No resets, force pushes, automatic merges or unrelated repository writes occurred.
 
-Completed: five provider adapters; explicit selection/paid consent and approval binding;
-authenticated worker jobs/receipts, atomic claims, revalidated repository/configuration,
-case-safe paths, cancellation acknowledgement, replay protection and full-history recovery.
-No dispatcher, executor or private publisher is activated. See docs/worker-contract.md.
+## Completed and verified
 
-Fresh local full suite: 198 passed, five environment skips, 95.24% statement coverage.
-Worker suite: 38 passed. Ruff check/format and mypy (22 sources) passed. Frontend: 12 tests,
-TypeScript, owner/Pages production builds, four Chromium cases and both audits passed.
-The browser Model label locator failed in recovery CI; its combobox role locator now passes.
-The browser's provider responses and job receipts are synthetic contracts, not live integrations.
-See evidence/v3-worker-local-checks.json; no new coverage exclusion or weakened assertion.
+- Five provider wire adapters; explicit profile/model selection, paid consent, context/output
+  budgets, shared spending reservations, usage validation, no fallback, expiry-bound approval.
+- Owner authentication, repository allowlist/installation contracts, durable planning/history,
+  cancellation, and unified diff preview before approval. No-op/oversized changes fail closed.
+- Authenticated worker jobs/receipts, single atomic claim, exact-job replay protection, repository
+  revocation and configuration rechecks, cancellation acknowledgements and restart recovery.
+- Production execution remains disabled. No sandbox driver, job transport or private PR publisher
+  is active. See [worker contract](worker-contract.md); receipt fixtures do not prove isolation.
+- Repaired two null-filled Git references only after backing up bytes and verifying commit/reflog
+  history. The backups are under the task's work/ directory. Git connectivity check passed.
 
-Last fully verified remote code: 49a920fa87789413117448ad1ead382adf37fe19; Verify
-40885395485 passed (201 backend, 96.02%, 12 component, six Chromium, PostgreSQL/container).
-The next follow-up adds a pinned-source diff preview and two regressions; local checks passed.
-Two additional live HTTPS Chromium checks passed and screenshots were visually reviewed.
+## Actual validation
 
-Next exact action: verify current PR head CI, then review the independent runtime integration
-gates below. Do not repeat provider/worker construction. The owner now sees proposed diffs
-before approval; this is text-only and does not enable filesystem edits or execution.
-Keep /execute at 409 and never auto-merge. Main/public recordings remain unchanged.
+[Verify 40886579341](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40886579341)
+passed on `4d4768d`: **203 backend tests, 96.05% statement coverage** (1,555/1,619), 12 component
+checks, six Chromium cases (four Pages/owner plus two root export), PostgreSQL regressions,
+Docker Compose HTTP smoke, Ruff check/format, mypy (22 sources), TypeScript, production builds,
+locked Python/full npm audits and configured credential-pattern scan.
 
-External gates: no configured API keys, model profiles, App ID/installation/PEM, installed
-Ollama, Docker or WSL. No paid-call authorization or infrastructure was consumed. An owner
-must configure one supported model (local or explicitly budgeted paid API) and the scoped
-GitHub App, then supply a defensible separately reviewed execution runtime before end-to-end
-real-model coding can run. Private snapshot supports <=8 source files; this repo is larger.
-A scoped repository inspection enhancement or explicit small-repository authorization is still
-needed for live planning. General runtime/transport and private publisher reconciliation remain
-engineering work, not merely credential setup. Netlify stays on hold; private hosting is absent.
+Local: **198 passed, five skips, 95.24%** (1,542/1,619). Four skips require local PostgreSQL;
+one requires Windows symlink privileges; all five ran in Linux CI. Worker suite: 38 passed.
+Twelve component and four local Chromium tests passed. Two further Chromium tests passed against
+https://naraya07pedro-spec.github.io/repopilot-ai/ at desktop/mobile sizes. The owner/mobile
+screenshots were inspected; the corrected owner labels and real diff display were checked again.
+Public recording tabs, actual diff/results, PR #2 link and absent private endpoints were verified.
+
+The recovery checkpoint browser locator failed in CI and was fixed using the accessible combobox
+role. No assertion was removed. Non-failing Starlette/Vite compatibility warnings remain. Dependency
+audits found no known vulnerabilities; secret patterns found no matches, neither proves full security.
+No live model or App authentication was performed. Synthetic provider/worker contract fixtures are
+not substitutes for those gates. Evidence: [check record](../evidence/v3-worker-local-checks.json).
+
+## Exact next engineering / owner actions
+
+1. Review PR #8 and verify its current-head checks before any owner-approved merge. Do not create
+   another PR or repeat provider/worker construction. The public demo remains on existing main.
+2. Add bounded, server-approved source scoping for this repository's fixture directory before a
+   live private planning task: the present whole-repository profile accepts <=8 source files and
+   this repository exceeds it. Do not authorize a different repository implicitly.
+3. Owner supplies server-side `GITHUB_APP_ID`, `GITHUB_INSTALLATION_ID`, mounted
+   `GITHUB_APP_PRIVATE_KEY_FILE` and repository allowlist, plus a model profile and either an
+   installed local endpoint or an API credential with explicit paid budget/consent. Never paste
+   secrets into chat. These were all absent; no paid calls were made.
+4. Implement a dispatcher/controller and separately reviewed disposable VM/microVM runtime with
+   secret-free guest, network denial, quotas, cancellation/cleanup and adversarial tests. Docker,
+   Ollama and installed WSL are unavailable locally. Keep `/execute` at 409 until independently
+   verified. Signed-message tests and the application container smoke are not sandbox validation.
+5. Connect exact candidate materialization, independent receipt verification and explicit PR write
+   approval with remote baseline/uncertain-write reconciliation. The current publisher remains
+   fixture-only. Run a genuine model-backed Issue-to-PR task only after these gates pass.
+
+## Release status
+
+Public demo: verified. Provider/owner/worker contracts: verified. Local real agent: PARTIAL.
+Live model/App validation, runtime isolation and connected private publication: BLOCKED/incomplete.
+Private cloud is not deployed; Netlify remains pending by owner decision. No infrastructure,
+Supabase application data or portfolio repositories were modified. No full-product completion
+or unattended continuation is claimed.
 
 ## Historical checkpoints
 
