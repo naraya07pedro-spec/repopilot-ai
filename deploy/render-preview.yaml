@@ -1,0 +1,45 @@
+# Optional owner control-plane PREVIEW. Import only after choosing an account.
+# Free instances sleep; this is not a production availability or sandbox claim.
+services:
+  - type: web
+    name: repopilot-owner-api
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    dockerCommand: python -m uvicorn repopilot.api:create_app --factory --host 0.0.0.0 --port 10000
+    healthCheckPath: /health
+    autoDeployTrigger: "off"
+    envVars:
+      - key: REPOPILOT_ENV
+        value: production
+      - key: REPOPILOT_MODE
+        value: owner
+      - key: REPOPILOT_COOKIE_SECURE
+        value: "true"
+      - key: REPOPILOT_DATA
+        value: /tmp/repopilot
+      - key: REPOPILOT_DATABASE_SCHEMA
+        value: repopilot_private
+      - key: DATABASE_URL
+        sync: false
+      - key: REPOPILOT_OWNER_PASSWORD_HASH
+        sync: false
+      - key: REPOPILOT_ORIGIN
+        sync: false
+  - type: web
+    name: repopilot-owner-web
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: .
+    dockerCommand: node node_modules/next/dist/bin/next start --hostname 0.0.0.0 --port 10000
+    healthCheckPath: /owner
+    autoDeployTrigger: "off"
+    envVars:
+      - key: REPOPILOT_ORIGIN
+        sync: false
+      - key: REPOPILOT_BACKEND
+        sync: false

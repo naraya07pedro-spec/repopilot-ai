@@ -237,3 +237,5 @@ frontend/public-site/next-env.d.ts
 
 frontend/playwright-report/
 frontend/test-results/
+.netlify/
+frontend/test-results-root/

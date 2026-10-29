@@ -3,9 +3,21 @@ import uuid
 from datetime import UTC, datetime
 from typing import Any
 
-from sqlalchemy import Boolean, Column, MetaData, String, Table, Text, create_engine, select, update
+from sqlalchemy import (
+    Boolean,
+    Column,
+    MetaData,
+    String,
+    Table,
+    Text,
+    create_engine,
+    inspect,
+    select,
+    update,
+)
 from sqlalchemy.exc import IntegrityError
 
+from repopilot.database import validate_database
 from repopilot.policy import PolicyError, digest
 
 metadata = MetaData()
@@ -33,13 +45,20 @@ class Store:
     Schema version 1 is additive create_all; future changes require migrations.
     """
 
-    def __init__(self, url: str):
+    def __init__(self, url: str, schema: str | None = None, production: bool = False):
+        validate_database(url, schema, production)
         self.engine = create_engine(
             url,
             connect_args={"check_same_thread": False, "timeout": 30}
             if url.startswith("sqlite")
-            else {},
+            else {"connect_timeout": 10},
+            pool_pre_ping=True,
         )
+        if schema:
+            if not inspect(self.engine).has_schema(schema):
+                self.engine.dispose()
+                raise ValueError("private_database_schema_missing")
+            self.engine.update_execution_options(schema_translate_map={None: schema})
         metadata.create_all(self.engine)
 
     def create(

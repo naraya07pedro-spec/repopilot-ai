@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-29",
+  "scope": "Public portfolio release; private V2 execution deferred",
+  "implementation_commit": "06a7171cf43f8063f58b6f59c6bea21effa41f3e",
+  "review_pr": "https://github.com/naraya07pedro-spec/repopilot-ai/pull/7",
+  "ci": {
+    "url": "https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40812511056",
+    "conclusion": "success",
+    "backend": {
+      "passed": 130,
+      "skipped": 0,
+      "statements": 1183,
+      "covered": 1132,
+      "percent": 95.69,
+      "artifact": 12871280718
+    },
+    "frontend": {
+      "component_tests": 10,
+      "browser_tests": 5,
+      "artifact": 12870597849
+    },
+    "checks": [
+      "Ruff lint and formatting",
+      "mypy",
+      "TypeScript",
+      "owner production build",
+      "Pages and root-path static builds",
+      "pip-audit locked requirements",
+      "npm audit full dependencies",
+      "configured secret-pattern scan",
+      "Docker Compose HTTP smoke"
+    ]
+  },
+  "local": {
+    "backend_passed": 125,
+    "backend_skipped": 5,
+    "coverage": 94.59,
+    "skip_reasons": [
+      "Four tests require unavailable local PostgreSQL",
+      "One Windows symlink privilege test"
+    ],
+    "frontend_tests": 10,
+    "local_browser_tests": 3,
+    "live_https_browser_tests": 2
+  },
+  "public_url": "https://naraya07pedro-spec.github.io/repopilot-ai/",
+  "live_model_validated": false,
+  "github_app_live_validated": false,
+  "private_worker_implemented": false,
+  "new_infrastructure_provisioned": false
+}

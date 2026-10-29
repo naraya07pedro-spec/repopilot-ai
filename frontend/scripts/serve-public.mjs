@@ -3,10 +3,11 @@ import {createServer} from "node:http";
 import {readFile} from "node:fs/promises";
 import {resolve,extname,sep} from "node:path";
 const root=resolve("public-site/out");
+const prefix=(process.env.PUBLIC_BASE_PATH??"/repopilot-ai")+"/";
 createServer(async(req,res)=>{try{
  const url=new URL(req.url,"http://127.0.0.1");
- if(!url.pathname.startsWith("/repopilot-ai/"))throw Error();
- const part=decodeURIComponent(url.pathname.slice("/repopilot-ai/".length));
+ if(!url.pathname.startsWith(prefix))throw Error();
+ const part=decodeURIComponent(url.pathname.slice(prefix.length));
  const file=resolve(root,part.endsWith("/")?part+"index.html":part||"index.html");
  if(!file.startsWith(root+sep))throw Error();
  const data=await readFile(file);

@@ -1,9 +1,9 @@
 """Additive, versioned migrations for owner sessions and private planning state."""
 
-from sqlalchemy import Column, Integer, MetaData, String, Table, Text
+from sqlalchemy import Column, Integer, MetaData, String, Table, Text, text
 from sqlalchemy.engine import Engine
 
-from repopilot.store import now
+from repopilot.store import now, runs
 
 owner_metadata = MetaData()
 versions = Table(
@@ -40,5 +40,20 @@ def migrate(engine: Engine) -> None:
     # Single service process; migrations run before accepting traffic.
     owner_metadata.create_all(engine)
     with engine.begin() as conn:
+        schema = engine.get_execution_options().get("schema_translate_map", {}).get(None)
+        if schema:
+            # Only the explicitly selected private schema; never change shared public tables.
+            quote = engine.dialect.identifier_preparer.quote
+            roles: list[str] = list(
+                conn.execute(
+                    text("SELECT rolname FROM pg_roles WHERE rolname IN ('anon', 'authenticated')")
+                ).scalars()
+            )
+            grantees = ", ".join(["PUBLIC", *(quote(role) for role in roles)])
+            conn.exec_driver_sql(f"REVOKE ALL ON SCHEMA {quote(schema)} FROM {grantees}")
+            for table in [runs, *owner_metadata.tables.values()]:
+                qualified = f"{quote(schema)}.{quote(table.name)}"
+                conn.exec_driver_sql(f"ALTER TABLE {qualified} ENABLE ROW LEVEL SECURITY")
+                conn.exec_driver_sql(f"REVOKE ALL ON TABLE {qualified} FROM {grantees}")
         if conn.execute(versions.select().where(versions.c.version == 2)).first() is None:
             conn.execute(versions.insert().values(version=2, applied_at=now()))

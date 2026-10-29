@@ -22,6 +22,12 @@ Set the same `REPOPILOT_ORIGIN` on both Next.js and FastAPI. The proxy compares 
 external origin rather than Next.js's internally normalized URL. Use one application process,
 PostgreSQL and a private backend network.
 
+Production additionally requires `REPOPILOT_DATABASE_SCHEMA` to name a dedicated private
+schema and `DATABASE_URL` to use `postgresql+psycopg` with `sslmode=verify-full`. Create the
+schema under a dedicated application role first. Startup rejects public/shared schemas and
+SQLite; it never falls back to the public schema. See [exact hosting setup](hosting-setup.md)
+and `deploy/owner.env.example`. Supabase connections require the same safeguards in every mode.
+
 ## GitHub App
 
 Create an App installed only on explicitly approved repositories. Planning requires

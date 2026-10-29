@@ -1,4 +1,36 @@
-# Execution handoff — 28 October 2026
+# Execution handoff — 29 October 2026
+
+Current scope: zero-additional-cost public portfolio release. Preserve the working Pages site.
+Do not expand private infrastructure, provision resources, call a paid model or resume Netlify
+publication; the owner deferred those activities.
+
+Branch: `feat/hosting-readiness`. Existing review PR: #7 (reuse it).
+Verified implementation commit: `06a7171cf43f8063f58b6f59c6bea21effa41f3e`.
+The release documentation follows that commit; inspect the current PR head before continuing.
+The recovered 22 files were committed locally in 8a796ac; the remaining five-file correction
+was published in 7286e55. CI exposed a schema-owner REVOKE failure, fixed in 06a7171 without
+relaxing NOINHERIT or the regression test. Local and API metadata histories were preserved.
+
+Verified CI: 40812511056 — 130 backend tests, 95.69% coverage, 10 component tests, 5 browser
+cases, PostgreSQL bootstrap/recovery, Docker smoke, lint/types/builds/audits/secret scan passed.
+Local: 125 passed, 5 environment skips, 94.59%; 10 frontend tests, 3 local browser cases,
+2 browser cases against the live HTTPS site, TypeScript/builds/audits passed.
+Coverage scope and exact evidence links are in docs/evidence.md. Public URL:
+https://naraya07pedro-spec.github.io/repopilot-ai/ (verified 29 October).
+
+Next executable action: inspect PR #7 and checks on its current head; integrate only after
+review and green CI, then verify main CI/Pages. If already merged, do not recreate the PR.
+No forced history changes or automatic merge of demonstration draft PR #2.
+
+Private V2 remains PARTIAL: no live App/model result, production database connection or private
+HTTPS host. A validated isolated worker is not implemented; private execution remains 409.
+The final SQL regression ran on disposable CI PostgreSQL. No existing Supabase data changed.
+Netlify stays pending by owner decision. These are explicitly deferred expansion gates;
+credentials alone do not supply a secure worker. No new spending is authorized.
+
+## Historical handoff — 28 October 2026
+
+The following records prior context. Its expansion steps are superseded by the scope above.
 
 Overall status: PARTIAL. Public recruiter demo: DEPLOYED AND VERIFIED.
 Public URL: https://naraya07pedro-spec.github.io/repopilot-ai/
@@ -11,9 +43,46 @@ root-level Next.js workflow; the owner deleted it in 71f5002. That deletion is p
 Only public-demo.yml publishes, only from main. No reset, force-push or unrelated repo changes.
 Actual fixture Issue #1 -> draft PR #2 remains separate and unmerged.
 
-The current documentation branch is docs/public-release-evidence, based on that main commit.
+Documentation PR #6 merged at c64c0cf548039725f1c53c155c98630198780f6a with green Verify
+40639976253 and Pages 40639976294 (including two live Chromium tests).
+Current development branch: feat/hosting-readiness, based on that main commit.
 Inspect current git status/log and PRs before resuming. Local/API commit metadata may differ;
 publication verifies exact tree equality. Never rewrite histories to reconcile metadata.
+
+## Hosting preparation continuation
+
+The owner selected Netlify for the public export and an accessible existing Supabase project
+for PostgreSQL; no paid provisioning is authorized. The intended Netlify account is not the
+working connected account, and the owner explicitly asked to keep its deployment pending.
+An active Supabase project has other applications' tables. Only their metadata was inspected.
+A rollback-only bootstrap/probe validated creating and using the new restricted role/schema;
+a separate query confirmed neither object remained. No existing data or global settings changed.
+
+Prepared netlify.toml for the root-path static export, deploy/render-preview.yaml with two
+free control-plane web services (no database/worker), and exact external steps in
+docs/hosting-setup.md. No resources are provisioned by those files alone.
+Production/Supabase startup now requires a private PostgreSQL schema and verified TLS.
+Private-schema migrations revoke public/browser-role access and enable RLS. Added a real
+PostgreSQL restricted-role, schema-isolation and restart-recovery test for CI.
+
+Local checks so far: 124 backend tests passed, 4 environment skips (three PostgreSQL, one
+Windows symlink), 94.42% statement coverage; affected database/owner checks 43 passed.
+Ruff, formatting and mypy passed. Frontend: 10 tests, TypeScript, owner production build and
+root-path public production build passed. Render configuration passed the official JSON
+schema; Netlify TOML parsed. Three actual local Chromium tests passed (root-path public demo
+at desktop/mobile sizes and private owner login/logout/disabled execution). Both dependency
+audits found no known vulnerabilities; the tracked-file credential-pattern scan passed.
+PR #7 publishes this stage. Verify run 40652011337 at 296bae7e8ef7c7cdd9506453b9121b4b7f4c2658
+passed 128 backend tests with 95.69% coverage, including the restricted PostgreSQL role,
+RLS/private schema and recovery test. Frontend passed 10 component tests and 5 browser flows
+(Pages/owner 3, root-path public 2); container smoke and audits passed.
+A final hostname-normalization regression adds coverage for uppercase/trailing-dot Supabase
+hosts; its 14 database configuration tests passed locally. Check CI on the updated PR head
+before integrating, rather than using an older green run as approval.
+Supabase's non-superuser administrator required explicit SET membership in the newly created
+role. The bootstrap now grants that membership without INHERIT and a new PostgreSQL regression
+test exercises the real bootstrap script under a non-superuser role. The corrected Supabase
+transactional probe passed and was rolled back; no persistent DB installation is claimed.
 
 ## Actual verification
 
@@ -38,13 +107,17 @@ verification and PR publication remain disabled (409). Docker is absent locally;
 smoke is not evidence of a hostile-code sandbox. Do not remove the exact-byte host fixture gate.
 No private HTTPS deployment, production recovery, comprehensive accessibility or adversarial
 sandbox review is claimed. A Netlify connection is now reachable, but the intended hosting
-account/backend/worker environment requires owner selection; no hosting resource was created.
+account connection is incorrect for the requested target; publication stays pending by owner
+request. Render is an evaluated free preview option; no hosting resource was created.
 
 ## Next exact actions
 
-1. Finish review/integration of the public-release-evidence documentation PR if still open.
-2. Obtain owner-selected private hosting/worker infrastructure and explicit spending limits.
-   Configure server-only variables listed in docs/private-workspace.md; do not paste keys in chat.
+1. Check the latest head of PR #7 and finish review/integration if still open, then verify
+   main CI/Pages. Preserve the working Pages host and Netlify publication hold.
+2. Follow docs/hosting-setup.md: reconnect the intended Netlify account when the owner resumes
+   publication; bootstrap only a private Supabase schema/role in the selected existing project,
+   inject its verified-TLS connection secret, and connect an approved container hosting account.
+   Configure App/model server-only variables and explicit spending limits; never paste keys in chat.
 3. Implement and validate a disposable secret-free VM/microVM worker with denied network,
    filesystem/resource/time limits, cancellation, cleanup and immutable evidence transfer.
    Keep private execution closed until this review passes.

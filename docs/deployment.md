@@ -1,5 +1,9 @@
 # Deployment and rollback
 
+For the owner's selected Netlify/Supabase direction, the optional Render preview configuration,
+and remaining external setup, see [hosting setup](hosting-setup.md). Netlify publication is
+pending by owner request. Pages remains the verified public host.
+
 ## Public evidence site
 
 The static Next.js app in `frontend/public-site` includes exactly three approved recordings.

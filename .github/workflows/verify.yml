@@ -65,6 +65,14 @@ jobs:
           PUBLIC_BASE_PATH: /repopilot-ai
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
+      - name: Build public site at domain root for Netlify
+        run: npm run build:public
+        env:
+          PUBLIC_BASE_PATH: ""
+      - name: Verify root-path public export
+        run: npx playwright test --grep "public recording workflow" --reporter=line --output=test-results-root
+        env:
+          PUBLIC_BASE_PATH: ""
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -72,6 +80,7 @@ jobs:
           path: |
             frontend/playwright-report
             frontend/test-results
+            frontend/test-results-root
   container:
     runs-on: ubuntu-latest
     steps:
