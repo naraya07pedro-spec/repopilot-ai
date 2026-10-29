@@ -55,8 +55,10 @@ test("contract-only owner provider selection, plan approval and cancellation",as
  await page.getByRole("button",{name:"Check model availability"}).click();
  await expect(page.getByRole("status")).toContainText('"discovered":true');
  await page.getByRole("button",{name:"Generate AI plan"}).click();
+ await expect(page.getByRole("region",{name:"Proposed code diff"})).toContainText("+    return sum(values) / len(values)");
  await page.getByRole("button",{name:"Approve exact plan"}).click();
  await expect(page.getByText("Plan accepted; no code has executed")).toBeVisible();
+ await expect(page.getByRole("heading",{name:"Proposed plan and edits: unexecuted",exact:true})).toBeVisible();
  await expect(page.getByRole("button",{name:"Isolated execution unavailable"})).toBeDisabled();
  await page.screenshot({path:testInfo.outputPath("owner-contract-plan.png"),fullPage:true});
  await page.getByRole("button",{name:"Cancel run"}).click();

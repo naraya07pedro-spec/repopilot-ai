@@ -5,20 +5,20 @@
   "scope": "Local V3 worker/provider/owner validation; synthetic provider and worker messages; no live model/sandbox",
   "backend": {
     "command": "python -m pytest --cov --cov-report=term-missing --cov-report=json --junitxml",
-    "passed": 196,
+    "passed": 198,
     "skipped": 5,
     "skips": [
       "4 PostgreSQL cases: no local server",
       "1 Windows symlink privilege case"
     ],
     "coverage": {
-      "covered_lines": 1531,
-      "num_statements": 1608,
-      "percent_covered": 95.21144278606965,
+      "covered_lines": 1542,
+      "num_statements": 1619,
+      "percent_covered": 95.24397776405188,
       "percent_covered_display": "95",
       "missing_lines": 77,
       "excluded_lines": 4,
-      "percent_statements_covered": 95.21144278606965,
+      "percent_statements_covered": 95.24397776405188,
       "percent_statements_covered_display": "95"
     },
     "scope": "repopilot; existing cli.py exclusion only"
@@ -32,7 +32,9 @@
     "local_chromium": 4,
     "typecheck": "passed",
     "owner_build": "passed",
-    "public_pages_build": "passed"
+    "public_pages_build": "passed",
+    "live_https_chromium": 2,
+    "visual_review": "Live mobile and test-only owner screenshots inspected; owner encoding defects fixed"
   },
   "quality": {
     "ruff_check": "passed",
@@ -43,5 +45,14 @@
   },
   "live_model": "not run: credentials/local endpoint unavailable",
   "sandbox": "not run: runtime unavailable; dispatch disabled",
-  "ci": "Recovery checkpoint backend/container passed, browser failed on Model label lookup. Fixed role lookup passed locally; follow-up CI pending."
+  "ci": {
+    "last_verified_head": "49a920fa87789413117448ad1ead382adf37fe19",
+    "run_url": "https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40885395485",
+    "conclusion": "success",
+    "backend_passed": 201,
+    "coverage_percent": 96.02,
+    "browser_passed": 6,
+    "note": "This precedes two new private diff regressions; check current-head CI separately."
+  },
+  "private_diff": "Pinned-source unified diff preview tested through real HTTP/Chromium with synthetic model input; no code execution"
 }

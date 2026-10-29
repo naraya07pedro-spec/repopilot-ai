@@ -1,5 +1,6 @@
 """Durable private planning; arbitrary execution fails closed until a worker is validated."""
 
+import difflib
 import json
 import re
 import time
@@ -161,7 +162,25 @@ class PrivateService:
                     raise PolicyError("private_edit_scope")
                 if SECRET.search(edit.content):
                     raise PolicyError("edit_secret_pattern")
+            preview = []
+            for edit in plan.edits:
+                before = snapshot["files"].get(edit.path, "")
+                for line in difflib.unified_diff(
+                    before.splitlines(keepends=True),
+                    edit.content.splitlines(keepends=True),
+                    fromfile="a/" + edit.path if edit.path in snapshot["files"] else "/dev/null",
+                    tofile="b/" + edit.path,
+                ):
+                    preview.append(
+                        line if line.endswith("\n") else line + "\n\\ No newline at end of file\n"
+                    )
+            diff = "".join(preview)
+            if not diff:
+                raise PolicyError("private_no_change")
+            if len(diff.encode()) > 128000:
+                raise PolicyError("private_diff_limit")
             data.update(
+                diff=diff,
                 snapshot=snapshot,
                 plan=plan.model_dump(),
                 usage=usage,

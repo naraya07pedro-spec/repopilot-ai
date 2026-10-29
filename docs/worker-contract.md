@@ -10,7 +10,8 @@ A signed receipt authenticates a message; it does not independently prove isolat
 The existing private run table stores the job, receipt and events. No queue or schema change
 is required. The ledger accepts only an approved plan whose repository is still allowlisted,
 configuration matches, digest matches the exact plan/snapshot/budget, and approval has not expired.
-It combines the inspected source with approved full-file edits in memory. Only bounded Python
+The owner inspects the derived unified diff before approval. The ledger combines the inspected
+source with approved full-file edits in memory. Only bounded Python
 source is eligible for this first verification profile; TypeScript planning remains inspection only.
 
 ```mermaid

@@ -10,15 +10,21 @@ authenticated worker jobs/receipts, atomic claims, revalidated repository/config
 case-safe paths, cancellation acknowledgement, replay protection and full-history recovery.
 No dispatcher, executor or private publisher is activated. See docs/worker-contract.md.
 
-Fresh local full suite: 196 passed, five environment skips, 95.21% statement coverage.
+Fresh local full suite: 198 passed, five environment skips, 95.24% statement coverage.
 Worker suite: 38 passed. Ruff check/format and mypy (22 sources) passed. Frontend: 12 tests,
 TypeScript, owner/Pages production builds, four Chromium cases and both audits passed.
 The browser Model label locator failed in recovery CI; its combobox role locator now passes.
 The browser's provider responses and job receipts are synthetic contracts, not live integrations.
 See evidence/v3-worker-local-checks.json; no new coverage exclusion or weakened assertion.
 
-Next exact action: publish this validated follow-up on PR #8, check Verify at that commit,
-record PostgreSQL/container and deployed HTTPS results, then perform final source/doc review.
+Last fully verified remote code: 49a920fa87789413117448ad1ead382adf37fe19; Verify
+40885395485 passed (201 backend, 96.02%, 12 component, six Chromium, PostgreSQL/container).
+The next follow-up adds a pinned-source diff preview and two regressions; local checks passed.
+Two additional live HTTPS Chromium checks passed and screenshots were visually reviewed.
+
+Next exact action: verify current PR head CI, then review the independent runtime integration
+gates below. Do not repeat provider/worker construction. The owner now sees proposed diffs
+before approval; this is text-only and does not enable filesystem edits or execution.
 Keep /execute at 409 and never auto-merge. Main/public recordings remain unchanged.
 
 External gates: no configured API keys, model profiles, App ID/installation/PEM, installed

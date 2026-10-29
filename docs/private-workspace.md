@@ -69,6 +69,9 @@ Reported usage comes from provider fields when present and valid. No paid reques
 
 ## Approval, persistence and recovery
 
+The owner sees a bounded unified diff derived from the pinned snapshot and proposed full-file
+edits before approval. New-file and missing-newline markers are preserved. No-op plans and
+overlarge previews fail closed. This preview only manipulates text; it never writes or runs code.
 The approval digest binds the inspected commit, source snapshot and exact proposed edits.
 Approval records intent but never starts arbitrary execution. `/execute` returns 409 with
 `isolated_worker_unavailable`. No private PR write is attempted. V1 fixture PR publication
@@ -77,7 +80,8 @@ remains a distinct operator workflow described in `demo.md`.
 Sessions expire in one hour; only token digests are stored. Login is limited to five attempts
 per minute per process. Mutation routes require the configured Origin. Logout revokes the
 session. Run creation uses a unique idempotency key plus request fingerprint. On restart,
-queued/planning runs become interrupted; uncertain calls are never automatically replayed.
+queued/planning and worker-protocol active states become interrupted; uncertain calls are never
+automatically replayed. The [worker ledger](worker-contract.md) is tested but not dispatched.
 There is no distributed worker lease or automatic resume. Use a new request only after review.
 Private snapshots and plans reside in the database: apply storage encryption, access control,
 backups and retention at the hosting layer. They are never copied into public recordings.

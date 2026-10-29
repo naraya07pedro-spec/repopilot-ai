@@ -155,6 +155,8 @@ def test_private_plan_approval_cancel_and_no_execution(tmp_path, config):
         assert client.post("/api/owner/runs", json={**req, "issue_number": 2}).status_code == 409
         run = wait(client, identity)
         assert run["status"] == "awaiting_approval", run
+        assert "+    return sum(values) / len(values)" in run["diff"]
+        assert "--- a/app.py" in run["diff"]
         assert client.get("/api/demo/runs").json() == []
         assert client.get("/api/demo/runs/" + identity).status_code == 404
         assert (
@@ -386,3 +388,35 @@ def test_cancel_preserves_plan_completed_during_race(store, monkeypatch):
     assert stopped["status"] == "cancelled"
     assert stopped["plan"] and stopped["usage"]
     assert [event["name"] for event in stopped["events"]][-2:] == ["plan_ready", "cancelled"]
+
+
+def test_private_diff_is_derived_without_execution(store, monkeypatch):
+    from repopilot.models import Edit, Plan
+
+    s = service(store)
+    plan = Plan.model_validate_json(result()["choices"][0]["message"]["content"])
+    plan.edits = [Edit(path="tests/test_added.py", content="assert 1 == 1")]
+    monkeypatch.setattr(s.planner, "plan", lambda *args: (plan, {}))
+    row, _ = s.create(REPO, 1, "preview-new-file", paid_approved=True)
+    s.prepare(row["id"])
+    data = s.get(row["id"])
+    assert data["status"] == "awaiting_approval"
+    assert "--- /dev/null" in data["diff"]
+    assert "+assert 1 == 1\n\\ No newline at end of file\n" in data["diff"]
+    assert "worker_receipt" not in data
+
+
+def test_noop_and_oversize_private_diffs_fail_closed(store, monkeypatch):
+    from repopilot.models import Edit, Plan
+
+    s = service(store)
+    plan = Plan.model_validate_json(result()["choices"][0]["message"]["content"])
+    plan.edits = [Edit(path="app.py", content=snapshot()["files"]["app.py"])]
+    monkeypatch.setattr(s.planner, "plan", lambda *args: (plan, {}))
+    row, _ = s.create(REPO, 1, "preview-no-change", paid_approved=True)
+    s.prepare(row["id"])
+    assert s.get(row["id"])["failure_category"] == "private_no_change"
+    plan.edits = [Edit(path=f"tests/test_new_{i}.py", content="x\n" * 12000) for i in range(4)]
+    row, _ = s.create(REPO, 1, "preview-too-large", paid_approved=True)
+    s.prepare(row["id"])
+    assert s.get(row["id"])["failure_category"] == "private_diff_limit"

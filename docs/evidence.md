@@ -7,12 +7,19 @@ files in [PR #8](https://github.com/naraya07pedro-spec/repopilot-ai/pull/8). Its
 container jobs passed; its browser job exposed the existing Model label lookup failure.
 The corrected accessible-role locator passes the actual owner workflow locally.
 
-[Fresh local check record](../evidence/v3-worker-local-checks.json): **196 backend passed,
-5 environment skips, 95.21% coverage** (1,531/1,608 statements). Worker contracts: 38 passed.
+[Fresh local check record](../evidence/v3-worker-local-checks.json): **198 backend passed,
+5 environment skips, 95.24% coverage** (1,542/1,619 statements). Worker contracts: 38 passed. The later diff preview adds no-op/oversize and new-file/newline
+regressions and a browser assertion before approval.
 Twelve component tests, four local Chromium cases, Ruff lint/format, mypy (22 sources),
 TypeScript, owner/Pages production builds and locked Python/full npm audits passed.
 The five local skips are four PostgreSQL cases and one Windows symlink privilege case.
-No coverage exclusions were added. Follow-up CI verification will be recorded separately.
+No coverage exclusions were added. [Follow-up Verify 40885395485](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40885395485)
+passed at `49a920fa87789413117448ad1ead382adf37fe19`: **201 backend tests, 96.02% coverage**
+(1,544/1,608 statements), 12 component tests, six Chromium cases (Pages/owner: four; root: two),
+PostgreSQL checks, Docker Compose smoke, lint/types/builds and dependency audits.
+Two additional local Chromium cases passed against the deployed HTTPS site at 1440px/390px.
+The live mobile screenshot and test-only owner screenshot were visually inspected; two garbled
+owner labels were found and corrected. The owner screenshot is synthetic test data, not live AI.
 
 Worker receipts and provider responses are synthetic contract fixtures. No live model,
 GitHub App credential validation, hostile-code sandbox or private PR publication ran.
