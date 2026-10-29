@@ -6,6 +6,10 @@
 BEGIN;
 CREATE ROLE repopilot_service NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE
     NOREPLICATION NOBYPASSRLS NOINHERIT;
+-- PostgreSQL 16+ requires SET membership even for a non-superuser role creator.
+-- This grants the current administrator access only to the new restricted role.
+GRANT repopilot_service TO CURRENT_USER WITH SET TRUE;
+GRANT repopilot_service TO CURRENT_USER WITH INHERIT FALSE;
 CREATE SCHEMA repopilot_private AUTHORIZATION repopilot_service;
 REVOKE ALL ON SCHEMA repopilot_private FROM PUBLIC;
 ALTER ROLE repopilot_service SET search_path = repopilot_private, pg_catalog;

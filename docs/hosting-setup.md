@@ -38,11 +38,18 @@ This is evidence for the exported application; it does not claim Netlify itself 
 
 Discovery found an accessible healthy project with existing application tables. Those tables
 were not read or changed. No RepoPilot schema or role has been created remotely.
+The bootstrap was exercised through the connected Supabase management SQL tool inside a
+rolled-back transaction: the restricted role created a probe table, wrote/read one test row,
+and enabled RLS. A separate query confirmed both role and schema were absent afterward.
+This validates the setup permissions, not the application's TLS database connection or a
+persisted production migration. The script grants the creating administrator SET membership
+in the new restricted role; this is required for Supabase's non-superuser administrator.
 
 External actions in the selected existing project:
 
 1. Review `deploy/private-schema.sql` and run it once through an administrator connection.
-   It creates only `repopilot_private` and `repopilot_service`, initially with login disabled.
+   It creates only `repopilot_private` and `repopilot_service`, initially with login disabled,
+   and grants the current administrator SET (not INHERIT) membership in that new role.
    It fails atomically if either already exists; inspect instead of dropping existing objects.
 2. Set a generated password securely (for example, psql `\password repopilot_service`), then
    enable that role's login. It has no superuser, role-creation, database-creation, replication

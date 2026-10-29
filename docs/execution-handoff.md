@@ -22,8 +22,9 @@ publication verifies exact tree equality. Never rewrite histories to reconcile m
 The owner selected Netlify for the public export and an accessible existing Supabase project
 for PostgreSQL; no paid provisioning is authorized. The intended Netlify account is not the
 working connected account, and the owner explicitly asked to keep its deployment pending.
-An active Supabase project has other applications' tables. Only table metadata was inspected;
-no rows, schema, role, global settings or existing data were changed.
+An active Supabase project has other applications' tables. Only their metadata was inspected.
+A rollback-only bootstrap/probe validated creating and using the new restricted role/schema;
+a separate query confirmed neither object remained. No existing data or global settings changed.
 
 Prepared netlify.toml for the root-path static export, deploy/render-preview.yaml with two
 free control-plane web services (no database/worker), and exact external steps in
@@ -46,6 +47,10 @@ RLS/private schema and recovery test. Frontend passed 10 component tests and 5 b
 A final hostname-normalization regression adds coverage for uppercase/trailing-dot Supabase
 hosts; its 14 database configuration tests passed locally. Check CI on the updated PR head
 before integrating, rather than using an older green run as approval.
+Supabase's non-superuser administrator required explicit SET membership in the newly created
+role. The bootstrap now grants that membership without INHERIT and a new PostgreSQL regression
+test exercises the real bootstrap script under a non-superuser role. The corrected Supabase
+transactional probe passed and was rolled back; no persistent DB installation is claimed.
 
 ## Actual verification
 

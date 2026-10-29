@@ -130,3 +130,48 @@ def test_private_schema_isolation_and_recovery():
             connection.exec_driver_sql(f"DROP ROLE {role}")
             connection.exec_driver_sql(f"DROP ROLE {probe}")
         admin.dispose()
+
+
+@pytest.mark.skipif(not os.environ.get("TEST_POSTGRES_URL"), reason="PostgreSQL not configured")
+def test_bootstrap_with_non_superuser_administrator():
+    from pathlib import Path
+
+    from sqlalchemy import create_engine, inspect, text
+    from sqlalchemy.schema import DropSchema
+
+    engine = create_engine(os.environ["TEST_POSTGRES_URL"])
+    suffix = uuid.uuid4().hex
+    admin_role, role, schema = "rp_admin_" + suffix, "rp_role_" + suffix, "rp_schema_" + suffix
+    with engine.begin() as connection:
+        database = engine.dialect.identifier_preparer.quote(
+            connection.scalar(text("SELECT current_database()"))
+        )
+        connection.exec_driver_sql(f"CREATE ROLE {admin_role} NOLOGIN NOSUPERUSER CREATEROLE")
+        connection.exec_driver_sql(f"GRANT CREATE ON DATABASE {database} TO {admin_role}")
+    script = Path("deploy/private-schema.sql").read_text()
+    script = script.replace("repopilot_service", role).replace("repopilot_private", schema)
+    script = script.replace("BEGIN;", "").replace("COMMIT;", "")
+    try:
+        with engine.begin() as connection:
+            connection.exec_driver_sql(f"SET LOCAL ROLE {admin_role}")
+            connection.exec_driver_sql(script)
+            connection.exec_driver_sql(f"SET LOCAL ROLE {role}")
+            connection.exec_driver_sql(f"CREATE TABLE {schema}.probe (id integer)")
+            assert connection.scalar(text("SELECT current_user")) == role
+        assert inspect(engine).has_table("probe", schema=schema)
+        with engine.connect() as connection:
+            assert not connection.scalar(
+                text(
+                    "SELECT rolcanlogin OR rolsuper OR rolcreatedb OR rolcreaterole OR "
+                    "rolreplication OR rolbypassrls OR rolinherit FROM pg_roles WHERE rolname=:role"
+                ),
+                {"role": role},
+            )
+    finally:
+        # Unique objects in the explicit throwaway test database only.
+        with engine.begin() as connection:
+            connection.execute(DropSchema(schema, cascade=True, if_exists=True))
+            connection.exec_driver_sql(f"DROP ROLE IF EXISTS {role}")
+            connection.exec_driver_sql(f"REVOKE CREATE ON DATABASE {database} FROM {admin_role}")
+            connection.exec_driver_sql(f"DROP ROLE {admin_role}")
+        engine.dispose()

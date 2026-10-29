@@ -159,4 +159,9 @@ coverage, plus three actual Chromium flows against the domain-root export and ow
 Both production builds, TypeScript, Ruff/mypy, ten frontend tests and dependency audits passed.
 The optional Render configuration matched its official JSON schema. Netlify publication is
 pending by owner request; no paid resource or remote database change was made.
+The bootstrap was also checked against the connected Supabase service in a rolled-back
+transaction. Initial missing SET membership failed correctly; the corrected script let the
+restricted role create a probe table, write/read one row and enable RLS. A separate query
+confirmed role/schema absence afterward. This is live SQL setup evidence, not an application
+connection, persisted deployment or model-execution result.
 See [hosting setup](hosting-setup.md) for the remaining external actions and worker gap.
