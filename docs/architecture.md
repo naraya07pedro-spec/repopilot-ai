@@ -51,9 +51,13 @@ profile and dependencies. It does not claim general framework detection. Remote 
 reads the two selected fixture files at an immutable GitHub commit, verifies type/size,
 and requires exact equality with the catalog.
 
-SQLAlchemy schema v1 has one table. SQLite enables no-service setup; Compose supplies
-PostgreSQL. Future schema changes require migrations; create_all is used only for this
-initial additive schema. Run IDs correlate events, workspaces, branches and logs.
+SQLAlchemy schema v1 introduced the fixture run table. Additive schema version 2 includes
+owner sessions, private run state, model budget reservations and a version record. SQLite
+enables no-service local setup; Compose supplies PostgreSQL. Production requires PostgreSQL,
+verified TLS and an existing private schema. Schema translation qualifies every application
+table; private migrations enable RLS and revoke public/browser-role access. The dedicated
+table owner is the trusted backend principal. No browser connects directly to the database.
+Run IDs correlate events, workspaces, branches and logs.
 Runtime is measured. Cost and token usage are not invented.
 
 ## V2 boundaries

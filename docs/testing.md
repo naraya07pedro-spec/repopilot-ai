@@ -24,7 +24,7 @@ CI installs locked dependencies, runs checks/coverage/builds, audits dependencie
 PostgreSQL. Workflow configuration alone is not a passing CI result.
 Optional live GitHub and paid-model tests remain separate from deterministic CI.
 
-Measured local statement scope: 648 statements, 619 covered, 29 missing (95.52%).
+Historical V1 local statement scope: 648 statements, 619 covered, 29 missing (95.52%).
 Coverage.py also excludes the Provider protocol method stub and adjacent blank lines
 (four lines) through its default ellipsis rule. There are no custom test-driven coverage exclusions. Linux CI covers one
 additional symlink-path statement (620/648, 95.68%). Local JUnit paths are redacted to
@@ -66,3 +66,10 @@ npm run test:browser
 Use a Python environment with the locked project dependencies for the browser test server.
 Both test services bind to loopback and use temporary data. CI also runs owner migrations and
 persistence/recovery against PostgreSQL 17; local PostgreSQL tests skip when unconfigured.
+
+The hosting follow-up additionally verifies explicit private-schema isolation, RLS and access
+revocation, and executes `deploy/private-schema.sql` as a non-superuser with CREATEROLE.
+These tests create unique roles/schemas only in the disposable `TEST_POSTGRES_URL` database;
+never point that variable at a production/shared Supabase database. The separate Supabase
+management SQL probe was rollback-only and is not counted as an application integration test.
+CI builds the public export at both `/repopilot-ai/` and `/` and tests both in Chromium.

@@ -3,6 +3,8 @@
 Status: PARTIAL. The GitHub Pages demo remains deployed. Netlify publication is explicitly
 pending at the owner's request. No paid service, new database, or worker was provisioned.
 Private execution is still disabled in code; there is no environment switch to bypass it.
+The 29 October portfolio scope defers the external actions below; they are setup instructions
+for a future owner-authorized expansion, not outstanding tasks for the public demonstration.
 
 ## Public frontend: Netlify
 
@@ -44,6 +46,9 @@ and enabled RLS. A separate query confirmed both role and schema were absent aft
 This validates the setup permissions, not the application's TLS database connection or a
 persisted production migration. The script grants the creating administrator SET membership
 in the new restricted role; this is required for Supabase's non-superuser administrator.
+The final 29 October correction also switches to that owner for schema REVOKE, preserving
+NOINHERIT. Its regression passed on disposable PostgreSQL 17 in CI (130 total backend tests);
+the final script has not been installed persistently on Supabase.
 
 External actions in the selected existing project:
 

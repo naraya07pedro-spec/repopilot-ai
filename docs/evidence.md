@@ -1,5 +1,48 @@
 # Verified execution evidence
 
+## Portfolio release verification — 29 October 2026
+
+[PR #7](https://github.com/naraya07pedro-spec/repopilot-ai/pull/7) preserves the interrupted
+hosting work and completes its non-superuser bootstrap correction. All 22 recovered files
+were already committed locally; the final five-file correction had not been published.
+No existing Supabase application data was changed and no infrastructure was provisioned.
+
+[Verify 40812511056](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40812511056)
+at `06a7171cf43f8063f58b6f59c6bea21effa41f3e` passed all three jobs:
+
+- Backend: **130 passed, no skips; 95.69% statement coverage** (1,132/1,183 statements).
+  Scope is `repopilot/`, excluding the existing CLI wrapper; no new coverage exclusions.
+  Real disposable PostgreSQL 17 tests cover non-superuser bootstrap, private schema/RLS,
+  concurrent idempotency, sessions and restart recovery.
+- Frontend: **10 component tests and 5 Chromium cases** (Pages/owner: 3; domain root: 2).
+  TypeScript, owner build and both static base-path builds passed.
+- Ruff lint/format, mypy (19 sources), locked Python/full npm audits, secret-pattern scan
+  and Docker Compose HTTP smoke passed. Audits found no known dependency vulnerabilities.
+
+[Earlier run 40812060958](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40812060958)
+correctly failed the new bootstrap regression: SET membership without INHERIT did not let the
+administrator revoke schema privileges as its owner. The script now uses SET LOCAL ROLE for
+that operation. The restricted role remains NOLOGIN, NOINHERIT and without elevated privileges;
+the regression assertions and execution restrictions were retained.
+
+Windows rerun: **125 passed, 5 skipped; 94.59%** (1,119/1,183 statements). Four PostgreSQL cases
+require the absent local server; one symlink test needs Windows privileges. All five ran in CI.
+Local Ruff/mypy, 10 component tests, TypeScript, owner/root public builds and audits passed.
+Three local Chromium cases passed, including actual owner login/logout, CSRF rejection and
+disabled-execution controls against a temporary backend with test-only credentials.
+
+Two additional Chromium tests passed against the deployed HTTPS site at 1440px and 390px:
+actual diff, passing tests, PR #2 link, rejected regression, recording labels, absent private
+routes, no API requests, no JS errors or failed assets, and no horizontal overflow.
+The mobile screenshot was visually inspected. [Fresh HTTP record](../evidence/public-https-2026-10-29.json)
+independently confirms homepage/eight assets 200 and owner/API paths 404.
+
+This release is the public portfolio demonstration. Netlify remains on hold by owner decision;
+paid-model validation, GitHub App live credentials, production private hosting and a reviewed
+isolated worker are deferred. The final bootstrap ran on disposable CI PostgreSQL, not as a
+persistent Supabase installation. Earlier rollback-only Supabase evidence remains limited to
+its stated probe. No live model, private execution readiness or production deployment is claimed.
+
 ## Public release — 28 October 2026
 
 The [public demo](https://naraya07pedro-spec.github.io/repopilot-ai/) is live and verified.
@@ -53,14 +96,14 @@ tested. The failed browser trace was retained and the corrected real-browser run
 One Windows API test exceeded its polling window during concurrent builds; an isolated rerun
 passed without changing its assertions or timeout.
 
-V2 remains PARTIAL. Pages reports site-not-found and the intended HTTPS URL returned 404 even
+At that earlier checkpoint V2 remained PARTIAL. Pages reported site-not-found and the intended HTTPS URL returned 404 even
 after the owner reported saving Actions source. Private execution/PR publication remains closed
 pending a validated isolated worker. App credentials, model credentials/approved spend and
 private hosting were unavailable. Native Computer Use stopped because it could not determine
 the current browser URL confidently; no safety guard was bypassed.
 
 The historical V1 evidence below remains valid for its stated commit and date. Its browser
-limitation is superseded by the CI browser results above; hosted URL verification is still open.
+limitation and hosted-URL blocker are superseded by the later public-release verification above.
 
 Recorded on 27 October 2026. This is a working, fixture-bounded reference implementation.
 General repository execution, live model quality and production readiness are not claimed.

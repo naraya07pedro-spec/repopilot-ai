@@ -1,4 +1,36 @@
-# Execution handoff — 28 October 2026
+# Execution handoff — 29 October 2026
+
+Current scope: zero-additional-cost public portfolio release. Preserve the working Pages site.
+Do not expand private infrastructure, provision resources, call a paid model or resume Netlify
+publication; the owner deferred those activities.
+
+Branch: `feat/hosting-readiness`. Existing review PR: #7 (reuse it).
+Verified implementation commit: `06a7171cf43f8063f58b6f59c6bea21effa41f3e`.
+The release documentation follows that commit; inspect the current PR head before continuing.
+The recovered 22 files were committed locally in 8a796ac; the remaining five-file correction
+was published in 7286e55. CI exposed a schema-owner REVOKE failure, fixed in 06a7171 without
+relaxing NOINHERIT or the regression test. Local and API metadata histories were preserved.
+
+Verified CI: 40812511056 — 130 backend tests, 95.69% coverage, 10 component tests, 5 browser
+cases, PostgreSQL bootstrap/recovery, Docker smoke, lint/types/builds/audits/secret scan passed.
+Local: 125 passed, 5 environment skips, 94.59%; 10 frontend tests, 3 local browser cases,
+2 browser cases against the live HTTPS site, TypeScript/builds/audits passed.
+Coverage scope and exact evidence links are in docs/evidence.md. Public URL:
+https://naraya07pedro-spec.github.io/repopilot-ai/ (verified 29 October).
+
+Next executable action: inspect PR #7 and checks on its current head; integrate only after
+review and green CI, then verify main CI/Pages. If already merged, do not recreate the PR.
+No forced history changes or automatic merge of demonstration draft PR #2.
+
+Private V2 remains PARTIAL: no live App/model result, production database connection or private
+HTTPS host. A validated isolated worker is not implemented; private execution remains 409.
+The final SQL regression ran on disposable CI PostgreSQL. No existing Supabase data changed.
+Netlify stays pending by owner decision. These are explicitly deferred expansion gates;
+credentials alone do not supply a secure worker. No new spending is authorized.
+
+## Historical handoff — 28 October 2026
+
+The following records prior context. Its expansion steps are superseded by the scope above.
 
 Overall status: PARTIAL. Public recruiter demo: DEPLOYED AND VERIFIED.
 Public URL: https://naraya07pedro-spec.github.io/repopilot-ai/
