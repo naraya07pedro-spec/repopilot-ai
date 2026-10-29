@@ -15,6 +15,8 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from repopilot.github_app import GitHubApp
 from repopilot.migrations import migrate
+from repopilot.model_adapters import ModelProfile
+from repopilot.model_registry import ModelRegistry, load_profiles
 from repopilot.models import Approval
 from repopilot.owner_auth import OwnerAuth
 from repopilot.policy import PolicyError
@@ -35,6 +37,8 @@ class OwnerConfig:
     repositories: tuple[str, ...] = ()
     model_key: str = field(default="", repr=False)
     model: str = ""
+    profiles: tuple[ModelProfile, ...] = ()
+    paid_enabled: bool = False
     daily_micro: int = 0
     run_micro: int = 0
     input_rate: Decimal = Decimal(0)
@@ -56,6 +60,8 @@ class OwnerConfig:
             ),
             model_key=os.environ.get("OPENAI_API_KEY", ""),
             model=os.environ.get("REPOPILOT_MODEL", ""),
+            profiles=load_profiles(os.environ.get("REPOPILOT_MODEL_PROFILES_FILE", "")),
+            paid_enabled=os.environ.get("REPOPILOT_ALLOW_PAID_MODELS") == "true",
             daily_micro=int(Decimal(os.environ.get("REPOPILOT_DAILY_USD", "0")) * 1000000),
             run_micro=int(Decimal(os.environ.get("REPOPILOT_RUN_USD", "0")) * 1000000),
             input_rate=Decimal(os.environ.get("REPOPILOT_INPUT_USD_PER_MILLION", "0")),
@@ -94,6 +100,9 @@ class PlanRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     repository: str = Field(max_length=200)
     issue_number: int = Field(ge=1)
+    model_profile: str | None = Field(default=None, max_length=40)
+    run_limit_micro_usd: int | None = Field(default=None, ge=0, le=100000000)
+    paid_approved: bool = False
     idempotency_key: str = Field(pattern=r"^[A-Za-z0-9_-]{8,80}$")
 
 
@@ -109,7 +118,7 @@ class OwnerRuntime:
         self.config = config or OwnerConfig.from_env()
         self.config.validate()
         migrate(store.engine)
-        self.client = httpx.Client()
+        self.client = httpx.Client(trust_env=False)
         self.auth = OwnerAuth(store.engine, self.config.password)
         cfg = self.config
         self.github = (
@@ -128,7 +137,8 @@ class OwnerRuntime:
                 cfg.input_rate,
                 cfg.output_rate,
             )
-            if cfg.model_key
+            if cfg.paid_enabled
+            and cfg.model_key
             and cfg.model
             and (
                 cfg.daily_micro > 0
@@ -138,7 +148,17 @@ class OwnerRuntime:
             )
             else None
         )
-        self.service = PrivateService(store.engine, self.github, self.planner)
+        self.registry = ModelRegistry(
+            self.client,
+            store.engine,
+            cfg.profiles,
+            cfg.daily_micro,
+            cfg.run_micro,
+            cfg.paid_enabled,
+        )
+        self.service = PrivateService(
+            store.engine, self.github, self.planner, self.registry.planners
+        )
 
         def origin(request: Request) -> None:
             if cfg.mode == "public":
@@ -195,18 +215,36 @@ class OwnerRuntime:
             return {
                 "authenticated": True,
                 "github_app_configured": self.github is not None,
-                "model_configured": self.planner is not None,
+                "model_configured": self.planner is not None or bool(self.registry.planners),
+                "models": self.registry.catalog(),
+                "paid_calls_enabled": cfg.paid_enabled,
                 "model": cfg.model,
                 "approved_repositories": list(cfg.repositories),
                 "daily_limit_micro_usd": cfg.daily_micro,
                 "run_limit_micro_usd": cfg.run_micro,
-                "reserved_today_micro_usd": self.planner.reserved_today() if self.planner else 0,
+                "reserved_today_micro_usd": (
+                    next(iter(self.registry.planners.values())).reserved_today()
+                    if self.registry.planners
+                    else self.planner.reserved_today()
+                    if self.planner
+                    else 0
+                ),
                 "execution_enabled": False,
                 "execution_blocker": (
                     "No independently validated isolated worker is configured. "
                     "Arbitrary code execution and private PR publication are disabled."
                 ),
             }
+
+        @app.post(
+            "/api/owner/models/{profile}/discover",
+            dependencies=[Depends(origin), Depends(authorized)],
+        )
+        def discover(profile: str) -> dict[str, Any]:
+            try:
+                return self.registry.discover(profile)
+            except PolicyError as exc:
+                raise HTTPException(409, str(exc)) from None
 
         @app.get("/api/owner/repositories", dependencies=[Depends(authorized)])
         def repositories() -> list[str]:
@@ -233,7 +271,12 @@ class OwnerRuntime:
                 raise HTTPException(429, "Execution capacity exhausted")
             try:
                 data, fresh = self.service.create(
-                    body.repository, body.issue_number, body.idempotency_key
+                    body.repository,
+                    body.issue_number,
+                    body.idempotency_key,
+                    model_profile=body.model_profile,
+                    run_micro=body.run_limit_micro_usd,
+                    paid_approved=body.paid_approved,
                 )
             except PolicyError as exc:
                 slots.release()

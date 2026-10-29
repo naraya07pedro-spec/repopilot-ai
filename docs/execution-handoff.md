@@ -1,4 +1,17 @@
-# Execution handoff — 29 October 2026
+# V3 recovery checkpoint — 29 October 2026
+
+Active branch: feat/v3-providers, based on merged PR #7 at 68bf412.
+Recovered eight modified/new provider, owner UI and test files. This checkpoint is WIP:
+30 existing owner tests and mypy passed before interruption, but new adapter contracts,
+model discovery proxy routing and complete UI validation remain unfinished.
+Do not merge this checkpoint or enable arbitrary code execution.
+Next: preserve provider PolicyError classifications, allow the bounded model-discovery
+proxy route, add provider/selection/budget/approval regressions, then run full checks.
+No provider/App credentials, Ollama, Docker or installed WSL were available at recovery.
+No paid calls or new infrastructure are authorized. The public Pages demo stays unchanged.
+The V3 request supersedes the earlier development deferral; spending remains default-deny.
+
+## Earlier portfolio handoff — 29 October 2026
 
 Current scope: zero-additional-cost public portfolio release. Preserve the working Pages site.
 Do not expand private infrastructure, provision resources, call a paid model or resume Netlify

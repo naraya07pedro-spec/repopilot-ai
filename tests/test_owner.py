@@ -142,7 +142,12 @@ def test_private_plan_approval_cancel_and_no_execution(tmp_path, config):
         owner.service = PrivateService(app.state.store.engine, owner.github, owner.planner)
         client.post("/api/owner/login", json={"password": PASSWORD}).raise_for_status()
         assert client.get("/api/owner/repositories").json() == [REPO]
-        req = {"repository": REPO, "issue_number": 1, "idempotency_key": "private-plan"}
+        req = {
+            "repository": REPO,
+            "issue_number": 1,
+            "idempotency_key": "private-plan",
+            "paid_approved": True,
+        }
         start = client.post("/api/owner/runs", json=req)
         assert start.status_code == 202
         identity = start.json()["id"]
@@ -237,16 +242,16 @@ def test_production_configuration(monkeypatch):
 
 def test_service_recovery_rejection_and_conflicts(store):
     s = service(store)
-    item, fresh = s.create(REPO, 1, "recovery-key")
+    item, fresh = s.create(REPO, 1, "recovery-key", paid_approved=True)
     assert fresh
-    assert s.create(REPO, 1, "recovery-key")[1] is False
+    assert s.create(REPO, 1, "recovery-key", paid_approved=True)[1] is False
     with pytest.raises(PolicyError):
-        s.create(REPO, 2, "recovery-key")
+        s.create(REPO, 2, "recovery-key", paid_approved=True)
     s.recover()
     assert s.get(item["id"])["status"] == "interrupted"
     s.prepare(item["id"])
     assert s.get(item["id"])["status"] == "interrupted"
-    item, _ = s.create(REPO, 1, "reject-key")
+    item, _ = s.create(REPO, 1, "reject-key", paid_approved=True)
     s.prepare(item["id"])
     assert s.stop(item["id"], "rejected")["status"] == "rejected"
     assert len(s.history()) == 2
@@ -268,7 +273,7 @@ def test_private_path_policy(store, path):
     plan["edits"][0]["path"] = path
     data["choices"][0]["message"]["content"] = json.dumps(plan)
     s.planner = planner(store, lambda r: httpx.Response(200, json=data))
-    item, _ = s.create(REPO, 1, "unsafe-key")
+    item, _ = s.create(REPO, 1, "unsafe-key", paid_approved=True)
     s.prepare(item["id"])
     assert s.get(item["id"])["status"] == "failed"
 
@@ -365,7 +370,7 @@ def test_budget_atomic_concurrent_reservation(store):
 
 def test_cancel_preserves_plan_completed_during_race(store, monkeypatch):
     s = service(store)
-    item, _ = s.create(REPO, 1, "cancel-race")
+    item, _ = s.create(REPO, 1, "cancel-race", paid_approved=True)
     original = s.transition
     raced = False
 
