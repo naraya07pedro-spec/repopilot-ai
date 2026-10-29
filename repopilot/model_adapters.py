@@ -26,7 +26,7 @@ ORIGINS = {
 
 
 class ModelProfile(BaseModel):
-    model_config = ConfigDict(extra="forbid", frozen=True)
+    model_config = ConfigDict(extra="forbid", frozen=True, hide_input_in_errors=True)
     id: str = Field(pattern=r"^[a-z][a-z0-9_-]{0,39}$")
     provider: Literal["openai", "anthropic", "gemini", "ollama", "compatible"]
     model: str = Field(min_length=1, max_length=150, pattern=r"^[A-Za-z0-9_.:/-]+$")

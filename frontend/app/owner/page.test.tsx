@@ -9,7 +9,7 @@ test("model choice and paid consent are explicit and bound to the request",async
   const path=String(input);
   if(path.endsWith("settings"))return new Response(JSON.stringify({models,github_app_configured:true,model_configured:true,model:"",run_limit_micro_usd:1000000,daily_limit_micro_usd:1000000,reserved_today_micro_usd:0,execution_enabled:false,execution_blocker:"Isolated worker not configured"}));
   if(path.endsWith("repositories"))return new Response(JSON.stringify(["naraya07pedro-spec/repopilot-ai"]));
-  if(init?.method==="POST"){bodies.push(JSON.parse(String(init.body)));return new Response(JSON.stringify({id:"a".repeat(32),repository:"naraya07pedro-spec/repopilot-ai",issue_number:1,status:"failed",events:[]}));}
+  if(init?.method==="POST"){bodies.push(JSON.parse(String(init.body)));if(bodies.length===1)throw new Error("Connection lost after submit");return new Response(JSON.stringify({id:"a".repeat(32),repository:"naraya07pedro-spec/repopilot-ai",issue_number:1,status:"failed",events:[]}));}
   return new Response("[]");
  });
  render(<Owner/>);
@@ -27,8 +27,14 @@ test("model choice and paid consent are explicit and bound to the request",async
  fireEvent.click(screen.getByRole("checkbox"));
  fireEvent.click(start);
  await waitFor(()=>expect(bodies).toHaveLength(1));
+ await screen.findByRole("alert");
+ expect((screen.getByRole("checkbox") as HTMLInputElement).checked).toBe(false);
+ fireEvent.click(screen.getByRole("checkbox"));
+ fireEvent.click(start);
+ await waitFor(()=>expect(bodies).toHaveLength(2));
+ expect(bodies[1].idempotency_key).toBe(bodies[0].idempotency_key);
  expect(bodies[0]).toMatchObject({model_profile:"approved-model",paid_approved:true,run_limit_micro_usd:200000,repository:"naraya07pedro-spec/repopilot-ai"});
- expect(screen.getByRole("checkbox").getAttribute("checked")).toBeNull();
+ await waitFor(()=>expect((screen.getByRole("checkbox") as HTMLInputElement).checked).toBe(false));
 });
 test("owner login exposes no token form and reports authentication errors",async()=>{
  const fetcher=vi.spyOn(globalThis,"fetch").mockImplementation(async()=>new Response(JSON.stringify({detail:"Owner authentication required"}),{status:401}));

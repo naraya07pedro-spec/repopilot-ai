@@ -23,6 +23,7 @@ from repopilot.policy import PolicyError
 from repopilot.private_planner import BudgetedPlanner
 from repopilot.private_service import PrivateService
 from repopilot.store import Store
+from repopilot.worker_contract import DisabledWorker
 
 
 @dataclass
@@ -159,6 +160,7 @@ class OwnerRuntime:
         self.service = PrivateService(
             store.engine, self.github, self.planner, self.registry.planners
         )
+        self.worker = DisabledWorker()
 
         def origin(request: Request) -> None:
             if cfg.mode == "public":
@@ -229,7 +231,7 @@ class OwnerRuntime:
                     if self.planner
                     else 0
                 ),
-                "execution_enabled": False,
+                "execution_enabled": self.worker.available,
                 "execution_blocker": (
                     "No independently validated isolated worker is configured. "
                     "Arbitrary code execution and private PR publication are disabled."
@@ -325,7 +327,10 @@ class OwnerRuntime:
         )
         def execute(identity: str) -> None:
             run(identity)
-            raise HTTPException(409, "isolated_worker_unavailable: no code was executed")
+            try:
+                self.worker.require_available()
+            except PolicyError as exc:
+                raise HTTPException(409, str(exc)) from None
 
     def close(self) -> None:
         self.client.close()

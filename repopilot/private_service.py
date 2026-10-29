@@ -232,9 +232,21 @@ class PrivateService:
 
     def recover(self) -> None:
         # One application process is supported; never reissue an uncertain model/GitHub write.
-        with self.engine.begin() as conn:
-            conn.execute(
-                update(private_runs)
-                .where(private_runs.c.status.in_(["queued", "planning"]))
-                .values(status="interrupted")
+        states = ["queued", "planning", "worker_queued", "executing", "cancel_requested"]
+        with self.engine.connect() as conn:
+            identities: list[str] = list(
+                conn.execute(
+                    select(private_runs.c.id).where(private_runs.c.status.in_(states))
+                ).scalars()
             )
+        for identity in identities:
+            data = self.get(identity)
+            if data["status"] in states:
+                data["events"].append(
+                    {
+                        "at": now(),
+                        "name": "interrupted",
+                        "detail": "Restart recovery; no operation replayed",
+                    }
+                )
+                self.transition(identity, [data["status"]], "interrupted", data)

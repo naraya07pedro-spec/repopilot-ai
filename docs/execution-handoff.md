@@ -1,3 +1,25 @@
+# Worker recovery checkpoint — 29 October 2026
+
+Branch: feat/v3-providers; existing PR #8. Base published head a79d4a3cdcfac27bb7d8cfefbb5e33e0636821bf.
+Recovered all eight unpublished worker/owner/frontend/test files. The branch reference
+matches valid commit ba8d497 and its reflog; no working-tree or index reset was used.
+The earlier damaged-reference backup remains outside the repository in work/.
+
+Targeted validation at this checkpoint: 95 worker/provider/owner tests passed;
+Ruff check and format passed; mypy passed (22 source files); tracked credential-pattern
+scan passed (128 files). Full-suite and browser completion are still pending.
+The new browser case previously timed out locating the Model selector; preserve and fix it.
+Do not infer final CI or sandbox success from this recovery commit.
+
+Implemented authenticated worker jobs and receipts, atomic claims, replay protection,
+cancellation acknowledgement and interruption recovery. Production dispatch stays disabled.
+Next exact action: fix the new owner browser selector, rerun frontend checks and Chromium,
+finish worker security edge cases, run full checks and publish results to this same PR.
+No provider/App credentials, Ollama, Docker or installed WSL were available. No paid calls,
+new infrastructure, live model execution or independently verified sandbox is claimed.
+
+## Previous provider handoff (historical)
+
 # V3 implementation — 29 October 2026
 
 Branch: feat/v3-providers. Published recovery checkpoint: b6e5316240833633f2df4e3862af01a1d1f0296b.
