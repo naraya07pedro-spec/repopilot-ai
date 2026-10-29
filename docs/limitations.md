@@ -19,7 +19,9 @@
 
 V2 private planning supports only small Python/TypeScript repositories, with strict context
 limits. Live GitHub App authentication and real-model calls await credentials and approved
-budget. Private modification, isolated verification and PR publication are not implemented.
+budget. Private full-file edits are planned and bounded worker messages are implemented. Filesystem
+application, isolated verification and private PR publication remain disabled and unimplemented
+as a connected runtime. Worker receipts in tests are synthetic, not execution evidence.
 Private deployment, production PostgreSQL recovery and hostile-code sandbox validation remain
 deferred. The public GitHub Pages demo is deployed; Netlify publication is pending by owner
 decision. Additional cloud resources, paid models and private hosting are outside the current

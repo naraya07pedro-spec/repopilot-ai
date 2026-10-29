@@ -63,16 +63,19 @@ class VerificationJob(Contract):
             raise ValueError("worker_lease_limit")
         if sum(len(v.encode()) for v in self.files.values()) > 128000:
             raise ValueError("worker_source_limit")
+        normalized = [path.casefold() for path in self.files]
+        if len(normalized) != len(set(normalized)):
+            raise ValueError("worker_source_collision")
+        reserved = {"CON", "PRN", "AUX", "NUL"} | {
+            f"{prefix}{index}" for prefix in ("COM", "LPT") for index in range(1, 10)
+        }
         for path, content in self.files.items():
             if (
                 not re.fullmatch(r"[A-Za-z0-9_/-]+\.py", path)
                 or any(part in {"", ".", ".."} for part in path.split("/"))
                 or path.startswith("/")
                 or SECRET.search(content)
-                or any(
-                    part.split(".")[0].upper() in {"CON", "PRN", "AUX", "NUL"}
-                    for part in path.split("/")
-                )
+                or any(part.split(".")[0].upper() in reserved for part in path.split("/"))
             ):
                 raise ValueError("worker_source_policy")
         return self
@@ -157,8 +160,13 @@ class WorkerLedger:
             raise PolicyError("worker_auth_key_too_short")
         self.service, self._key = service, key
 
+    def authorize_repository(self, data: dict[str, Any]) -> None:
+        if not self.service.github or data["repository"] not in self.service.github.allowed:
+            raise PolicyError("worker_repository_not_authorized")
+
     def prepare(self, identity: str) -> Envelope:
         data = self.service.get(identity)
+        self.authorize_repository(data)
         if data["status"] == "worker_queued":
             envelope = sign(data["worker_job"], self._key, "job")
             validate_job(envelope, self._key)
@@ -193,6 +201,7 @@ class WorkerLedger:
     def claim(self, envelope: Envelope) -> VerificationJob:
         job = validate_job(envelope, self._key)
         data = self.service.get(job.run_id)
+        self.authorize_repository(data)
         if data.get("worker_job") != job.model_dump():
             raise PolicyError("worker_job_mismatch")
         if self.service.approval_digest(data) != job.approval_digest:
@@ -202,7 +211,8 @@ class WorkerLedger:
             != data["selection"]
         ):
             raise PolicyError("model_configuration_changed")
-        if not self.service.transition(job.run_id, ["worker_queued"], "executing"):
+        data["events"].append({"at": now(), "name": "worker_claimed"})
+        if not self.service.transition(job.run_id, ["worker_queued"], "executing", data):
             raise PolicyError("worker_state_conflict")
         return job
 

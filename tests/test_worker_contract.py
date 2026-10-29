@@ -96,6 +96,8 @@ def test_authentication_domains_and_tampering():
         "a\\app.py",
         "a.py:stream",
         "NUL.py",
+        "COM9.py",
+        "LPT2/test.py",
         "requirements.txt",
     ],
 )
@@ -285,3 +287,61 @@ def test_cancellation_race_cannot_be_overwritten_by_receipt(store, monkeypatch):
         ledger.accept(receipt(order))
     assert s.get(identity)["status"] == "cancel_requested"
     assert "worker_receipt" not in s.get(identity)
+
+
+def test_forged_receipt_and_unregistered_job_do_not_change_state(store):
+    s, ledger, identity = setup(store)
+    envelope = ledger.prepare(identity)
+    changed = {**envelope.payload, "nonce": "f" * 32}
+    with pytest.raises(PolicyError, match="job_mismatch"):
+        ledger.claim(sign(changed, KEY, "job"))
+    order = ledger.claim(envelope)
+    report = receipt(order)
+    with pytest.raises(PolicyError, match="authentication"):
+        ledger.accept(sign(report.payload, b"untrusted-worker-key-" * 2, "receipt"))
+    with pytest.raises(PolicyError, match="authentication"):
+        ledger.accept(
+            Envelope(payload={**report.payload, "outcome": "failed"}, signature=report.signature)
+        )
+    assert s.get(identity)["status"] == "executing"
+    assert "worker_receipt" not in s.get(identity)
+    assert s.get(identity)["events"][-1]["name"] == "worker_claimed"
+
+
+def test_claim_rechecks_approval_and_configuration(store, monkeypatch):
+    s, ledger, identity = setup(store)
+    envelope = ledger.prepare(identity)
+    planner = s.selected(None)
+    monkeypatch.setattr(planner, "binding", lambda limit: {"changed": True})
+    with pytest.raises(PolicyError, match="configuration_changed"):
+        ledger.claim(envelope)
+    monkeypatch.undo()
+    data = s.get(identity)
+    data["plan"]["summary"] = "Changed after approval"
+    s.transition(identity, ["worker_queued"], "worker_queued", data)
+    with pytest.raises(PolicyError, match="approval_invalid"):
+        ledger.claim(envelope)
+    assert s.get(identity)["status"] == "worker_queued"
+
+
+def test_repository_revocation_prevents_dispatch_and_claim(store):
+    s, ledger, identity = setup(store)
+    github = s.github
+    s.github = None
+    with pytest.raises(PolicyError, match="repository_not_authorized"):
+        ledger.prepare(identity)
+    s.github = github
+    envelope = ledger.prepare(identity)
+    s.github = None
+    with pytest.raises(PolicyError, match="repository_not_authorized"):
+        ledger.claim(envelope)
+    assert s.get(identity)["status"] == "worker_queued"
+
+
+def test_case_aliases_and_secret_validation_messages_rejected():
+    with pytest.raises(ValueError, match="source_collision"):
+        VerificationJob.model_validate({**job().model_dump(), "files": {"A.py": "", "a.py": ""}})
+    secret = "sk-" + "z" * 40
+    with pytest.raises(ValueError) as exc:
+        VerificationJob.model_validate({**job().model_dump(), "files": {"app.py": secret}})
+    assert secret not in str(exc.value)

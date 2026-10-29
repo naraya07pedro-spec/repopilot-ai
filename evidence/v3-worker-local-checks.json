@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-29",
+  "branch": "feat/v3-providers",
+  "recovered_checkpoint": "3e49acf56a390f52b6b379d30decdba00bf2e949",
+  "scope": "Local V3 worker/provider/owner validation; synthetic provider and worker messages; no live model/sandbox",
+  "backend": {
+    "command": "python -m pytest --cov --cov-report=term-missing --cov-report=json --junitxml",
+    "passed": 196,
+    "skipped": 5,
+    "skips": [
+      "4 PostgreSQL cases: no local server",
+      "1 Windows symlink privilege case"
+    ],
+    "coverage": {
+      "covered_lines": 1531,
+      "num_statements": 1608,
+      "percent_covered": 95.21144278606965,
+      "percent_covered_display": "95",
+      "missing_lines": 77,
+      "excluded_lines": 4,
+      "percent_statements_covered": 95.21144278606965,
+      "percent_statements_covered_display": "95"
+    },
+    "scope": "repopilot; existing cli.py exclusion only"
+  },
+  "worker_contract": {
+    "command": "python -m pytest tests/test_worker_contract.py -q",
+    "passed": 38
+  },
+  "frontend": {
+    "component_tests": 12,
+    "local_chromium": 4,
+    "typecheck": "passed",
+    "owner_build": "passed",
+    "public_pages_build": "passed"
+  },
+  "quality": {
+    "ruff_check": "passed",
+    "ruff_format": "passed",
+    "mypy_sources": 22,
+    "locked_python_audit": "no known vulnerabilities",
+    "full_npm_audit": "0 vulnerabilities"
+  },
+  "live_model": "not run: credentials/local endpoint unavailable",
+  "sandbox": "not run: runtime unavailable; dispatch disabled",
+  "ci": "Recovery checkpoint backend/container passed, browser failed on Model label lookup. Fixed role lookup passed locally; follow-up CI pending."
+}

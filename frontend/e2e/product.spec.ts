@@ -51,7 +51,7 @@ test("contract-only owner provider selection, plan approval and cancellation",as
  await page.getByRole("button",{name:"Validate approved repositories"}).click();
  await expect(page.getByLabel("Repository")).toHaveValue("naraya07pedro-spec/repopilot-ai");
  await page.getByLabel("AI provider").selectOption("ollama");
- await page.getByLabel("Model",{exact:true}).selectOption("browser-local");
+ await page.getByRole("combobox",{name:"Model",exact:true}).selectOption("browser-local");
  await page.getByRole("button",{name:"Check model availability"}).click();
  await expect(page.getByRole("status")).toContainText('"discovered":true');
  await page.getByRole("button",{name:"Generate AI plan"}).click();

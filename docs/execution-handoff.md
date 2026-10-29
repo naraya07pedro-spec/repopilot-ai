@@ -1,3 +1,37 @@
+# V3 worker validation checkpoint — 29 October 2026
+
+Branch: feat/v3-providers; PR https://github.com/naraya07pedro-spec/repopilot-ai/pull/8 (open).
+Recovery published as 3e49acf56a390f52b6b379d30decdba00bf2e949, including all eight files.
+Both branch-reference repairs preserved binary backups under work/ and used verified reflogs;
+no working-tree, index or history reset occurred. Source is preserved locally and on GitHub.
+
+Completed: five provider adapters; explicit selection/paid consent and approval binding;
+authenticated worker jobs/receipts, atomic claims, revalidated repository/configuration,
+case-safe paths, cancellation acknowledgement, replay protection and full-history recovery.
+No dispatcher, executor or private publisher is activated. See docs/worker-contract.md.
+
+Fresh local full suite: 196 passed, five environment skips, 95.21% statement coverage.
+Worker suite: 38 passed. Ruff check/format and mypy (22 sources) passed. Frontend: 12 tests,
+TypeScript, owner/Pages production builds, four Chromium cases and both audits passed.
+The browser Model label locator failed in recovery CI; its combobox role locator now passes.
+The browser's provider responses and job receipts are synthetic contracts, not live integrations.
+See evidence/v3-worker-local-checks.json; no new coverage exclusion or weakened assertion.
+
+Next exact action: publish this validated follow-up on PR #8, check Verify at that commit,
+record PostgreSQL/container and deployed HTTPS results, then perform final source/doc review.
+Keep /execute at 409 and never auto-merge. Main/public recordings remain unchanged.
+
+External gates: no configured API keys, model profiles, App ID/installation/PEM, installed
+Ollama, Docker or WSL. No paid-call authorization or infrastructure was consumed. An owner
+must configure one supported model (local or explicitly budgeted paid API) and the scoped
+GitHub App, then supply a defensible separately reviewed execution runtime before end-to-end
+real-model coding can run. Private snapshot supports <=8 source files; this repo is larger.
+A scoped repository inspection enhancement or explicit small-repository authorization is still
+needed for live planning. General runtime/transport and private publisher reconciliation remain
+engineering work, not merely credential setup. Netlify stays on hold; private hosting is absent.
+
+## Historical checkpoints
+
 # Worker recovery checkpoint — 29 October 2026
 
 Branch: feat/v3-providers; existing PR #8. Base published head a79d4a3cdcfac27bb7d8cfefbb5e33e0636821bf.

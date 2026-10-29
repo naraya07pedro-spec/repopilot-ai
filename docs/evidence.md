@@ -1,5 +1,24 @@
 # Verified execution evidence
 
+## V3 worker contracts — 29 October 2026
+
+Recovery commit `3e49acf56a390f52b6b379d30decdba00bf2e949` preserves the eight interrupted
+files in [PR #8](https://github.com/naraya07pedro-spec/repopilot-ai/pull/8). Its backend and
+container jobs passed; its browser job exposed the existing Model label lookup failure.
+The corrected accessible-role locator passes the actual owner workflow locally.
+
+[Fresh local check record](../evidence/v3-worker-local-checks.json): **196 backend passed,
+5 environment skips, 95.21% coverage** (1,531/1,608 statements). Worker contracts: 38 passed.
+Twelve component tests, four local Chromium cases, Ruff lint/format, mypy (22 sources),
+TypeScript, owner/Pages production builds and locked Python/full npm audits passed.
+The five local skips are four PostgreSQL cases and one Windows symlink privilege case.
+No coverage exclusions were added. Follow-up CI verification will be recorded separately.
+
+Worker receipts and provider responses are synthetic contract fixtures. No live model,
+GitHub App credential validation, hostile-code sandbox or private PR publication ran.
+The authenticated protocol does not prove execution isolation; dispatch remains disabled.
+
+
 ## Portfolio release verification — 29 October 2026
 
 [PR #7](https://github.com/naraya07pedro-spec/repopilot-ai/pull/7) preserves the interrupted

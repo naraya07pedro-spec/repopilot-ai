@@ -13,7 +13,8 @@ Arbitrary repositories and arbitrary model-generated code cannot execute on the 
 ## Public portfolio release
 
 V3 development adds [five provider adapters and explicit owner model selection](docs/providers.md).
-These contracts are tested; live provider execution and a validated isolated worker remain open
+The [worker job/receipt lifecycle](docs/worker-contract.md) is also contract-tested, with no
+production dispatcher. Live provider execution and a validated isolated worker remain open
 release gates. The public recordings and their deterministic provenance are unchanged.
 
 [Open the public demo](https://naraya07pedro-spec.github.io/repopilot-ai/) — no login, API key,
