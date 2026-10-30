@@ -62,3 +62,11 @@ Claims recheck repository authorization and immutable approval/configuration. Ca
 requires an acknowledgement; uncertain restart states never become success. These are protocol
 controls only. A compromised trusted worker could forge its own evidence, and no HMAC signature
 proves OS isolation. No worker key is sent to tested code; no runtime or transport is enabled.
+
+## Integration controls
+
+Server-approved source roots are bound into run identity and the immutable snapshot. Private
+publication requires a separate digest and a successful matching receipt; it shares the closed
+runtime gate. Unknown writes are reconciled using exact branch/commit/PR identities, never
+blindly retried. Worker transport denies redirects/non-loopback endpoints and bounds responses.
+No worker authentication secret is sent to candidate files. See [integration](private-publication.md).

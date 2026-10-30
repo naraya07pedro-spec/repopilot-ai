@@ -54,3 +54,20 @@ test("authenticated workspace reports missing infrastructure without pretending 
  expect(screen.getByText("No private runs recorded.")).toBeTruthy();
  expect(screen.getByRole("button",{name:"Validate approved repositories"}).hasAttribute("disabled")).toBe(true);
 });
+
+test("saved worker evidence and publication preview do not unlock execution",async()=>{
+ const run={id:"b".repeat(32),status:"verification_passed",repository:"naraya07pedro-spec/repopilot-ai",issue_number:1,events:[],worker_receipt:{outcome:"completed",checks:[{name:"pytest",command:["python","-m","pytest"],exit_code:0,output:"synthetic receipt for component test",duration_seconds:1}]}};
+ vi.spyOn(globalThis,"fetch").mockImplementation(async input=>{
+  const path=String(input);
+  if(path.endsWith("settings"))return new Response(JSON.stringify({github_app_configured:false,model_configured:false,model:"",daily_limit_micro_usd:0,reserved_today_micro_usd:0,execution_enabled:false,execution_blocker:"Worker gate closed"}));
+  if(path.endsWith("publication"))return new Response(JSON.stringify({digest:"a".repeat(64),branch:"repopilot/private-test",files:{"app.py":"proposed content"}}));
+  return new Response(JSON.stringify(path.endsWith("runs")?[run]:run));
+ });
+ render(<Owner/>);
+ fireEvent.click(await screen.findByRole("button",{name:/naraya07pedro-spec/}));
+ fireEvent.click(await screen.findByRole("button",{name:"Inspect PR publication"}));
+ expect(await screen.findByRole("region",{name:"Publication approval"})).toBeTruthy();
+ expect(screen.getByRole("button",{name:"Approve and publish draft PR"}).hasAttribute("disabled")).toBe(true);
+ expect(screen.getByRole("region",{name:"Worker verification"}).textContent).toContain("pytest: exit 0");
+ expect(screen.getByRole("button",{name:"Isolated execution unavailable"}).hasAttribute("disabled")).toBe(true);
+});

@@ -85,6 +85,7 @@ class PrivateService:
             "paid_approved": paid_approved,
             "model_profile": model_profile,
             "selection": planner.binding(limit),
+            "source_root": getattr(self.github, "source_roots", {}).get(repository, ""),
         }
 
         fingerprint, identity = digest(request), uuid.uuid4().hex
@@ -142,6 +143,10 @@ class PrivateService:
             planner = self.selected(data.get("model_profile"))
             if planner.binding(data["selection"]["run_micro"]) != data["selection"]:
                 raise PolicyError("model_configuration_changed")
+            if getattr(self.github, "source_roots", {}).get(data["repository"], "") != data.get(
+                "source_root", ""
+            ):
+                raise PolicyError("repository_scope_changed")
             snapshot = self.github.snapshot(data["repository"], data["issue_number"])
             if SECRET.search(json.dumps(snapshot)):
                 raise PolicyError("context_secret_pattern")
@@ -251,7 +256,14 @@ class PrivateService:
 
     def recover(self) -> None:
         # One application process is supported; never reissue an uncertain model/GitHub write.
-        states = ["queued", "planning", "worker_queued", "executing", "cancel_requested"]
+        states = [
+            "queued",
+            "planning",
+            "worker_queued",
+            "executing",
+            "cancel_requested",
+            "preparing_pr",
+        ]
         with self.engine.connect() as conn:
             identities: list[str] = list(
                 conn.execute(
@@ -268,4 +280,6 @@ class PrivateService:
                         "detail": "Restart recovery; no operation replayed",
                     }
                 )
-                self.transition(identity, [data["status"]], "interrupted", data)
+                after = "publication_unknown" if data["status"] == "preparing_pr" else "interrupted"
+                data["events"][-1]["name"] = after
+                self.transition(identity, [data["status"]], after, data)

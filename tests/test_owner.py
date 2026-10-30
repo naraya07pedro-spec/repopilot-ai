@@ -420,3 +420,35 @@ def test_noop_and_oversize_private_diffs_fail_closed(store, monkeypatch):
     row, _ = s.create(REPO, 1, "preview-too-large", paid_approved=True)
     s.prepare(row["id"])
     assert s.get(row["id"])["failure_category"] == "private_diff_limit"
+
+
+def test_queued_scope_change_and_conflicting_idempotency_fail_closed(store):
+    s = service(store)
+    s.github.source_roots = {REPO: "fixtures/bug"}
+    row, _ = s.create(REPO, 1, "scope-change-key", paid_approved=True)
+    s.github.source_roots = {REPO: "fixtures/feature"}
+    with pytest.raises(PolicyError, match="idempotency_conflict"):
+        s.create(REPO, 1, "scope-change-key", paid_approved=True)
+    s.prepare(row["id"])
+    assert s.get(row["id"])["failure_category"] == "repository_scope_changed"
+
+
+@pytest.mark.parametrize("roots", [["wrong"], {"unapproved/repo": "fixtures"}, {REPO: "../escape"}])
+def test_owner_rejects_invalid_source_root_configuration(roots):
+    with pytest.raises(PolicyError, match="source_root"):
+        OwnerConfig(source_roots=roots, repositories=(REPO,)).validate()
+
+
+def test_local_doctor_never_reports_secret_values(monkeypatch):
+    from repopilot.doctor import report
+
+    monkeypatch.setenv("OPENAI_API_KEY", "private-value-never-print")
+    monkeypatch.setenv("REPOPILOT_MODE", "owner")
+    monkeypatch.delenv("REPOPILOT_OWNER_PASSWORD_HASH", raising=False)
+    result = report()
+    assert not result["execution_enabled"] and not result["live_integrations_validated"]
+    assert not result["owner_configuration_valid"]
+    assert result["provider_credentials_present"]["OPENAI_API_KEY"]
+    assert "private-value-never-print" not in json.dumps(result)
+    monkeypatch.setenv("REPOPILOT_MODE", "local")
+    assert report()["model_profiles"] == 0

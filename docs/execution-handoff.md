@@ -1,3 +1,48 @@
+# V3 integration checkpoint — 30 October 2026
+
+Branch: `feat/v3-providers`; existing [PR #8](https://github.com/naraya07pedro-spec/repopilot-ai/pull/8), open/unmerged.
+Last published source-scoping checkpoint: `d3efcb70c194eeae1aa15c14df65bf9f9a76209d`.
+Its [CI 40991695569](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40991695569) passed.
+This checkpoint preserves the integration milestone; final full-suite/CI evidence follows.
+
+## Newly completed independent work
+
+- Bounded server-selected source roots bind request identity, approval, worker claim and remote patch paths.
+- Temporary candidate text staging with snapshot checks and cleanup; no candidate execution/imports.
+- Loopback-only signed HTTP job/cancellation transport, durable dispatch failure handling and no automatic retries.
+- Separate publication approval, candidate/receipt binding, atomic claim, draft PR creation and read-only reconciliation.
+  Lost acknowledgements and restart never trigger repeated writes or invented success.
+- Owner API authorization/Origin checks, receipt and PR display, publication preview and reconciliation controls.
+- Secret-free offline diagnostics and reproducible [Windows startup](local-owner-windows.md).
+
+## Verified at this checkpoint
+
+124 targeted GitHub App/owner/worker/transport/publication tests passed. Ruff check and format, mypy
+(25 source modules), TypeScript, 13 frontend component tests and the production frontend build passed.
+Secret-pattern and whitespace checks passed. Full-suite coverage, browser tests and new-head CI are pending.
+All new GitHub responses and worker receipts are synthetic test data. One transport test uses a real
+loopback HTTP server; it does not run repository code or prove isolation.
+
+## Gates and next exact action
+
+Owner explicitly cannot supply credentials, spending approval or a Linux worker. Do not ask again during
+this continuation. No paid calls, cloud resources, unrelated repository writes or merges are authorized.
+Execution and private publication remain closed through `DisabledWorker`, with no environment bypass.
+No production dispatcher/runtime is wired into `/execute`. The transport and publisher are tested code;
+they are not a working sandbox or a completed live coding agent.
+
+Next: complete full backend coverage, four local Chromium cases, two live Pages cases, dependency audits,
+and a credential-free owner HTTP startup smoke; publish results to PR #8 and inspect its current-head CI.
+When a suitable Linux worker becomes available, implement/review the runtime binding, enforce and test
+isolation/quotas/egress/cleanup, then wire the dispatcher. Only after server-side model and GitHub App
+configuration (and paid consent where applicable) may a real model-to-PR acceptance run proceed.
+
+External blockers: no model credential or installed local provider; no GitHub App installation/key;
+no suitable isolated Linux worker. Private cloud remains undeployed; Netlify remains pending by owner
+choice. Public Pages is unchanged. Overall real-agent delivery remains PARTIAL.
+
+## Prior checkpoint (historical)
+
 # Scoped-inspection recovery — 30 October 2026
 
 Branch feat/v3-providers; existing PR #8. Recovered three unpublished scoped-inspection

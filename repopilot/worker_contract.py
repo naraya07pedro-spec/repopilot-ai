@@ -121,7 +121,9 @@ class Envelope(Contract):
     signature: str = Field(pattern=r"^[a-f0-9]{64}$")
 
 
-def sign(payload: dict[str, Any], key: bytes, kind: Literal["job", "receipt"]) -> Envelope:
+def sign(
+    payload: dict[str, Any], key: bytes, kind: Literal["job", "receipt", "cancel"]
+) -> Envelope:
     if len(key) < 32:
         raise PolicyError("worker_auth_key_too_short")
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
@@ -131,7 +133,7 @@ def sign(payload: dict[str, Any], key: bytes, kind: Literal["job", "receipt"]) -
     return Envelope(payload=payload, signature=hmac.new(key, message, hashlib.sha256).hexdigest())
 
 
-def authenticate(envelope: Envelope, key: bytes, kind: Literal["job", "receipt"]) -> None:
+def authenticate(envelope: Envelope, key: bytes, kind: Literal["job", "receipt", "cancel"]) -> None:
     expected = sign(envelope.payload, key, kind)
     if not hmac.compare_digest(expected.signature, envelope.signature):
         raise PolicyError("worker_authentication_failed")
@@ -163,6 +165,9 @@ class WorkerLedger:
     def authorize_repository(self, data: dict[str, Any]) -> None:
         if not self.service.github or data["repository"] not in self.service.github.allowed:
             raise PolicyError("worker_repository_not_authorized")
+        root = getattr(self.service.github, "source_roots", {}).get(data["repository"], "")
+        if data["snapshot"].get("source_root", "") != (root + "/" if root else ""):
+            raise PolicyError("worker_source_scope_changed")
 
     def prepare(self, identity: str) -> Envelope:
         data = self.service.get(identity)

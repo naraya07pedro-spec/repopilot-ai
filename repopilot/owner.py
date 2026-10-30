@@ -14,7 +14,7 @@ import httpx
 from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from pydantic import BaseModel, ConfigDict, Field
 
-from repopilot.github_app import GitHubApp
+from repopilot.github_app import GitHubApp, validate_source_roots
 from repopilot.migrations import migrate
 from repopilot.model_adapters import ModelProfile
 from repopilot.model_registry import ModelRegistry, load_profiles
@@ -22,6 +22,7 @@ from repopilot.models import Approval
 from repopilot.owner_auth import OwnerAuth
 from repopilot.policy import PolicyError
 from repopilot.private_planner import BudgetedPlanner
+from repopilot.private_publish import PrivatePublisher
 from repopilot.private_service import PrivateService
 from repopilot.store import Store
 from repopilot.worker_contract import DisabledWorker
@@ -73,6 +74,7 @@ class OwnerConfig:
         )
 
     def validate(self) -> None:
+        validate_source_roots(self.source_roots, self.repositories)
         parsed = urlparse(self.origin)
         if (
             self.mode not in {"local", "owner", "public"}
@@ -171,6 +173,7 @@ class OwnerRuntime:
             store.engine, self.github, self.planner, self.registry.planners
         )
         self.worker = DisabledWorker()
+        self.publisher = PrivatePublisher(self.service, self.worker.require_available)
 
         def origin(request: Request) -> None:
             if cfg.mode == "public":
@@ -339,6 +342,36 @@ class OwnerRuntime:
             run(identity)
             try:
                 self.worker.require_available()
+            except PolicyError as exc:
+                raise HTTPException(409, str(exc)) from None
+
+        @app.get("/api/owner/runs/{identity}/publication", dependencies=[Depends(authorized)])
+        def publication(identity: str) -> dict[str, Any]:
+            run(identity)
+            try:
+                return self.publisher.artifact(identity)
+            except PolicyError as exc:
+                raise HTTPException(409, str(exc)) from None
+
+        @app.post(
+            "/api/owner/runs/{identity}/publish",
+            dependencies=[Depends(origin), Depends(authorized)],
+        )
+        def publish(identity: str, body: Approval) -> dict[str, Any]:
+            run(identity)
+            try:
+                return self.publisher.publish(identity, body.digest)
+            except PolicyError as exc:
+                raise HTTPException(409, str(exc)) from None
+
+        @app.post(
+            "/api/owner/runs/{identity}/reconcile",
+            dependencies=[Depends(origin), Depends(authorized)],
+        )
+        def reconcile(identity: str) -> dict[str, Any]:
+            run(identity)
+            try:
+                return self.publisher.reconcile(identity)
             except PolicyError as exc:
                 raise HTTPException(409, str(exc)) from None
 

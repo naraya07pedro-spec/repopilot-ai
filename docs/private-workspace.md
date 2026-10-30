@@ -85,3 +85,5 @@ automatically replayed. The [worker ledger](worker-contract.md) is tested but no
 There is no distributed worker lease or automatic resume. Use a new request only after review.
 Private snapshots and plans reside in the database: apply storage encryption, access control,
 backups and retention at the hosting layer. They are never copied into public recordings.
+
+See [Windows local startup](local-owner-windows.md) and [scoped inspection/publication](private-publication.md). REPOPILOT_SOURCE_ROOTS can restrict this repository to fixtures/bug, so it no longer needs whole-repository inspection for that scenario. The configured mapping cannot be changed by browser requests.

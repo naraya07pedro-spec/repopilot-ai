@@ -34,7 +34,7 @@ real-model planning, approval/rejection, cancellation and persistent history. Th
 contract-tested; live credentials were unavailable. General execution and private PR publication
 remain disabled until a validated isolated worker exists. This is not production-ready.
 
-[Private setup](docs/private-workspace.md) · [Deployment](docs/deployment.md) ·
+[Windows startup and diagnostics](docs/local-owner-windows.md) · [Private setup](docs/private-workspace.md) · [Deployment](docs/deployment.md) ·
 [V2 release gates](docs/v2-gaps.md)
 
 [Recruiter walkthrough](docs/recruiter-walkthrough.md) ·

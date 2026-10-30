@@ -14,6 +14,19 @@ from repopilot.github import GitHub
 from repopilot.policy import PolicyError, repository_name
 
 
+def validate_source_roots(roots: dict[str, str], repositories: tuple[str, ...]) -> None:
+    if not isinstance(roots, dict) or len(roots) > 20:
+        raise PolicyError("invalid_repository_source_root")
+    for repo, root in roots.items():
+        if (
+            repo not in repositories
+            or not isinstance(root, str)
+            or len(root) > 200
+            or not re.fullmatch(r"[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*", root)
+        ):
+            raise PolicyError("invalid_repository_source_root")
+
+
 class GitHubApp:
     def __init__(
         self,
@@ -26,12 +39,8 @@ class GitHubApp:
     ):
         for repo in repositories:
             repository_name(repo)
-        self.source_roots = source_roots or {}
-        for repo, root in self.source_roots.items():
-            if repo not in repositories or not re.fullmatch(
-                r"[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*", root
-            ):
-                raise PolicyError("invalid_repository_source_root")
+        self.source_roots = {} if source_roots is None else source_roots
+        validate_source_roots(self.source_roots, repositories)
         self.client, self.app_id, self.private_key = client, app_id, private_key
         self.installation, self.allowed = installation, repositories
         self.cache: dict[str, tuple[str, float]] = {}
@@ -150,9 +159,10 @@ class GitHubApp:
             blob = github.request("GET", f"{repository}/contents/{path}?ref={commit['sha']}")
             if blob.get("type") != "file" or blob.get("size", 0) > 12000:
                 raise PolicyError("repository_file_limit")
-            files[path.removeprefix(prefix)] = base64.b64decode(
-                blob["content"], validate=False
-            ).decode("utf-8")
+            content = base64.b64decode("".join(blob["content"].split()), validate=True)
+            if len(content) > 12000:
+                raise PolicyError("repository_file_limit")
+            files[path.removeprefix(prefix)] = content.decode("utf-8")
         if not files or sum(len(v.encode()) for v in files.values()) > 24000:
             raise PolicyError("repository_context_limit")
         return {
