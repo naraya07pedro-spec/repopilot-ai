@@ -1,3 +1,17 @@
+# Disposable CI isolation experiment — 30 October 2026
+
+All backend/frontend/container checks passed on `d9b57896f60dfb1b430a09afdd77bb8e6de83e12`
+([CI 41045767443](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41045767443)),
+including the worker tooling-image build. This follow-up tries the existing disposable Linux CI
+VM as a real rootless runsc test host. It contains no model/App credentials and runs only the six
+bounded security fixtures. No host security settings are weakened; no private runtime is deployed.
+
+Next exact action: inspect the sandbox job on this PR head. Fix actual driver/test defects; if the
+runner lacks required rootless/cgroup/runtime properties, record the specific failure without
+weakening controls. The owner execution gate remains closed regardless of CI test availability.
+
+## Prior implementation handoff
+
 # RepoPilot V3 continuation — 30 October 2026
 
 Repository: naraya07pedro-spec/repopilot-ai. Branch: `feat/v3-providers`.

@@ -99,3 +99,46 @@ jobs:
           curl --fail http://localhost:3000/
       - if: always()
         run: docker compose down
+
+  sandbox:
+    name: Disposable Linux isolation probes
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -c requirements.lock -e ".[dev]"
+      - name: Install reviewed-source runtime on disposable CI VM
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y podman uidmap
+          cd "$RUNNER_TEMP"
+          curl --fail --location --proto '=https' https://storage.googleapis.com/gvisor/releases/release/latest/x86_64/gvisor.tar.bz2 -o gvisor.tar.bz2
+          curl --fail --location --proto '=https' https://storage.googleapis.com/gvisor/releases/release/latest/x86_64/gvisor.tar.bz2.sha512 -o gvisor.tar.bz2.sha512
+          sha512sum --check gvisor.tar.bz2.sha512
+          sudo tar -xjf gvisor.tar.bz2 -C /usr/local/bin
+          runsc --version
+          podman version
+          podman info --format=json
+      - name: Build pinned local worker image
+        run: |
+          podman pull docker.io/library/python:3.12-slim
+          base=$(podman image inspect docker.io/library/python:3.12-slim --format '{{index .RepoDigests 0}}')
+          podman build --build-arg PYTHON_BASE="$base" -f deploy/worker/Containerfile -t localhost/repopilot-worker:probe .
+          image=$(podman image inspect localhost/repopilot-worker:probe --format '{{.Id}}')
+          echo "REPOPILOT_LIVE_SANDBOX_IMAGE=$image" >> "$GITHUB_ENV"
+      - name: Run actual isolated resource and cancellation probes
+        run: python -m pytest tests/test_sandbox_live.py -v --junitxml=evidence/sandbox-live.xml
+        env:
+          REPOPILOT_SANDBOX_ACK: disposable-test-host
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sandbox-probe-evidence
+          path: evidence/sandbox-live.xml
