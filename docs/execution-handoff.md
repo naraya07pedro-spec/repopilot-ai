@@ -1,3 +1,20 @@
+# Scoped-inspection recovery — 30 October 2026
+
+Branch feat/v3-providers; existing PR #8. Recovered three unpublished scoped-inspection
+files on top of 875ff38f75996ee408005aaab810007293ad5316. Prior head CI 40887290408 passed.
+This checkpoint adds server-selected repository subdirectory inspection, immutable source-root
+mapping and regression tests without changing provider/worker contracts or execution gates.
+Targeted validation: 49 GitHub App/owner tests, Ruff check/format and mypy (22 modules) passed.
+Credential-pattern scan and diff whitespace check passed. Full follow-up CI still needs checking.
+
+Owner explicitly cannot provide credentials, worker infrastructure or spending approval.
+Continue independent integration, local startup and deployment preparation only. Keep execution
+and unverified publication disabled; no paid resources or calls, no automatic merge.
+Next: bind source scope into queued request identity, harden scoped responses, implement/test
+publication reconciliation and transport integration behind the existing closed worker gate.
+
+## Prior verified checkpoint
+
 # V3 verified continuation checkpoint — 29 October 2026
 
 Branch: `feat/v3-providers`. Existing [PR #8](https://github.com/naraya07pedro-spec/repopilot-ai/pull/8)

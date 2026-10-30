@@ -1,5 +1,6 @@
 """Owner-only control plane. Public static deployment contains none of these routes."""
 
+import json
 import os
 import threading
 from concurrent.futures import ThreadPoolExecutor
@@ -36,6 +37,7 @@ class OwnerConfig:
     installation: int = 0
     app_key: str = field(default="", repr=False)
     repositories: tuple[str, ...] = ()
+    source_roots: dict[str, str] = field(default_factory=dict)
     model_key: str = field(default="", repr=False)
     model: str = ""
     profiles: tuple[ModelProfile, ...] = ()
@@ -59,6 +61,7 @@ class OwnerConfig:
             repositories=tuple(
                 filter(None, os.environ.get("REPOPILOT_REPOSITORIES", "").split(","))
             ),
+            source_roots=json.loads(os.environ.get("REPOPILOT_SOURCE_ROOTS", "{}")),
             model_key=os.environ.get("OPENAI_API_KEY", ""),
             model=os.environ.get("REPOPILOT_MODEL", ""),
             profiles=load_profiles(os.environ.get("REPOPILOT_MODEL_PROFILES_FILE", "")),
@@ -123,7 +126,14 @@ class OwnerRuntime:
         self.auth = OwnerAuth(store.engine, self.config.password)
         cfg = self.config
         self.github = (
-            GitHubApp(self.client, cfg.app_id, cfg.app_key, cfg.installation, cfg.repositories)
+            GitHubApp(
+                self.client,
+                cfg.app_id,
+                cfg.app_key,
+                cfg.installation,
+                cfg.repositories,
+                cfg.source_roots,
+            )
             if cfg.app_id and cfg.app_key and cfg.installation
             else None
         )

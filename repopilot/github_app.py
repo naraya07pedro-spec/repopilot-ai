@@ -22,9 +22,16 @@ class GitHubApp:
         private_key: str,
         installation: int,
         repositories: tuple[str, ...],
+        source_roots: dict[str, str] | None = None,
     ):
         for repo in repositories:
             repository_name(repo)
+        self.source_roots = source_roots or {}
+        for repo, root in self.source_roots.items():
+            if repo not in repositories or not re.fullmatch(
+                r"[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*", root
+            ):
+                raise PolicyError("invalid_repository_source_root")
         self.client, self.app_id, self.private_key = client, app_id, private_key
         self.installation, self.allowed = installation, repositories
         self.cache: dict[str, tuple[str, float]] = {}
@@ -118,11 +125,14 @@ class GitHubApp:
         tree = github.request("GET", f"{repository}/git/trees/{commit['sha']}?recursive=1")
         if tree.get("truncated") or len(tree["tree"]) > 1000:
             raise PolicyError("repository_context_limit")
+        prefix = self.source_roots.get(repository, "")
+        prefix = prefix + "/" if prefix else ""
         paths = [
             item["path"]
             for item in tree["tree"]
             if item["type"] == "blob"
             and item.get("mode") != "120000"
+            and item["path"].startswith(prefix)
             and item["path"].endswith((".py", ".ts", ".tsx"))
             and not any(
                 part.startswith(".") or part in {"node_modules", "vendor", "dist"}
@@ -140,13 +150,17 @@ class GitHubApp:
             blob = github.request("GET", f"{repository}/contents/{path}?ref={commit['sha']}")
             if blob.get("type") != "file" or blob.get("size", 0) > 12000:
                 raise PolicyError("repository_file_limit")
-            files[path] = base64.b64decode(blob["content"]).decode("utf-8")
+            files[path.removeprefix(prefix)] = base64.b64decode(
+                blob["content"], validate=False
+            ).decode("utf-8")
         if not files or sum(len(v.encode()) for v in files.values()) > 24000:
             raise PolicyError("repository_context_limit")
         return {
             "issue": issue.model_dump(),
             "base_sha": commit["sha"],
             "base_ref": repo["default_branch"],
+            "base_tree": commit.get("commit", {}).get("tree", {}).get("sha"),
+            "source_root": prefix,
             "files": files,
             "profile": "small-python-typescript; inspection only",
         }
