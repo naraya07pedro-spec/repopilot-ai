@@ -1,3 +1,22 @@
+# Validation checkpoint — 30 October 2026
+
+Published integration: `fd9273fd27eb3c063a94368781c4d010bda84adb` on feat/v3-providers / PR #8.
+[CI 40994353933](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40994353933)
+passed: 246 backend tests, 96.10% coverage (1,801/1,874), PostgreSQL, frontend/browser and container jobs.
+Local full suite: 241 passed, five environment skips, 95.36% (1,787/1,874).
+Subsequent proxy-inheritance hardening: 14 transport tests passed. TypeScript, 13 component tests,
+production frontend build and four serial Chromium cases passed. The earlier browser timeout under
+concurrent local load is recorded; the same unchanged test passed serially and in CI.
+A real credential-free owner factory startup/authentication/logout HTTP smoke passed.
+
+Execution remains disabled. The latest user explicitly requested a real Linux runtime implementation
+and reproducible isolation harness even when live validation is unavailable. Next: finish the bounded
+rootless Podman/gVisor driver and standalone worker service, test their controller behavior, and keep
+production dispatch closed. Actual isolation must be verified on a suitable Linux host before wiring
+owner execution. No credentials, paid consent or Linux runtime are available in this Windows session.
+
+## Earlier checkpoint (historical)
+
 # V3 integration checkpoint — 30 October 2026
 
 Branch: `feat/v3-providers`; existing [PR #8](https://github.com/naraya07pedro-spec/repopilot-ai/pull/8), open/unmerged.

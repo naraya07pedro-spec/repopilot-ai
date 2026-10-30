@@ -17,7 +17,7 @@ the prefix, baseline commit and Git tree used to map a future patch to its origi
 worker_dispatch.py stages validated text in a fresh temporary directory; it never imports or
 executes candidate files. Snapshot checks detect tampering and cleanup is limited to the owned
 temporary directory. WorkerTransport accepts only an explicit literal loopback HTTP endpoint.
-Callers must supply an HTTP client with trust_env=False so environment proxy settings are ignored.
+The transport rejects clients unless trust_env=False, so environment proxies cannot redirect job data.
 Production has no configured transport or runtime enable switch. A future controller must keep
 its HMAC key and transport outside the tested sandbox.
 

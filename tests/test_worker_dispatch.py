@@ -60,7 +60,14 @@ def test_real_loopback_transport_and_durable_receipt(store):
 )
 def test_transport_endpoint_policy(endpoint):
     with pytest.raises(PolicyError, match="configuration"):
-        WorkerTransport(endpoint, KEY, httpx.Client())
+        WorkerTransport(endpoint, KEY, httpx.Client(trust_env=False))
+
+
+def test_transport_rejects_environment_proxy_inheritance(monkeypatch):
+    monkeypatch.setenv("HTTP_PROXY", "http://untrusted-proxy.example:8080")
+    with httpx.Client() as client:
+        with pytest.raises(PolicyError, match="configuration"):
+            WorkerTransport("http://127.0.0.1:8012", KEY, client)
 
 
 @pytest.mark.parametrize("mode", ["timeout", "redirect", "invalid", "oversized", "forged"])
@@ -81,7 +88,9 @@ def test_unknown_or_unsafe_transport_never_retries(store, mode):
         return httpx.Response(200, json={"payload": {}, "signature": "a" * 64})
 
     transport = WorkerTransport(
-        "http://127.0.0.1:8012", KEY, httpx.Client(transport=httpx.MockTransport(handler))
+        "http://127.0.0.1:8012",
+        KEY,
+        httpx.Client(transport=httpx.MockTransport(handler), trust_env=False),
     )
     dispatcher = WorkerDispatcher(s, KEY, transport, lambda: None)
     with pytest.raises(PolicyError, match="uncertain"):
@@ -106,7 +115,9 @@ def test_cancel_message_has_distinct_domain_and_acknowledgement(store):
         return httpx.Response(200, json=receipt(order, outcome="cancelled").model_dump())
 
     transport = WorkerTransport(
-        "http://127.0.0.1:8012", KEY, httpx.Client(transport=httpx.MockTransport(handler))
+        "http://127.0.0.1:8012",
+        KEY,
+        httpx.Client(transport=httpx.MockTransport(handler), trust_env=False),
     )
     dispatcher = WorkerDispatcher(s, KEY, transport, lambda: None)
     dispatcher.cancel(identity)

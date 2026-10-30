@@ -51,6 +51,7 @@ class WorkerTransport:
             or url.query
             or url.fragment
             or len(key) < 32
+            or client.trust_env
         ):
             raise PolicyError("worker_transport_configuration")
         self.endpoint, self._key, self.client = endpoint.rstrip("/"), key, client
