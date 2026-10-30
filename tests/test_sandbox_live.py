@@ -50,6 +50,8 @@ from pathlib import Path
 
 def test_boundary():
     assert os.getuid() == 65532
+    assert Path.cwd().stat().st_uid == 65532
+    assert Path.cwd().stat().st_mode & 0o777 == 0o700
     names = ("OPENAI_API_KEY", "GITHUB_APP_PRIVATE_KEY_FILE", "REPOPILOT_WORKER_KEY_FILE")
     assert not any(k in os.environ for k in names)
     assert not Path("/var/run/docker.sock").exists()

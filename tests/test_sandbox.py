@@ -49,6 +49,8 @@ def test_command_enforces_scope_limits_and_no_secret_environment(tmp_path, monke
     assert "--read-only-tmpfs=false" in command and "--unsetenv-all" in command
     assert "--security-opt=no-new-privileges" in command and "--image-volume=ignore" in command
     assert "--runtime" in command and runtime.runsc in command
+    assert "--tmpfs=/work:rw,noexec,nosuid,nodev,size=60m,mode=1777" in command
+    assert not any("uid=65532" in x for x in command if x.startswith("--tmpfs"))
     assert not any(
         x.startswith(("--mount", "--volume", "--privileged", "--device")) for x in command
     )

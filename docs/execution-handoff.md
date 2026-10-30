@@ -1,3 +1,18 @@
+# Podman tmpfs compatibility correction — 30 October 2026
+
+Diagnostic commit `5b00c77c6ed9b41fc215379be072d530454126b0` is published.
+[CI 41088871352](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41088871352):
+backend, frontend and container passed. All six live probes failed at Podman create, exit 125:
+`Error: unknown mount option "uid=65532": invalid mount option` (Podman 4.9.3).
+This is a driver compatibility defect, not evidence of unavailable host isolation.
+
+The correction uses supported bounded sticky tmpfs mounts. The non-root guest creates its own
+private 0700 candidate directory; the live boundary probe now asserts its owner and mode.
+Rootless runsc, resource limits, read-only image, no host mounts and no network remain enforced.
+Local validation: 26 controller tests passed; Ruff, formatting and mypy passed. Next: inspect
+all six real probes and the full CI suite on this correction. Owner dispatch stays disabled;
+no live isolation or real-model acceptance success is claimed before those checks execute.
+
 # CI diagnostic follow-up — 30 October 2026
 
 Image-ID correction published as 6857df3903b8b1b871366a75168a5825b461929f.

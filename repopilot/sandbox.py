@@ -113,9 +113,8 @@ class LinuxSandbox:
             "--log-driver=none",
             "--health-cmd=none",
             "--sdnotify=ignore",
-            f"--tmpfs=/work:rw,noexec,nosuid,nodev,size={job.disk_mib - 4}m,"
-            "uid=65532,gid=65532,mode=700",
-            "--tmpfs=/tmp:rw,noexec,nosuid,nodev,size=4m,uid=65532,gid=65532,mode=700",
+            f"--tmpfs=/work:rw,noexec,nosuid,nodev,size={job.disk_mib - 4}m,mode=1777",
+            "--tmpfs=/tmp:rw,noexec,nosuid,nodev,size=4m,mode=1777",
             "--workdir=/work",
             "--entrypoint=/opt/tools/bin/python",
             "-i",

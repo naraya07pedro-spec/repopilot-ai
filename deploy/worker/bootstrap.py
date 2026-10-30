@@ -27,6 +27,11 @@ COMMANDS = {
 def main() -> None:
     if os.getuid() != 65532 or Path.cwd() != Path("/work"):
         raise SystemExit("invalid guest identity")
+    # Podman 4.9 rejects uid/gid tmpfs options. Create a private directory as the
+    # non-root guest within the bounded sticky tmpfs; no host filesystem is mounted.
+    root = Path("/work/candidate")
+    root.mkdir(mode=0o700)
+    os.chdir(root)
     raw = sys.stdin.buffer.read(256001)
     if len(raw) > 256000:
         raise SystemExit("source limit")
@@ -41,7 +46,7 @@ def main() -> None:
             or not isinstance(content, str)
         ):
             raise SystemExit("source path")
-        target = Path("/work") / name
+        target = root / name
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(content, encoding="utf-8", newline="")
     command = COMMANDS[sys.argv[1]]
