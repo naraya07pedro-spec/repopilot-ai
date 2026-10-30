@@ -22,6 +22,8 @@ class LinuxSandbox:
     def __init__(
         self, image: str, podman: str = "/usr/bin/podman", runsc: str = "/usr/local/bin/runsc"
     ):
+        if re.fullmatch(r"[a-f0-9]{64}", image):
+            image = "sha256:" + image
         if not re.fullmatch(r"sha256:[a-f0-9]{64}", image):
             raise PolicyError("sandbox_requires_local_image_digest")
         if not all(Path(p).is_absolute() for p in (podman, runsc)):

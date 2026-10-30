@@ -25,6 +25,7 @@ def driver(tmp_path):
 
 
 def test_runtime_needs_pinned_local_image_and_preflight(tmp_path):
+    assert LinuxSandbox("a" * 64, str(tmp_path / "podman"), str(tmp_path / "runsc")).image == IMAGE
     with pytest.raises(PolicyError):
         LinuxSandbox("python:latest")
     with pytest.raises(PolicyError):

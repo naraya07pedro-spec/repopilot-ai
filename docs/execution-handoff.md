@@ -1,3 +1,11 @@
+# Live CI probe correction — 30 October 2026
+
+CI 41046517451 installed gVisor and built the image successfully. All six isolation cases stopped
+before execution because Podman returns a bare 64-digit image ID while the driver expected its
+sha256: prefix. The driver now canonicalizes the exact 64-digit digest; mutable tags remain denied.
+Local sandbox-controller suite: 25 passed. Next: inspect the rerun on this new head; keep owner
+execution disabled. No model/App credentials or deployed worker have been supplied.
+
 # Disposable CI isolation experiment — 30 October 2026
 
 All backend/frontend/container checks passed on `d9b57896f60dfb1b430a09afdd77bb8e6de83e12`
