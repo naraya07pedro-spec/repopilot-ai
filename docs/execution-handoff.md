@@ -4,6 +4,14 @@ Branch `feat/v3-providers`; [PR #8](https://github.com/naraya07pedro-spec/repopi
 is open, unmerged and **not ready for integration**. Latest runtime correction:
 `0c3ae880dea735f2cd083a3170efd40d9217f5e5`. The current PR head adds the diagnosis/evidence below.
 
+Final repeat on published `9cc4bae9adb9dc6b358d50d321038a9f283a3956`:
+[CI 41092402645](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41092402645)
+again passed backend/frontend/container and failed all six sandbox probes with the same startup
+exit 125. Backend: 275 passed, six separate-job skips, 93.98% (2,045/2,176); frontend: 13 component
+and six Chromium passed. Ruff/format/mypy, both builds, PostgreSQL and audits passed; 148 tracked
+files scanned. Local full repeat: 270 passed, 11 environment skips, 93.38% (2,032/2,176).
+This follow-up only records those completed checks; no further runtime changes were made.
+
 [Full CI 41090628500](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41090628500):
 backend/frontend/container passed; **all six actual Linux probes failed, none skipped**.
 Container create and configuration inspection succeed. Startup exits 125 with

@@ -106,5 +106,29 @@
   "owner_dispatch_enabled": false,
   "live_model": "not run",
   "live_github_app": "not run",
-  "real_agent_issue_to_pr": "not run"
+  "real_agent_issue_to_pr": "not run",
+  "repeat_validation": {
+    "commit": "9cc4bae9adb9dc6b358d50d321038a9f283a3956",
+    "ci_url": "https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41092402645",
+    "ci_conclusion": "failure",
+    "sandbox_job": 124189385983,
+    "sandbox_failed": 6,
+    "sandbox_skipped": 0,
+    "same_startup_error": true,
+    "backend_passed": 275,
+    "backend_skipped": 6,
+    "backend_covered": 2045,
+    "backend_statements": 2176,
+    "backend_coverage_percent": 93.97977941176471,
+    "frontend_components": 13,
+    "chromium": 6,
+    "container": "passed",
+    "audits": "passed",
+    "secret_scan_tracked_files": 148,
+    "local_passed": 270,
+    "local_environment_skips": 11,
+    "local_covered": 2032,
+    "local_statements": 2176,
+    "local_coverage_percent": 93.38235294117648
+  }
 }

@@ -10,6 +10,13 @@ Implementation commit: `0c3ae880dea735f2cd083a3170efd40d9217f5e5`.
 [Full CI](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41090628500) ·
 [Sandbox job and raw logs](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41090628500/job/124183254613).
 
+Repeated on documentation commit `9cc4bae9adb9dc6b358d50d321038a9f283a3956` in
+[CI 41092402645](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41092402645):
+same six startup failures; backend/frontend/container still passed. The backend repeat measured
+275 passes, six separate-job skips and 93.98% coverage (2,045/2,176). Local full repeat passed
+270 tests with 11 environment skips and 93.38% (2,032/2,176). Counts below are pinned to the
+first runtime-correction run; the structured evidence also records this repeat.
+
 - GitHub-hosted Ubuntu 24.04 image `20261025.353.1`, kernel `7.0.0-1017-azure`.
 - Python 3.12.15, pytest 9.0.3, rootless Podman 4.9.3.
 - gVisor `release-20261026.0`, OCI spec 1.2.1.
