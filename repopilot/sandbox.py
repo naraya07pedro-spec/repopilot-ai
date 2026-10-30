@@ -144,7 +144,8 @@ class LinuxSandbox:
         started = time.monotonic()
         created = self.control(self.arguments(job, check)[2:])
         if created.returncode:
-            raise PolicyError("sandbox_create_failed")
+            detail = redact(created.stderr.decode("utf-8", errors="replace")[:2000])
+            raise PolicyError(f"sandbox_create_failed: exit={created.returncode}; {detail}")
         self.verify_container(job, check)
         output = bytearray()
         overflow = threading.Event()

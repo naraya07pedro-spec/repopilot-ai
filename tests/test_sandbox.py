@@ -58,6 +58,27 @@ def test_command_enforces_scope_limits_and_no_secret_environment(tmp_path, monke
         runtime.arguments(job(), "sh")
 
 
+def test_create_failure_preserves_exit_and_redacts_bounded_diagnostic(tmp_path, monkeypatch):
+    runtime = driver(tmp_path)
+    monkeypatch.setattr(
+        runtime,
+        "control",
+        lambda args: subprocess.CompletedProcess(
+            args,
+            125,
+            b"",
+            b"runtime unavailable Authorization: "
+            + b"Bearer synthetic-private-value\n"
+            + b"x" * 3000,
+        ),
+    )
+    with pytest.raises(PolicyError, match="exit=125") as error:
+        runtime.command(job(), "pytest", threading.Event(), time.monotonic() + 1)
+    assert "runtime unavailable" in str(error.value)
+    assert "synthetic-private-value" not in str(error.value)
+    assert len(str(error.value)) < 2100
+
+
 @pytest.mark.parametrize("failure", [None, "rootful", "v1", "controllers", "image"])
 def test_preflight_fails_closed_on_unenforceable_host(tmp_path, monkeypatch, failure):
     runtime = driver(tmp_path)

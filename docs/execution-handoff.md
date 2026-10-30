@@ -1,3 +1,13 @@
+# CI diagnostic follow-up — 30 October 2026
+
+Image-ID correction published as 6857df3903b8b1b871366a75168a5825b461929f.
+CI 41087651221: backend/frontend/container passed; all six live probes now reach Podman create
+and fail with sandbox_create_failed. Rootless/cgroup/image preflight passed. The prior generic
+exception discarded the actual Podman stderr; this change adds bounded redacted exit/stderr
+reporting, tested locally. Do not guess or relax the isolation configuration.
+Next: inspect the sandbox job at this head for the exact creation failure, fix its verified cause,
+and rerun all six probes/full CI. Owner execution stays disabled.
+
 # Live CI probe correction — 30 October 2026
 
 CI 41046517451 installed gVisor and built the image successfully. All six isolation cases stopped
