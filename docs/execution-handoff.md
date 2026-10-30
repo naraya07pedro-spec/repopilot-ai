@@ -1,3 +1,25 @@
+# Linux runtime implementation checkpoint — 30 October 2026
+
+Branch feat/v3-providers / PR #8. Prior published checkpoint:
+`95bed12d67fdc08a0b59bab559511b15c421e1d7` (closed execution gate preserved).
+New: Linux-only rootless Podman/gVisor driver, pinned local image, effective-container inspection,
+resource/network/filesystem policy, bounded output/time, cancellation and verified teardown before
+receipts; standalone authenticated HTTP worker with SQLite replay journal and restart cleanup.
+No ordinary Docker or host fallback. Production owner dispatch is still disabled.
+
+Targeted validation: 94 tests passed; six live-host cases skipped. Ruff check/format and mypy
+(27 modules) passed. Controller tests use synthetic processes/receipts. The opt-in six-case hostile-code harness is
+implemented but cannot run here: no isolated Linux worker, Podman or runsc. Follow
+[Linux worker setup](linux-worker.md). A versioned python-checks-v2 profile includes root-level
+fixture tests; old v1 jobs fail validation and require a new approved run.
+
+Next exact action: finish full coverage and current-head CI, update release documentation and PR #8.
+Do not activate the owner route before real host isolation evidence and review. Live model/App
+acceptance still needs server-side credentials (or a local model) and paid consent if applicable.
+No private deployment, paid resources or automatic merge is authorized.
+
+## Previous verified evidence
+
 # Validation checkpoint — 30 October 2026
 
 Published integration: `fd9273fd27eb3c063a94368781c4d010bda84adb` on feat/v3-providers / PR #8.

@@ -29,7 +29,7 @@ COMMANDS = {
         "--noconftest",
         "-p",
         "no:cacheprovider",
-        "tests",
+        ".",
     ],
     "lint": ["python", "-I", "-m", "ruff", "check", "--isolated", "--no-cache", "."],
     "format": ["python", "-I", "-m", "ruff", "format", "--isolated", "--no-cache", "--check", "."],
@@ -45,7 +45,7 @@ class VerificationJob(Contract):
     nonce: str = Field(pattern=r"^[a-f0-9]{32}$")
     baseline_sha: str = Field(pattern=r"^[a-f0-9]{40}$")
     approval_digest: str = Field(pattern=r"^[a-f0-9]{64}$")
-    profile: Literal["python-checks-v1"] = "python-checks-v1"
+    profile: Literal["python-checks-v2"] = "python-checks-v2"
     files: dict[str, str] = Field(min_length=1, max_length=32)
     issued_at: int
     expires_at: int
