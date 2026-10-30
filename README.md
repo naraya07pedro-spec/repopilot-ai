@@ -17,6 +17,10 @@ The [worker job/receipt lifecycle](docs/worker-contract.md) is also contract-tes
 production dispatcher. Live provider execution and a validated isolated worker remain open
 release gates. The public recordings and their deterministic provenance are unchanged.
 
+**Current PR #8 blocker:** the six mandatory live Linux probes fail at gVisor startup with a
+released rootless/systemd integration defect. Backend/frontend/container CI passes; overall CI
+is failed. Owner execution remains disabled. [Exact failure and reproduction](docs/sandbox-ci-diagnosis.md).
+
 [PR #8 verification](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41044345258)
 at `34bfb83`: **270 backend tests passed, six live-isolation skips, 94.02% coverage**.
 Thirteen component checks, six CI Chromium cases, PostgreSQL integration, type checks and

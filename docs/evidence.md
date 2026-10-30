@@ -1,4 +1,19 @@
-# V3 runtime continuation — 30 October 2026
+# Current sandbox validation — 30 October 2026
+
+Runtime correction `0c3ae880dea735f2cd083a3170efd40d9217f5e5` was exercised in
+[CI 41090628500](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41090628500).
+Backend/frontend/container passed: 275 backend tests, six separate-job skips, 94.03% statement
+coverage (2,046/2,176), PostgreSQL, 13 component and six Chromium tests, types/builds and audits.
+The mandatory live sandbox job ran **six tests: all failed, none skipped**. Every guest command
+exited 125 during gVisor startup with a systemd authentication error; no candidate Python ran.
+The known upstream rootless-systemd defect remains unresolved in the tested release.
+
+[Detailed diagnosis and reproducible Linux commands](sandbox-ci-diagnosis.md) ·
+[Structured evidence](../evidence/sandbox-ci-diagnosis.json).
+Full CI is failed and PR #8 remains unmerged. Private execution/publication stays disabled.
+Earlier results below are pinned historical evidence, not claims about current sandbox success.
+
+# V3 runtime continuation — 30 October 2026 (historical)
 
 [CI 41044345258](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41044345258)
 passed on `34bfb83eeb93d043b2b62e92860400be19eae212`: 270 backend tests, six explicitly skipped

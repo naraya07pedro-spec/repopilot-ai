@@ -1,15 +1,19 @@
 # Experimental Linux worker: setup and validation
 
-Implemented, **not live-tested**. Windows cannot run this driver. The owner application's
-execution/publication gate remains closed; there is no environment switch that bypasses it.
-Controller tests mock Podman. They do not prove hostile-code isolation. No worker was deployed.
+Implemented, **live validation attempted and blocked**. All six mandatory CI probes fail at
+gVisor startup because its released systemd driver cannot create rootless user scopes. See the
+[exact diagnosis, raw CI logs and dedicated-host procedure](sandbox-ci-diagnosis.md).
+Windows cannot run this driver. Owner execution/publication remains closed; there is no bypass
+switch. Controller tests mock Podman and do not prove hostile-code isolation. No worker is deployed.
 
 ## Target environment and trust boundary
 
 Use a dedicated disposable Linux VM, preferably Ubuntu 24.04 LTS, with cgroup v2 delegation,
 an unprivileged worker account, subordinate UID/GID mappings and rootless Podman. Install a
 reviewed gVisor `runsc` release at `/usr/local/bin/runsc`; Podman is `/usr/bin/podman`.
-This is the implementation's target configuration, not a claimed tested OS compatibility matrix.
+This is the implementation's target configuration, not a claimed passing compatibility matrix.
+Ubuntu 24.04 / Podman 4.9.3 / runsc release-20261026.0 with systemd cgroups was tested and fails;
+a new host using the same combination is expected to reproduce the upstream issue.
 Keep the VM separate from developer files and model/GitHub secrets. No Docker socket is used.
 
 The worker account controls a pinned local image and private job journal. Candidate files are

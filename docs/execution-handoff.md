@@ -1,3 +1,43 @@
+# Current checkpoint — sandbox blocked by released runtime integration
+
+Branch `feat/v3-providers`; [PR #8](https://github.com/naraya07pedro-spec/repopilot-ai/pull/8)
+is open, unmerged and **not ready for integration**. Latest runtime correction:
+`0c3ae880dea735f2cd083a3170efd40d9217f5e5`. The current PR head adds the diagnosis/evidence below.
+
+[Full CI 41090628500](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41090628500):
+backend/frontend/container passed; **all six actual Linux probes failed, none skipped**.
+Container create and configuration inspection succeed. Startup exits 125 with
+`creating container: systemd error: Interactive authentication required.`
+Released gVisor `release-20261026.0` uses system-wide systemd for rootless Podman 4.9.3;
+[upstream #11543](https://github.com/google/gvisor/issues/11543) reproduces this and
+[fix #13853](https://github.com/google/gvisor/pull/13853) is still open/unmerged.
+This is a specific runtime/host incompatibility, not a generic absence of cgroup v2 in Actions.
+
+Saved corrections: bounded/redacted diagnostics; canonical exact image ID; supported tmpfs
+options with private non-root 0700 staging; exact configured runsc path recognition. No security
+assertion, resource cap or execution boundary was weakened. No provider/frontend features added.
+
+Actual checks: 28 local controller tests passed; full local backend at ea86ad0 was 268 passed,
+11 environment skips, 93.42%. Current runtime CI: 275 backend passed, six separate-job skips,
+94.03% (2,046/2,176); PostgreSQL, Ruff/format, mypy, 13 frontend tests, six Chromium cases,
+TypeScript, public/private builds, container smoke and dependency/secret-pattern audits passed.
+CI overall remains FAILED. See [exact six outcomes and host reproduction](sandbox-ci-diagnosis.md)
+and [structured evidence](../evidence/sandbox-ci-diagnosis.json).
+
+**Next exact action:** validate a reviewed upstream runtime release/configuration that supports
+rootless user-systemd cgroups on a disposable host, then rerun the unchanged six-probe harness
+and full CI. Do not use ignore-cgroups, rootful/privileged execution, broader polkit permission,
+an unreviewed runtime fork, or skips. A different Linux host alone does not fix this version bug.
+
+Activation still needs a validated worker host/runtime, a configured real model (or installed local
+model; paid calls still unauthorized), and a repository-scoped GitHub App installation/key.
+Owner dispatch/publication remain deliberately unwired/disabled. After host evidence review,
+the remaining engineering step is the dispatcher binding and real Issue-to-PR acceptance run.
+Neither live model/App use nor running-sandbox recovery has been demonstrated. No cloud was
+provisioned, no unrelated repo was modified, and no merge occurred. Public Pages is unchanged.
+
+## Earlier diagnostic checkpoints (historical)
+
 # Podman tmpfs compatibility correction — 30 October 2026
 
 CI 41090255712 on `aac5a2164abbc33d9b4cb5f86205cb010ab4db47` identifies the next
