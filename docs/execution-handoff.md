@@ -1,5 +1,11 @@
 # Podman tmpfs compatibility correction — 30 October 2026
 
+Correction published as `ea86ad067fad416fb7c3e20fceac3c6cf08a3238`.
+CI 41089848261 now creates containers successfully but fails the effective-configuration check
+before starting candidate code. This follow-up reports only the bounded checked settings,
+excluding environment and mount paths, so the next correction can use the actual mismatch.
+Full local suite at ea86ad0: 268 passed, 11 environment skips, 93.42% (2,031/2,174).
+
 Diagnostic commit `5b00c77c6ed9b41fc215379be072d530454126b0` is published.
 [CI 41088871352](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41088871352):
 backend, frontend and container passed. All six live probes failed at Podman create, exit 125:

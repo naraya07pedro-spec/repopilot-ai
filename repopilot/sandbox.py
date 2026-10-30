@@ -238,7 +238,22 @@ class LinuxSandbox:
             or any(m["Type"] != "tmpfs" for m in item.get("Mounts", []))
             or host.get("Binds")
         ):
-            raise PolicyError("sandbox_effective_configuration_rejected")
+            # Only report fields checked above; never dump environment, paths or inspect JSON.
+            observed = {
+                "runtime": item["OCIRuntime"],
+                "user": item["Config"]["User"],
+                "privileged": host["Privileged"],
+                "readonly": host["ReadonlyRootfs"],
+                "network": host["NetworkMode"],
+                "memory": host["Memory"],
+                "memory_swap": host["MemorySwap"],
+                "pids": host["PidsLimit"],
+                "cpu_nanos": cpu,
+                "mount_types": [m["Type"] for m in item.get("Mounts", [])],
+                "bind_count": len(host.get("Binds") or []),
+            }
+            detail = redact(json.dumps(observed)[:2000])
+            raise PolicyError(f"sandbox_effective_configuration_rejected: {detail}")
 
     @staticmethod
     def stop(pid: int) -> None:

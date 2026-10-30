@@ -332,7 +332,7 @@ def test_inspect_rejects_effective_runtime_or_mount_overrides(tmp_path, monkeypa
     if change == "runtime":
         item["OCIRuntime"] = "runc"
     if change == "mount":
-        item["Mounts"] = [{"Type": "bind", "Source": "/"}]
+        item["Mounts"] = [{"Type": "bind", "Source": "/private-host-path"}]
     if change == "network":
         item["HostConfig"]["NetworkMode"] = "host"
     if change == "memory":
@@ -345,7 +345,10 @@ def test_inspect_rejects_effective_runtime_or_mount_overrides(tmp_path, monkeypa
         lambda args: subprocess.CompletedProcess(args, 0, json.dumps([item]).encode()),
     )
     if change:
-        with pytest.raises(PolicyError, match="effective_configuration"):
+        with pytest.raises(PolicyError, match="effective_configuration") as error:
             runtime.verify_container(order, "pytest")
+        assert '"runtime":' in str(error.value)
+        assert "/private-host-path" not in str(error.value)
+        assert len(str(error.value)) < 2100
     else:
         runtime.verify_container(order, "pytest")
