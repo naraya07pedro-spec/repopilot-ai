@@ -312,7 +312,10 @@ def test_lost_worker_claim_cannot_overwrite_recovered_state(tmp_path):
         assert row["state"] == "recovered" and row["receipt"] is None
 
 
-@pytest.mark.parametrize("change", [None, "runtime", "mount", "network", "memory", "root"])
+@pytest.mark.parametrize(
+    "change",
+    [None, "absolute_runtime", "other_path", "runtime", "mount", "network", "memory", "root"],
+)
 def test_inspect_rejects_effective_runtime_or_mount_overrides(tmp_path, monkeypatch, change):
     runtime, order = driver(tmp_path), job()
     item = {
@@ -331,6 +334,10 @@ def test_inspect_rejects_effective_runtime_or_mount_overrides(tmp_path, monkeypa
     }
     if change == "runtime":
         item["OCIRuntime"] = "runc"
+    if change == "absolute_runtime":
+        item["OCIRuntime"] = runtime.runsc
+    if change == "other_path":
+        item["OCIRuntime"] = "/unapproved/runsc"
     if change == "mount":
         item["Mounts"] = [{"Type": "bind", "Source": "/private-host-path"}]
     if change == "network":
@@ -344,7 +351,7 @@ def test_inspect_rejects_effective_runtime_or_mount_overrides(tmp_path, monkeypa
         "control",
         lambda args: subprocess.CompletedProcess(args, 0, json.dumps([item]).encode()),
     )
-    if change:
+    if change not in (None, "absolute_runtime"):
         with pytest.raises(PolicyError, match="effective_configuration") as error:
             runtime.verify_container(order, "pytest")
         assert '"runtime":' in str(error.value)

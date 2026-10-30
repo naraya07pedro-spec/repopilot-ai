@@ -36,8 +36,8 @@ def run_source(runtime, source, **limits):
 
 def test_live_benign_checks_and_teardown(runtime):
     result = run_source(runtime, "def test_answer():\n    assert 1 + 1 == 2\n")
-    assert result.outcome == "completed"
-    assert all(c.exit_code == 0 for c in result.checks)
+    assert result.outcome == "completed", result.model_dump()
+    assert all(c.exit_code == 0 for c in result.checks), result.model_dump()
 
 
 def test_live_filesystem_identity_network_and_secret_boundary(runtime):
@@ -68,7 +68,7 @@ def test_boundary():
             assert connection.connect_ex((address, 80)) != 0
 """,
     )
-    assert result.checks[0].exit_code == 0
+    assert result.checks[0].exit_code == 0, result.checks[0].output
 
 
 def test_live_disk_limit(runtime):
@@ -85,7 +85,7 @@ def test_live_disk_limit(runtime):
         raise AssertionError("disk quota did not reject 80 MiB")
 """,
     )
-    assert result.checks[0].exit_code == 0
+    assert result.checks[0].exit_code == 0, result.checks[0].output
 
 
 def test_live_memory_limit(runtime):
@@ -98,7 +98,9 @@ def test_live_memory_limit(runtime):
         memory_mib=128,
     )
     first = result.checks[0]
-    assert first.exit_code == 137 or (first.exit_code != 0 and "MemoryError" in first.output)
+    assert first.exit_code == 137 or (first.exit_code != 0 and "MemoryError" in first.output), (
+        first.model_dump()
+    )
     assert result.outcome == "failed"
 
 
@@ -126,13 +128,13 @@ def test_process_limit():
             child.wait()
 """,
     )
-    assert result.checks[0].exit_code == 0
+    assert result.checks[0].exit_code == 0, result.checks[0].output
 
 
 def test_live_cpu_deadline_and_cancellation(runtime):
     source = "def test_cpu():\n    while True:\n        pass\n"
     result = run_source(runtime, source, timeout_seconds=5)
-    assert result.outcome == "failed" and result.checks[0].timed_out
+    assert result.outcome == "failed" and result.checks[0].timed_out, result.model_dump()
     order = job().model_copy(update={"files": {"test_cpu.py": source}})
     cancel = threading.Event()
     with ThreadPoolExecutor(max_workers=1) as pool:

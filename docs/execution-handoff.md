@@ -1,5 +1,11 @@
 # Podman tmpfs compatibility correction — 30 October 2026
 
+CI 41090255712 on `aac5a2164abbc33d9b4cb5f86205cb010ab4db47` identifies the next
+driver defect: Podman reports OCIRuntime as the configured absolute `/usr/local/bin/runsc`,
+not the alias `runsc`. All other inspected controls matched. Accept only that exact configured
+path or the existing alias; reject other paths/runtimes. Live assertions now show the already
+bounded/redacted command evidence when execution fails. No assertion or limit was removed.
+
 Correction published as `ea86ad067fad416fb7c3e20fceac3c6cf08a3238`.
 CI 41089848261 now creates containers successfully but fails the effective-configuration check
 before starting candidate code. This follow-up reports only the bounded checked settings,

@@ -226,7 +226,7 @@ class LinuxSandbox:
             host.get("CpuQuota", 0) * 1000000000 / (host.get("CpuPeriod", 0) or 1)
         )
         if (
-            item["OCIRuntime"] != "runsc"
+            item["OCIRuntime"] not in {"runsc", self.runsc}
             or item["Config"]["User"] != "65532:65532"
             or host["Privileged"] is not False
             or host["ReadonlyRootfs"] is not True
