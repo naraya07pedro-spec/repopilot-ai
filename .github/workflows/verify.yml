@@ -86,6 +86,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: docker compose build
+      - name: Build trusted worker tooling (not an isolation test)
+        run: |
+          docker pull python:3.12-slim
+          base=$(docker image inspect python:3.12-slim --format '{{index .RepoDigests 0}}')
+          docker build --build-arg PYTHON_BASE="$base" -f deploy/worker/Containerfile -t repopilot-worker:ci .
+          docker run --rm --network none --read-only --user 65532:65532 --entrypoint /opt/tools/bin/python repopilot-worker:ci -I -c 'import pytest, ruff; print("Trusted tooling import passed; sandbox not validated")'
       - run: docker compose up -d --wait
       - run: |
           for i in $(seq 1 30); do curl --fail http://localhost:8000/health && break || sleep 2; done

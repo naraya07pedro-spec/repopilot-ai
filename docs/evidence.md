@@ -1,3 +1,27 @@
+# V3 runtime continuation — 30 October 2026
+
+[CI 41044345258](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41044345258)
+passed on `34bfb83eeb93d043b2b62e92860400be19eae212`: 270 backend tests, six explicitly skipped
+live-isolation probes, 94.02% statement coverage (2,027/2,156), PostgreSQL, frontend and container
+jobs. [Structured check record](../evidence/v3-runtime-checks.json).
+
+Local full suite: 265 passed, 11 skips, 93.37% (2,013/2,156). Skips are four PostgreSQL cases,
+one Windows symlink case and six live-host probes. Ruff/format, mypy (27 sources), TypeScript,
+13 component tests and production frontend build passed. Four serial Chromium cases and two
+live Pages desktop/mobile cases passed. One earlier browser case timed out under competing
+local work; it passed serially with unchanged assertions and in CI. Mobile/public and synthetic
+owner screenshots were inspected. Real factory startup/authentication/logout HTTP smoke passed.
+Locked Python and npm audits found no known vulnerabilities; configured credential scanning found
+no matches. Neither check proves comprehensive security. No paid calls or resources were used.
+
+The new Linux-only controller, rootless Podman/gVisor driver, pinned tooling image, HTTP service,
+journal/recovery, publication reconciliation and malicious-resource harness are implemented.
+Controller tests use fake runtime outputs. The live harness did not run; private owner dispatch
+remains disabled. Coverage fell from the earlier 96.10% because the new Linux startup/lifecycle
+paths are included without new exclusions. No live model/App/sandbox or private deployment claim.
+
+## Historical evidence below
+
 # Verified execution evidence
 
 ## Final V3 implementation verification — 29 October 2026

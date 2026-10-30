@@ -259,6 +259,35 @@ def test_guest_and_controller_command_profiles_match():
     assert trusted_guest["COMMANDS"] == COMMANDS
 
 
+def test_shutdown_requests_cancel_and_waits_for_receipt(tmp_path):
+    service, runtime = manager(tmp_path)
+    runtime.wait = True
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        future = pool.submit(service.execute, sign(job().model_dump(), KEY, "job"))
+        assert runtime.started.wait(2)
+        service.shutdown()
+        assert future.result().payload["outcome"] == "cancelled"
+    assert not service.events
+
+
+def test_lost_worker_claim_cannot_overwrite_recovered_state(tmp_path):
+    from repopilot.worker_contract import ExecutionReceipt
+
+    service, runtime = manager(tmp_path)
+
+    def changed_state(order, cancel):
+        with service.connect() as conn:
+            conn.execute("UPDATE jobs SET state='recovered' WHERE id=?", (order.run_id,))
+        return ExecutionReceipt.model_validate(receipt(order).payload)
+
+    runtime.run = changed_state
+    with pytest.raises(PolicyError, match="interrupted"):
+        service.execute(sign(job().model_dump(), KEY, "job"))
+    with service.connect() as conn:
+        row = conn.execute("SELECT state,receipt FROM jobs").fetchone()
+        assert row["state"] == "recovered" and row["receipt"] is None
+
+
 @pytest.mark.parametrize("change", [None, "runtime", "mount", "network", "memory", "root"])
 def test_inspect_rejects_effective_runtime_or_mount_overrides(tmp_path, monkeypatch, change):
     runtime, order = driver(tmp_path), job()

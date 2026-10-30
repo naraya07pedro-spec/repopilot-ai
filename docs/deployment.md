@@ -85,3 +85,7 @@ boundaries. No production dispatcher, worker endpoint or enable flag is deployed
 stay in the control plane; a future worker guest receives only bounded source and fixed commands.
 Credentials and a reviewed Linux runtime remain external gates; do not treat container smoke as
 a hostile-code security test. No new cloud or paid resources were provisioned.
+
+[Linux worker preparation](linux-worker.md) now includes the trusted image, standalone controller,
+private journal and opt-in isolation harness. CI builds the tooling image and imports its trusted
+packages; this is not sandbox validation. No private backend, database or worker was deployed.

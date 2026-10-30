@@ -70,3 +70,8 @@ publication requires a separate digest and a successful matching receipt; it sha
 runtime gate. Unknown writes are reconciled using exact branch/commit/PR identities, never
 blindly retried. Worker transport denies redirects/non-loopback endpoints and bounds responses.
 No worker authentication secret is sent to candidate files. See [integration](private-publication.md).
+
+The experimental Linux runtime adds rootless gVisor, effective-container inspection, secret-free
+stdin staging, fixed commands, bounded output and teardown checks. Its HTTP worker journal rejects
+replays and recovers by cleanup rather than rerunning code. See [runtime threat model](linux-worker.md).
+No live hostile-code isolation claim is made; owner dispatch stays closed.

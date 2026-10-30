@@ -100,3 +100,8 @@ Reviewed 29 October 2026:
 No provider/model pair has a live success record in this environment. Official credentials,
 paid-call authorization or an installed local model are still required for that release gate.
 
+
+The selected adapter returns both the structured plan and bounded full-file candidate edits.
+The owner approves those exact bytes before any worker job is prepared. Source scope, baseline,
+model configuration and spending limits remain bound through staging and publication. No provider
+was invoked live in the 30 October continuation. The Linux runtime does not receive provider keys.

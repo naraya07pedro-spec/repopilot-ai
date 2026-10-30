@@ -74,5 +74,15 @@ An owner-selected registry supplies five wire adapters through the validated pla
 Approval binds the snapshot, provider/model configuration, spending limit and expiry. The separate
 [worker contract](worker-contract.md) extends private durable states with authenticated jobs,
 atomic claims, bounded receipts, cancellation acknowledgements and restart recovery. It is a
-control-plane protocol with no execution transport or sandbox runtime; production dispatch is closed.
+control-plane protocol connected to a bounded loopback HTTP transport and a separate experimental
+Linux worker service. The [rootless Podman/gVisor runtime](linux-worker.md) and receipt-bound
+[private publisher](private-publication.md) are implemented; live isolation is unverified and
+production owner dispatch/publication remain closed.
 The fixture threads described above cannot accept these arbitrary candidate files.
+
+
+The private worker has its own SQLite journal and single-process lock, outside the web process.
+The controller holds only a worker HMAC key, never App/model keys. It starts fixed commands in
+fresh, read-only gVisor containers with bounded tmpfs and no network or host mounts. Confirmed
+cleanup precedes a signed receipt. Uncertain execution/publication cannot be blindly repeated.
+These are implemented controls awaiting actual Linux validation, not production guarantees.

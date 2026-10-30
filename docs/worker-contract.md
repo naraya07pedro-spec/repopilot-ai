@@ -1,7 +1,7 @@
 # Worker job and execution-receipt contract
 
-Status: implemented and tested as a protocol/state machine; **no sandbox runtime or dispatch
-transport is implemented or enabled**. The private execute route returns 409. Nothing in this
+Status: implemented and tested as a protocol/state machine. The [Linux runtime](linux-worker.md),
+HTTP transport and publication integration are implemented but **not activated or live-validated**. The private execute route returns 409. Nothing in this
 module launches a subprocess, provisions a machine, mounts a socket or writes candidate files.
 A signed receipt authenticates a message; it does not independently prove isolation or execution.
 
@@ -28,9 +28,11 @@ stateDiagram-v2
     cancel_requested --> interrupted: restart
 ```
 
-There is deliberately no transition from a receipt to a completed run or published PR.
-Publication still needs independently validated execution, remote-baseline reconciliation,
-explicit write approval and a reviewed publisher integration.
+A verified receipt alone cannot publish. The separate [publisher](private-publication.md) requires
+a matching candidate, exact publication approval and remote reconciliation. Its production gate
+remains closed until runtime isolation is independently verified. Profile python-checks-v2 uses
+pytest on the candidate root so both root-level and tests/ layouts work. Legacy v1 jobs are
+rejected; generate and approve a new run rather than silently changing existing commands.
 
 ## Job and receipt boundaries
 

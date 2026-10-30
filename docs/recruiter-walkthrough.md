@@ -32,3 +32,11 @@ Use the static viewer to compare the failed baseline, exact one-line diff, passi
 and actual draft PR #2. Every run is labeled a recording. PR #4 adds the separate owner
 control plane with security and failure-path tests; it does not establish production
 readiness or live model quality. Read private-workspace.md for the remaining execution gate.
+
+## V3 engineering review
+
+Review PR #8 for five provider wire adapters, immutable approval/source scoping, a separate
+authenticated worker service and uncertain-publication reconciliation. Tests distinguish synthetic
+protocol evidence from live execution. The Linux runtime and hostile-code harness are implemented
+but unvalidated on a suitable host; production owner execution remains closed. This is credible
+evidence of tested backend/security engineering, not a completed autonomous coding-agent claim.

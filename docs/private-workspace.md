@@ -3,7 +3,7 @@
 The owner UI at `/owner` supports login, repository validation, issue planning, plan
 approval/rejection, cancellation and durable history. It does **not** execute arbitrary
 code or publish private PRs: those routes remain closed until a validated isolated worker
-is implemented and available. No live model or GitHub App installation call has been verified.
+has passed host validation and is wired into owner dispatch. No live model or GitHub App installation call has been verified.
 Contract tests use mock HTTP responses, real signing and real database transactions.
 
 ## Configure locally
@@ -41,9 +41,9 @@ required after revocation rather than silently retrying writes.
 
 The inspection profile accepts up to eight Python/TypeScript source files, 12 KB per file,
 24 KB aggregate, and a maximum 1,000-entry tree. Larger repositories are rejected explicitly.
-The current project itself exceeds this small-repository profile. Use an explicitly approved
-small test repository for a future live planning check; approval to access an unrelated
-repository must be obtained separately. Inspection reads a pinned commit and never clones or runs code.
+Set REPOPILOT_SOURCE_ROOTS to {"naraya07pedro-spec/repopilot-ai":"fixtures/bug"} for
+this repository. Whole-repository inspection exceeds this profile; the server-selected scope
+keeps the acceptance task within the existing authorization. Inspection reads a pinned commit and never clones or runs code.
 
 ## Real provider and budgets
 
@@ -82,7 +82,9 @@ per minute per process. Mutation routes require the configured Origin. Logout re
 session. Run creation uses a unique idempotency key plus request fingerprint. On restart,
 queued/planning and worker-protocol active states become interrupted; uncertain calls are never
 automatically replayed. The [worker ledger](worker-contract.md) is tested but not dispatched.
-There is no distributed worker lease or automatic resume. Use a new request only after review.
+There is no distributed scheduling or automatic resume. Publication restart state is
+publication_unknown; reconciliation reads confirmed remote identities without repeating writes.
+The separate worker journal also prevents replay after a crash. Use a new request only after review.
 Private snapshots and plans reside in the database: apply storage encryption, access control,
 backups and retention at the hosting layer. They are never copied into public recordings.
 

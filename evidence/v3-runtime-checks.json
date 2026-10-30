@@ -1,0 +1,70 @@
+{
+  "date": "2026-10-30",
+  "branch": "feat/v3-providers",
+  "implementation_commit": "34bfb83eeb93d043b2b62e92860400be19eae212",
+  "scope": "Controller, transport, private publication and runtime implementation; no live model/App/sandbox validation",
+  "local_backend": {
+    "command": "python -m pytest --cov --cov-report=term-missing --cov-report=json --junitxml",
+    "passed": 265,
+    "skipped": 11,
+    "skip_reasons": {
+      "PostgreSQL_unavailable": 4,
+      "Windows_symlink_privilege": 1,
+      "isolated_Linux_host_unavailable": 6
+    },
+    "coverage": {
+      "covered_lines": 2013,
+      "num_statements": 2156,
+      "percent_covered": 93.36734693877551,
+      "percent_covered_display": "93",
+      "missing_lines": 143,
+      "excluded_lines": 4,
+      "percent_statements_covered": 93.36734693877551,
+      "percent_statements_covered_display": "93"
+    },
+    "coverage_scope": "repopilot; existing cli.py exclusion only"
+  },
+  "targeted_runtime": {
+    "passed": 94,
+    "skipped": 6,
+    "note": "Synthetic process/GitHub/receipt tests, plus skipped real-isolation harness"
+  },
+  "frontend": {
+    "components": 13,
+    "typecheck": "passed",
+    "production_build": "passed",
+    "serial_chromium": 4,
+    "live_pages_chromium": 2,
+    "public_url": "https://naraya07pedro-spec.github.io/repopilot-ai/",
+    "visual_review": "Live mobile and test-only owner screenshots inspected",
+    "initial_failure": "One browser timeout under competing local workload; same test passed serially without changed assertions and in CI"
+  },
+  "quality": {
+    "ruff_check": "passed",
+    "ruff_format": "passed",
+    "mypy_sources": 27,
+    "python_dependency_audit": "no known vulnerabilities",
+    "npm_audit": "0 vulnerabilities",
+    "secret_scan": "144 tracked files, no configured patterns",
+    "owner_factory_HTTP_smoke": "health, unauthorized access, login, settings, logout passed without credentials"
+  },
+  "ci": {
+    "url": "https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41044345258",
+    "head": "34bfb83eeb93d043b2b62e92860400be19eae212",
+    "conclusion": "success",
+    "backend_passed": 270,
+    "backend_skipped": 6,
+    "coverage_percent": 94.02,
+    "covered_statements": 2027,
+    "statements": 2156,
+    "postgres": "passed",
+    "frontend": "passed",
+    "container": "passed",
+    "note": "Later documentation/tooling-image CI commit must be checked separately"
+  },
+  "execution_enabled": false,
+  "live_model": "not run",
+  "live_github_app": "not run",
+  "hostile_code_isolation": "not run; no suitable host",
+  "private_cloud": "not deployed"
+}

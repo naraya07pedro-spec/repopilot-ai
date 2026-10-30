@@ -85,3 +85,11 @@ approval and cancellation. It is not a live provider or GitHub App integration.
 
 Run `python -m pytest tests/test_worker_contract.py tests/test_owner.py tests/test_model_adapters.py`
 for affected contracts. Full backend coverage includes worker_contract.py with no new exclusions.
+
+## Linux runtime checks
+
+`python -m pytest tests/test_sandbox.py tests/test_worker_dispatch.py tests/test_private_publish.py`
+checks actual controller/state code with synthetic runtime/GitHub responses. The separate
+`tests/test_sandbox_live.py` suite contains six opt-in cases and skips without an explicitly approved
+disposable Linux host and pinned image. See [setup and evidence boundary](linux-worker.md).
+CI builds the trusted worker image but never substitutes ordinary Docker for these isolation tests.

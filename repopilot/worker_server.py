@@ -10,6 +10,7 @@ import json
 import os
 import sqlite3
 import threading
+import time
 from collections.abc import Iterator
 from contextlib import asynccontextmanager, contextmanager
 from pathlib import Path
@@ -92,18 +93,37 @@ class WorkerManager:
                 if cancel.is_set() and receipt.outcome != "cancelled":
                     raise PolicyError("worker_cancel_unconfirmed")
                 response = sign(receipt.model_dump(), self.key, "receipt")
-                conn.execute(
-                    "UPDATE jobs SET state='finished',receipt=? WHERE id=?",
+                changed = conn.execute(
+                    "UPDATE jobs SET state='finished',receipt=? WHERE id=? "
+                    "AND state IN ('running','cancelling')",
                     (response.model_dump_json(), job.run_id),
                 )
+                if changed.rowcount != 1:
+                    raise PolicyError("worker_execution_claim_lost")
                 return response
         except Exception:
             with self.connect() as conn:
-                conn.execute("UPDATE jobs SET state='interrupted' WHERE id=?", (job.run_id,))
+                conn.execute(
+                    "UPDATE jobs SET state='interrupted' WHERE id=? "
+                    "AND state IN ('running','cancelling')",
+                    (job.run_id,),
+                )
             raise PolicyError("worker_interrupted: operator recovery required") from None
         finally:
             with self.lock:
                 self.events.pop(job.run_id, None)
+
+    def shutdown(self) -> None:
+        with self.lock:
+            for event in self.events.values():
+                event.set()
+        deadline = time.monotonic() + 120
+        while time.monotonic() < deadline:
+            with self.lock:
+                if not self.events:
+                    return
+            threading.Event().wait(0.05)
+        raise PolicyError("worker_shutdown_unconfirmed")
 
     def cancel(self, envelope: Envelope) -> Envelope:
         authenticate(envelope, self.key, "cancel")
@@ -192,6 +212,7 @@ def create_worker_app() -> FastAPI:
         try:
             yield
         finally:
+            await asyncio.to_thread(manager.shutdown)
             lock.close()
 
     app.router.lifespan_context = lifespan

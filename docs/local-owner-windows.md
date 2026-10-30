@@ -94,8 +94,8 @@ being wired into the owner execution route. There is no fallback to host subproc
 
 The worker controller must run in a dedicated Linux environment with a reviewed sandbox,
 secret-free guest, network denial, CPU/memory/disk/process limits, process-tree cancellation
-and reliable teardown. Rootless Podman with gVisor is a candidate, not a verified deployment;
-its user-namespace/cgroup/network constraints must be measured on the actual host. Neither
+and reliable teardown. The [Linux runtime and six-case harness](linux-worker.md) implement rootless Podman/gVisor;
+its user-namespace/cgroup/network behavior must still be verified on the actual host. Neither
 WSL nor Docker alone establishes adequate isolation. No Linux worker is available here.
 
 External gates: GitHub App installation/key; configured local model or explicitly approved

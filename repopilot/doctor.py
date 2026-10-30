@@ -17,6 +17,11 @@ def report() -> dict[str, Any]:
         "owner_configuration_valid": False,
         "github_app_configured": False,
         "model_profiles": 0,
+        "worker_dependencies": {
+            "linux": sys.platform == "linux",
+            "podman_available": shutil.which("podman") is not None,
+            "runsc_available": shutil.which("runsc") is not None,
+        },
         "execution_enabled": False,
         "execution_reason": "No verified runtime integration is activated in this build",
         "live_integrations_validated": False,
