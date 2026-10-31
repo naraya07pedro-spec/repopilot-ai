@@ -76,3 +76,12 @@ reviewed image. Additive V2 tables may remain when rolling back to V1; do not dr
 V1 must remain loopback-only. Restore a database backup only with explicit operator approval,
 since that can discard newer runs and budget reservations. No rollback was exercised against
 production infrastructure because none was provisioned.
+
+## Prepared private integration
+
+[Windows local startup](local-owner-windows.md) provides a no-hosting path and read-only diagnostic.
+[Worker transport/publication](private-publication.md) documents the staged protocol and retry
+boundaries. No production dispatcher, worker endpoint or enable flag is deployed. Model/App keys
+stay in the control plane; a future worker guest receives only bounded source and fixed commands.
+Credentials and a reviewed Linux runtime remain external gates; do not treat container smoke as
+a hostile-code security test. No new cloud or paid resources were provisioned.

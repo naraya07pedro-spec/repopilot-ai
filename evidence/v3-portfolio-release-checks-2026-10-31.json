@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-31",
+  "branch": "release/v3-portfolio",
+  "review_pr": "https://github.com/naraya07pedro-spec/repopilot-ai/pull/9",
+  "application_commit": "b611e8272e4318c981006ce4db239f3dd97ee647",
+  "scope": "Fail-closed application and public recorded demo; no packaged sandbox runtime",
+  "ci": {
+    "url": "https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41165328471",
+    "conclusion": "success",
+    "jobs": {
+      "backend": "success",
+      "frontend": "success",
+      "container": "success"
+    },
+    "backend": {
+      "passed": 247,
+      "skipped": 0,
+      "covered": 1801,
+      "statements": 1874,
+      "coverage_percent": 96.10458911419424
+    },
+    "postgres": "passed",
+    "ruff": "passed",
+    "format": "passed",
+    "mypy_source_modules": 25,
+    "frontend_components": 13,
+    "chromium_cases": 6,
+    "builds": [
+      "private Next.js",
+      "public /repopilot-ai",
+      "public /"
+    ],
+    "python_audit": "no known vulnerabilities",
+    "npm_audit": "zero vulnerabilities",
+    "secret_pattern_scan": "141 tracked files; no configured patterns"
+  },
+  "local": {
+    "backend_passed": 242,
+    "backend_skipped": 5,
+    "skip_reasons": {
+      "postgres_unavailable": 4,
+      "windows_symlink_privilege": 1
+    },
+    "covered": 1787,
+    "statements": 1874,
+    "coverage_percent": 95.35752401280682,
+    "targeted_contracts_passed": 141,
+    "publication_denial_regression": "passed; authenticated approved plan cannot execute or publish",
+    "frontend_components": 13,
+    "typecheck": "passed",
+    "private_public_build": "passed",
+    "serial_chromium": 4,
+    "live_https_chromium": 2,
+    "live_url": "https://naraya07pedro-spec.github.io/repopilot-ai/",
+    "live_checks": [
+      "HTTP 200",
+      "recorded label",
+      "actual diff",
+      "3 passed fixture evidence",
+      "PR #2 link",
+      "rejected regression",
+      "no API requests",
+      "private routes 404",
+      "desktop/mobile width"
+    ],
+    "visual_review": "actual live mobile screenshot inspected"
+  },
+  "coverage_scope": "repopilot; existing cli.py exclusion only, no new coverage exclusions",
+  "workflow_changed_from_main": false,
+  "test_workflow_deletions_relative_to_main": false,
+  "preserved_pr8": {
+    "head": "37c01e9c6bb77b75940f4072aa8cf0974a8d8b37",
+    "url": "https://github.com/naraya07pedro-spec/repopilot-ai/pull/8",
+    "ci": "https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41161973178",
+    "sandbox_failed": 6,
+    "sandbox_skipped": 0,
+    "all_runtime_files_tests_preserved": true
+  },
+  "execution_enabled": false,
+  "private_publication_enabled": false,
+  "live_model_validation": false,
+  "live_github_app_validation": false,
+  "real_agent_acceptance": false,
+  "paid_calls_or_provisioning": false,
+  "automatic_merge": false
+}

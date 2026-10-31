@@ -1,0 +1,26 @@
+[
+  {
+    "id": "ollama-smoke",
+    "provider": "ollama",
+    "model": "qwen2.5-coder:0.5b",
+    "structured_output": "json_schema",
+    "context_tokens": 8192,
+    "output_tokens": 512,
+    "context_bytes": 3584,
+    "endpoint": "http://127.0.0.1:11434",
+    "input_rate": 0,
+    "output_rate": 0
+  },
+  {
+    "id": "ollama-coder-candidate",
+    "provider": "ollama",
+    "model": "qwen2.5-coder:1.5b",
+    "structured_output": "json_schema",
+    "context_tokens": 8192,
+    "output_tokens": 1024,
+    "context_bytes": 3072,
+    "endpoint": "http://127.0.0.1:11434",
+    "input_rate": 0,
+    "output_rate": 0
+  }
+]

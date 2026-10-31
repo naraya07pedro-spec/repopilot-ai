@@ -1,0 +1,198 @@
+{
+  "schema_version": 1,
+  "scope": "WSL prerequisites and real local control-plane smoke only; no inference or sandbox acceptance",
+  "source_commit": "a8ac5c56c90924c5621fb6914253d82241e136bb",
+  "windows": {
+    "measured_at": "2026-10-31T16:01:09.4423269+07:00",
+    "installed_memory_module_bytes": [
+      4294967296
+    ],
+    "visible_memory_bytes": 4126380032,
+    "available_memory_kib": 324196,
+    "windows_version": "10.0.26300",
+    "windows_build": "26300",
+    "cpu": "Intel(R) Core(TM) i3-8130U CPU @ 2.20GHz",
+    "cpu_cores": 2,
+    "logical_processors": 4,
+    "firmware_virtualization": false,
+    "slat": false,
+    "hypervisor_present": true,
+    "drive_c_free_bytes": 31948091392,
+    "features": [
+      {
+        "Name": "VirtualMachinePlatform",
+        "InstallState": 1
+      },
+      {
+        "Name": "Microsoft-Windows-Subsystem-Linux",
+        "InstallState": 1
+      }
+    ],
+    "tools": [
+      {
+        "name": "wsl",
+        "available": true
+      },
+      {
+        "name": "ollama",
+        "available": false
+      },
+      {
+        "name": "podman",
+        "available": false
+      },
+      {
+        "name": "docker",
+        "available": false
+      }
+    ],
+    "admin_session": false,
+    "installs_or_network_calls": false
+  },
+  "windows_measurement_note": "CIM firmware/SLAT booleans changed under the active hypervisor; working WSL2 was directly observed. No BIOS setting was modified. PowerShell 7 ran the audit; Windows PowerShell 5 script policy was left unchanged.",
+  "wsl": {
+    "measured_at_utc": "2026-10-31T09:01:16Z",
+    "kernel": "6.18.54.1-microsoft-standard-WSL2",
+    "architecture": "x86_64",
+    "os": "Ubuntu 24.04.5 LTS",
+    "uid": 1000,
+    "logical_processors": 4,
+    "memory_bytes": {
+      "MemTotal": 1912164352,
+      "MemAvailable": 1514897408,
+      "SwapTotal": 1073741824,
+      "SwapFree": 1073741824
+    },
+    "root_filesystem": {
+      "total_bytes": 1081101176832,
+      "free_bytes": 1024727142400,
+      "thin_vhd_not_physical_host_free_space": true
+    },
+    "pid1": "systemd",
+    "tools": {
+      "python3": true,
+      "node": false,
+      "ollama": false,
+      "podman": false,
+      "docker": false,
+      "runsc": false,
+      "unshare": true,
+      "newuidmap": false,
+      "newgidmap": false
+    },
+    "cgroup_v2": true,
+    "cgroup_controllers": [
+      "cpuset",
+      "cpu",
+      "io",
+      "memory",
+      "hugetlb",
+      "pids",
+      "rdma"
+    ],
+    "root_subtree_controllers": [
+      "cpu",
+      "memory",
+      "pids"
+    ],
+    "root_cgroup_writable": false,
+    "user_service": {
+      "exit_code": 0,
+      "stdout": "ControlGroup=/user.slice/user-1000.slice/user@1000.service\nDelegate=yes",
+      "stderr": "",
+      "duration_seconds": 0.112
+    },
+    "kvm_device_present": true,
+    "kvm_accessible_to_current_user": false,
+    "windows_drive_c_mounted": true,
+    "windows_interop_registered": true,
+    "configured_automount_enabled": true,
+    "configured_interop_enabled": true,
+    "configured_systemd": true,
+    "sandbox_verified": false,
+    "audit_authorizes_owner_execution": false,
+    "installs_or_external_network_calls": false,
+    "namespace_probe": {
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "duration_seconds": 0.036
+    },
+    "transient_cgroup_probe": {
+      "exit_code": 0,
+      "stdout": "{\"uid\": 1000, \"limits\": {\"cpu.max\": \"25000 100000\", \"memory.max\": \"67108864\", \"memory.swap.max\": \"0\", \"pids.max\": \"16\"}, \"no_new_privs\": \"1\"}",
+      "stderr": "",
+      "duration_seconds": 0.409
+    },
+    "transient_service_active_after_cleanup": {
+      "exit_code": 4,
+      "stdout": "inactive",
+      "stderr": "",
+      "duration_seconds": 0.017
+    }
+  },
+  "local_owner_smoke": {
+    "measured_at_utc": "2026-10-31T08:55:59Z",
+    "memory_before": {
+      "available_kib": 594408,
+      "disk_free_bytes": 31961481216
+    },
+    "configuration": "fresh SQLite, random temporary password, actual production services; no GitHub or model credential; zero budgets",
+    "memory_with_api_next": {
+      "available_kib": 456364,
+      "disk_free_bytes": 31961444352
+    },
+    "browser": {
+      "production_http": true,
+      "actual_owner_login_logout": true,
+      "unauthorized_denied": true,
+      "foreign_origin_denied": true,
+      "local_profiles": 2,
+      "model_discovery_unavailable_error": "provider_transport_unknown",
+      "paid_calls": false,
+      "execution_enabled": false,
+      "history_empty": true,
+      "mobile_no_horizontal_overflow": true,
+      "page_errors": [],
+      "mocks": false,
+      "live_model": false
+    },
+    "sqlite_session_survived_api_restart": true,
+    "memory_after_cleanup": {
+      "available_kib": 730232,
+      "disk_free_bytes": 31961346048
+    }
+  },
+  "model_runtime_feasibility": {
+    "windows_ollama_command": false,
+    "wsl_ollama_command": false,
+    "model_download_attempted": false,
+    "inference_executed": false,
+    "reason": "Windows free-memory snapshots below 800 MiB; guest free RAM overlaps host capacity. No measured concurrent fit."
+  },
+  "isolation_acceptance": {
+    "six_live_probes_rerun": false,
+    "reason": "No compatible sandbox installed; preserved PR #8 runtime failure is not resolved by WSL prerequisites",
+    "owner_execution_enabled": false
+  },
+  "software_installed": [],
+  "paid_calls": 0,
+  "local_checks": {
+    "backend_passed": 244,
+    "backend_skipped": 5,
+    "skip_reasons": [
+      "4 PostgreSQL tests: disposable database not configured locally",
+      "1 Windows symlink privilege test"
+    ],
+    "coverage_statements": 1874,
+    "coverage_covered": 1787,
+    "coverage_percent": 95.36,
+    "ruff": "passed",
+    "format": "passed: 69 files",
+    "mypy": "passed: 25 application modules",
+    "source_scope": "repopilot; existing cli.py exclusion unchanged",
+    "frontend_code_changed": false,
+    "local_build_repeated": false,
+    "prior_published_ci": "https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41169808465"
+  }
+}

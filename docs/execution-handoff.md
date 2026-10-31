@@ -1,131 +1,163 @@
-# Execution handoff — 29 October 2026
+# WSL2 operational follow-up — 31 October 2026
 
-Current scope: zero-additional-cost public portfolio release. Preserve the working Pages site.
-Do not expand private infrastructure, provision resources, call a paid model or resume Netlify
-publication; the owner deferred those activities.
+Branch: release/v3-portfolio / PR #9; recovered source a8ac5c56c90924c5621fb6914253d82241e136bb.
+That exact remote head passed [CI 41169808465](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41169808465):
+249 backend, zero skips, 96.10%; PostgreSQL, 13 frontend, six Chromium cases, builds/audits.
+This follow-up changes audit tooling, setup/evidence/docs only; verify its new head CI in PR #9.
+No application/provider/worker implementation, workflow or dependency was replaced.
 
-Branch: `feat/hosting-readiness`. Existing review PR: #7 (reuse it).
-Verified implementation commit: `06a7171cf43f8063f58b6f59c6bea21effa41f3e`.
-The release documentation follows that commit; inspect the current PR head before continuing.
-The recovered 22 files were committed locally in 8a796ac; the remaining five-file correction
-was published in 7286e55. CI exposed a schema-owner REVOKE failure, fixed in 06a7171 without
-relaxing NOINHERIT or the regression test. Local and API metadata histories were preserved.
+The owner completed WSL setup. Ubuntu 24.04.5 runs as repopilot/UID1000 on
+6.18.54.1-microsoft-standard-WSL2, systemd, four logical CPUs, 1.78 GiB guest RAM, about 1.4 GiB
+guest available and 1 GiB swap. Non-root user/network namespace creation exits 0. A fixed trusted
+transient user service reads actual cpu.max=25000/100000, memory.max=67108864,
+memory.swap.max=0, pids.max=16 and NoNewPrivs=1. It becomes inactive after cleanup.
+These are prerequisite/configuration checks, NOT hostile-code isolation or stress enforcement.
+The audit script is scripts/audit_wsl.py; it installs nothing and cannot open owner dispatch.
 
-Verified CI: 40812511056 — 130 backend tests, 95.69% coverage, 10 component tests, 5 browser
-cases, PostgreSQL bootstrap/recovery, Docker smoke, lint/types/builds/audits/secret scan passed.
-Local: 125 passed, 5 environment skips, 94.59%; 10 frontend tests, 3 local browser cases,
-2 browser cases against the live HTTPS site, TypeScript/builds/audits passed.
-Coverage scope and exact evidence links are in docs/evidence.md. Public URL:
-https://naraya07pedro-spec.github.io/repopilot-ai/ (verified 29 October).
+Host RAM remains 4 GB; available Windows samples were below 800 MiB (about 446 MiB with
+API/Next running). About 29.8 GiB remains on physical C:. Do not mistake WSL's thin virtual
+1 TB filesystem for real free disk or add guest/host available memory. No Ollama, model weights,
+Podman, Docker, runsc or Linux uidmap helpers were installed. No inference was attempted.
+Windows drives and interop remain exposed in this owner's Ubuntu. /dev/kvm exists but the user
+cannot open it. No hypervisor permission, WSL setting, pagefile or execution policy was changed.
 
-Next executable action: inspect PR #7 and checks on its current head; integrate only after
-review and green CI, then verify main CI/Pages. If already merged, do not recreate the PR.
-No forced history changes or automatic merge of demonstration draft PR #2.
+An actual production API/Next/Chromium smoke, without mocked GitHub/model services, passed:
+login/logout, origin/authorization denial, local profile selection, unavailable Ollama error,
+closed controls, mobile login layout and SQLite session persistence across actual API restart.
+No task/model code executed. Services/data were temporary and cleaned up; the screenshot is a
+local work artifact. Reproduce ordinary startup via docs/local-owner-windows.md; the shipped
+local profiles are now explicitly included in that startup command.
 
-Private V2 remains PARTIAL: no live App/model result, production database connection or private
-HTTPS host. A validated isolated worker is not implemented; private execution remains 409.
-The final SQL regression ran on disposable CI PostgreSQL. No existing Supabase data changed.
-Netlify stays pending by owner decision. These are explicitly deferred expansion gates;
-credentials alone do not supply a secure worker. No new spending is authorized.
+Local full checks: Ruff/format (69 files) and mypy (25 application modules) passed;
+244 backend passed, five environment skips, 95.36% statement coverage (1787/1874). Skips are
+four unconfigured PostgreSQL cases and one Windows symlink privilege case, not sandbox tests.
+No new coverage exclusion. CI provides the disposable PostgreSQL service. Backend source,
+frontend source and lockfiles are unchanged; no heavy local production rebuild was repeated.
 
-## Historical handoff — 28 October 2026
+Next exact step: check new PR #9 application CI, preserve its independent review scope, then
+re-measure memory when the machine has real headroom before installing even the local smoke
+runtime/model. The 398 MB 0.5B weights exclude runner/context RAM; no practical model is yet
+validated. Use loopback, cloud disabled, one loaded model/request, explicit bounded context,
+zero paid flags/budgets and keep_alive=0. Do not install larger weights or rent a host.
 
-The following records prior context. Its expansion steps are superseded by the scope above.
+WSL boot does not fix PR #8's released gVisor cgroup failure. Keep all six failed probes and
+37c01e9 preserved there; no speculative runtime experiment was repeated. Before any hostile
+probe, choose a reviewed compatible sandbox, separate Windows drives/interop/credentials, verify
+capacity and run resource/network/filesystem/cancellation/cleanup/recovery acceptance. Only
+then review owner dispatcher binding and a real Issue → local model → isolated tests → draft PR.
+Those gates remain unperformed and closed. No automatic merge is authorized.
 
-Overall status: PARTIAL. Public recruiter demo: DEPLOYED AND VERIFIED.
-Public URL: https://naraya07pedro-spec.github.io/repopilot-ai/
+No additional Windows administrator action is currently needed. Only GitHub account authorization
+remains owner-only: the read-only selected-repository App/key steps in docs/owner-activation.md;
+do not request keys in chat. Write permissions remain deferred until isolation acceptance and
+separate draft-PR approval. [Current WSL report](wsl-evaluation.md),
+[sanitized evidence](../evidence/wsl-local-readiness-2026-10-31.json).
 
-## Published state
+## Earlier checkpoints (historical; superseded where noted)
 
-V2 PR #4 merged normally into main at 1e79482783675c0b74a980e5cb2714442b66b978 after
-fresh green CI and review of public/private separation. PR #5 introduced an incompatible
-root-level Next.js workflow; the owner deleted it in 71f5002. That deletion is preserved.
-Only public-demo.yml publishes, only from main. No reset, force-push or unrelated repo changes.
-Actual fixture Issue #1 -> draft PR #2 remains separate and unmerged.
+# Local-first correction — 31 October 2026
 
-Documentation PR #6 merged at c64c0cf548039725f1c53c155c98630198780f6a with green Verify
-40639976253 and Pages 40639976294 (including two live Chromium tests).
-Current development branch: feat/hosting-readiness, based on that main commit.
-Inspect current git status/log and PRs before resuming. Local/API commit metadata may differ;
-publication verifies exact tree equality. Never rewrite histories to reconcile metadata.
+PR #9 source 18837c52354bc68ba0b9bc7917a8f2edb417f8cd was reverified: open/unmerged,
+CI 41165868963 green (247 backend, zero skips, 96.10%; 13 frontend/six browser; builds/audits).
+Do not merge automatically. Current follow-up replaces the paid-provider activation path with
+local-only setup and records a real read-only Windows audit. It adds bounded zero-cost Ollama
+profiles, a repeatable hardware audit and two deterministic zero-budget regression tests.
 
-## Hosting preparation continuation
+Actual hardware: one 4 GB module, 3.84 GiB visible, 485–549 MiB available during samples,
+i3-8130U 2C/4T, Intel UHD 620, about 33.4 GiB disk free. Firmware virtualization/SLAT true;
+hypervisor absent. WSL/VirtualMachinePlatform disabled, wsl --status exits 50, no distro or
+Ollama/Podman/Docker. Current session is not elevated. No heavy installs, downloads or settings
+changes were made. CPU/GPU/OS model identifiers only are recorded; no hostnames/serials/secrets.
 
-The owner selected Netlify for the public export and an accessible existing Supabase project
-for PostgreSQL; no paid provisioning is authorized. The intended Netlify account is not the
-working connected account, and the owner explicitly asked to keep its deployment pending.
-An active Supabase project has other applications' tables. Only their metadata was inspected.
-A rollback-only bootstrap/probe validated creating and using the new restricted role/schema;
-a separate query confirmed neither object remained. No existing data or global settings changed.
+**Zero paid API, zero rented server.** No OpenAI or other model API keys are required. Keep all
+paid flags false and budgets zero. The existing Ollama adapter already sets num_ctx/num_predict
+and keep_alive=0. Local-only contract checks: 35 passed, including both shipped profiles and
+an authenticated zero-budget plan/approval with execution/publication still denied. These use
+synthetic HTTP responses, not a real installed model. Full current follow-up CI must be checked.
 
-Prepared netlify.toml for the root-path static export, deploy/render-preview.yaml with two
-free control-plane web services (no database/worker), and exact external steps in
-docs/hosting-setup.md. No resources are provisioned by those files alone.
-Production/Supabase startup now requires a private PostgreSQL schema and verified TLS.
-Private-schema migrations revoke public/browser-role access and enable RLS. Added a real
-PostgreSQL restricted-role, schema-isolation and restart-recovery test for CI.
+No practical local model has been validated. Qwen2.5-Coder 0.5B (398 MB Q4) is a smoke candidate;
+1.5B (986 MB Q4) is the smallest coding candidate to evaluate, not a measured capability claim.
+Weight sizes exclude runtime/context RAM. Current headroom cannot support a credible concurrent
+model + app + WSL worker demonstration. No speculative runtime code was added.
 
-Local checks so far: 124 backend tests passed, 4 environment skips (three PostgreSQL, one
-Windows symlink), 94.42% statement coverage; affected database/owner checks 43 passed.
-Ruff, formatting and mypy passed. Frontend: 10 tests, TypeScript, owner production build and
-root-path public production build passed. Render configuration passed the official JSON
-schema; Netlify TOML parsed. Three actual local Chromium tests passed (root-path public demo
-at desktop/mobile sizes and private owner login/logout/disabled execution). Both dependency
-audits found no known vulnerabilities; the tracked-file credential-pattern scan passed.
-PR #7 publishes this stage. Verify run 40652011337 at 296bae7e8ef7c7cdd9506453b9121b4b7f4c2658
-passed 128 backend tests with 95.69% coverage, including the restricted PostgreSQL role,
-RLS/private schema and recovery test. Frontend passed 10 component tests and 5 browser flows
-(Pages/owner 3, root-path public 2); container smoke and audits passed.
-A final hostname-normalization regression adds coverage for uppercase/trailing-dot Supabase
-hosts; its 14 database configuration tests passed locally. Check CI on the updated PR head
-before integrating, rather than using an older green run as approval.
-Supabase's non-superuser administrator required explicit SET membership in the newly created
-role. The bootstrap now grants that membership without INHERIT and a new PostgreSQL regression
-test exercises the real bootstrap script under a non-superuser role. The corrected Supabase
-transactional probe passed and was rolled back; no persistent DB installation is claimed.
+Next exact dependency: owner may enable WSL only in Administrator PowerShell using
+`wsl --install --no-distribution` and reboot if requested. Then re-audit memory, WSL and kernel
+capabilities before any distro/model download. Do not blindly rerun the known failing gVisor
+configuration. Verify separation from Windows files/interop and all six preserved live probes
+before dispatch activation. Exact GitHub App owner authorization is in owner-activation.md.
+Do not ask for model credentials, a VPS or cloud hosting. Do not buy hardware/services.
 
-## Actual verification
+See [feasibility](local-feasibility.md), [audit record](../evidence/local-hardware-audit-2026-10-31.json)
+and [local profiles](../deploy/local-models.example.json). PR #8 remains preserved at 37c01e9.
+A genuine Issue → local model → actual isolated tests → draft PR has NOT run. Dispatcher binding,
+verified worker lifecycle/recovery and that acceptance remain blocked. Unsafe execution stays off.
 
-Main Verify 40639065402: 114 backend tests, 95.57% statement coverage, 10 component tests,
-3 Chromium E2E tests, Ruff/mypy, TypeScript, production builds, PostgreSQL migration/session
-recovery, Docker HTTP smoke, locked Python/full npm audits and secret-pattern scan passed.
-Deployment 40639065386: public build/deploy passed; 2 additional Chromium flows passed against
-the actual HTTPS site at desktop/mobile widths. Artifact 12794941485 has live screenshots.
-Independent HTTPS checks saved in evidence/public-https.json: homepage 200, 8 assets 200,
-owner/API routes 404. Earlier Pages 404 reports are historical and resolved.
+## Completed local-first checks
 
-## Remaining blockers and implementation gaps
+Published follow-up source: d1c0e651b2ab035e88725048bf4d120300787255.
+[CI 41169549936](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41169549936)
+passed: 249 backend, zero skips, 96.05% (1,800/1,874), PostgreSQL, Ruff/format/mypy,
+13 frontend component and six Chromium cases, private/public builds and audits. Local full
+suite: 244 passed, five environment skips, 95.41% (1,788/1,874). No production source change
+or new coverage exclusion was needed; the two added tests verify existing local behavior.
+The saved PowerShell audit was executed successfully. Standard Ollama install path is absent
+and its loopback API is unavailable. No local inference or WSL/sandbox execution is claimed.
+Owner WSL administrator action has been requested; no completion was received at this checkpoint.
+Next: re-audit only after owner enables WSL. Do not install heavy runtimes/models under the
+measured memory load. No paid/provider credential, rented host or automatic merge is required.
 
-Owner sessions, App installation scoping, real-model planning adapter, budget reservations,
-approval binding, idempotency, cancellation and recovery are implemented and contract-tested.
-Live GitHub App and real-model calls are unverified: no App ID/installation/key, model API key,
-authorized spending limits or production DATABASE_URL are configured in the current environment.
-No secrets have been requested in chat or added to the public site.
+## Previous portfolio checkpoint (historical)
 
-A validated isolated worker is NOT implemented or provisioned. General private modifications,
-verification and PR publication remain disabled (409). Docker is absent locally; CI Docker
-smoke is not evidence of a hostile-code sandbox. Do not remove the exact-byte host fixture gate.
-No private HTTPS deployment, production recovery, comprehensive accessibility or adversarial
-sandbox review is claimed. A Netlify connection is now reachable, but the intended hosting
-account connection is incorrect for the requested target; publication stays pending by owner
-request. Render is an evaluated free preview option; no hosting resource was created.
+# Portfolio release recovery — 31 October 2026
 
-## Next exact actions
+Current branch: `release/v3-portfolio`, based on main `68bf412d6451c7982509d7c5c0ca3ba27826db86`.
+The V3 experiment remains preserved in PR #8 / feat/v3-providers at
+`37c01e9c6bb77b75940f4072aa8cf0974a8d8b37`, including every sandbox file/test and failure record.
+Do not restart or rerun runtime experiments without a compatible environment.
 
-1. Check the latest head of PR #7 and finish review/integration if still open, then verify
-   main CI/Pages. Preserve the working Pages host and Netlify publication hold.
-2. Follow docs/hosting-setup.md: reconnect the intended Netlify account when the owner resumes
-   publication; bootstrap only a private Supabase schema/role in the selected existing project,
-   inject its verified-TLS connection secret, and connect an approved container hosting account.
-   Configure App/model server-only variables and explicit spending limits; never paste keys in chat.
-3. Implement and validate a disposable secret-free VM/microVM worker with denied network,
-   filesystem/resource/time limits, cancellation, cleanup and immutable evidence transfer.
-   Keep private execution closed until this review passes.
-4. Validate real App/model planning on an explicitly authorized small repository, then bounded
-   edits, independent verification and reconciled PR publication with human approval.
-5. Deploy the private control plane behind HTTPS with PostgreSQL/backups and test actual recovery.
+## Release scope
 
-The existing small-repository inspection profile is limited to 8 source files / 24 KB total;
-this project exceeds it. A future live private task must use an explicitly approved compatible
-repository or a separately reviewed scoped-inspection enhancement. Do not create a new repo
-or access unrelated repositories merely to satisfy that test.
+This branch extracts the passing application file set from V3: model adapters/registry, owner
+planning/auth/approval/budgets, source scoping, candidate text staging, signed contracts/loopback
+transport, publication reconciliation and regression tests. Owner execute and private publication
+still use DisabledWorker. No candidate code is imported or executed by private planning.
+The main application CI workflow is unchanged; no test or workflow is deleted relative to main.
+No sandbox driver/server/image/harness or live sandbox tests are packaged in this application PR.
+Their six mandatory failed probes remain in PR #8, which is not being merged wholesale.
+See [release boundary](portfolio-release.md) and [source manifest](../evidence/release-scope.json).
+
+## Validated application release checkpoint
+
+Published source: `b611e8272e4318c981006ce4db239f3dd97ee647`.
+[PR #9](https://github.com/naraya07pedro-spec/repopilot-ai/pull/9), open/unmerged.
+[CI 41165328471](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41165328471)
+passed all three application jobs: 247 backend passed, zero skipped, 96.10% (1,801/1,874),
+PostgreSQL, Ruff/format/mypy, 13 component and six Chromium tests, private/public builds,
+container smoke and audits. No new coverage exclusions; workflow unchanged from main.
+
+Local: 242 backend passed, five environment skips, 95.36%; 141 targeted contracts and the
+approved-plan publication-denial regression passed. TypeScript, 13 frontend tests, private/public
+builds and four serial browser cases passed. Two live HTTPS Pages desktop/mobile cases passed;
+the real mobile screenshot was inspected. Public private-endpoint requests returned 404.
+[Structured evidence](../evidence/v3-portfolio-release-checks-2026-10-31.json). This documentation follow-up
+records the measured source checkpoint; verify its current CI in PR #9 before review approval.
+
+PR #8 remains unchanged at 37c01e9 and still fails its mandatory sandbox job. No runtime
+experiment was repeated. The app release is eligible for independent human review; the
+real coding agent remains incomplete. No automatic merge or deployment occurred.
+
+## Remaining blockers and next action
+
+Review PR #9 and verify the current application CI before any separately approved integration.
+No automatic merge or deployment is authorized. Public Pages is already deployed independently.
+
+Real-agent activation remains blocked on a reviewed compatible runtime and dedicated disposable
+host, then independent resource/network/filesystem/cancellation/cleanup/recovery validation.
+Both released gVisor configurations failed before guest execution. A different ordinary Linux VM
+alone does not resolve those defects; see [runtime options/costs](runtime-options.md).
+No speculative microVM implementation or paid infrastructure was started.
+
+Owner App/model setup is documented step by step in [owner activation](owner-activation.md).
+Credentials and paid-call consent are absent. After isolation passes, the owner dispatcher binding
+and the real model → actual isolated tests → draft PR acceptance remain engineering work.
+Private cloud and Netlify stay deferred. No unrelated repositories or databases were changed.

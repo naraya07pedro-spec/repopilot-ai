@@ -10,7 +10,38 @@ The default provider deterministically selects reviewed edits. An optional OpenA
 planner is implemented and contract-tested; live model quality is not claimed.
 Arbitrary repositories and arbitrary model-generated code cannot execute on the host.
 
+## Local-first target
+
+The private target is the existing Windows laptop: local backend/frontend, SQLite, a genuinely
+local Ollama model and a separately verified sandbox evaluated in WSL2. **Zero paid model API,
+zero rented server.** The audit found 4 GB installed RAM. Ubuntu 24.04 now boots under WSL2;
+non-root namespace creation and bounded cgroup configuration were measured successfully.
+Ollama is not installed; concurrent model/app/worker feasibility and sandbox isolation remain
+unverified. No model, Docker Desktop or container runtime was installed by this audit.
+[Measured audit and exact owner actions](docs/local-feasibility.md) ·
+[WSL prerequisites and remaining gates](docs/wsl-evaluation.md) ·
+[Zero-budget local profiles](deploy/local-models.example.json).
+
 ## Public portfolio release
+
+This review branch separates the passing V3 application from the blocked Linux sandbox in
+[PR #8](https://github.com/naraya07pedro-spec/repopilot-ai/pull/8). It includes
+[five provider adapters](docs/providers.md), owner authentication and scoped planning/review,
+approval/budget controls, durable history, and contract-tested transport/publication logic.
+Owner execution and private publication fail closed through DisabledWorker. Live model/App
+validation and isolated Issue-to-PR acceptance remain incomplete.
+
+The release is based on main and retains its existing CI workflow unchanged. Experimental
+runtime code and all six failing isolation tests remain intact in PR #8; no failed test was
+removed from that PR or converted to a skip. Application CI is evidence only for this branch's
+scope. [Release boundary](docs/portfolio-release.md) · [Current evidence](docs/evidence.md) ·
+[Owner actions](docs/owner-activation.md) · [Runtime prerequisites/costs](docs/runtime-options.md).
+
+[Application release CI](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41165328471)
+at `b611e82`: **247 backend tests, zero skips, 96.10% coverage**, 13 component tests and six
+Chromium cases passed, with builds, PostgreSQL and audits. Two additional browser tests verified
+the live HTTPS demo on desktop/mobile. [Review PR #9](https://github.com/naraya07pedro-spec/repopilot-ai/pull/9) ·
+[Measured release evidence](evidence/v3-portfolio-release-checks-2026-10-31.json).
 
 [Open the public demo](https://naraya07pedro-spec.github.io/repopilot-ai/) — no login, API key,
 payment or installation. Explore clearly labeled recordings, actual diffs, checks and PR links.
@@ -23,7 +54,7 @@ real-model planning, approval/rejection, cancellation and persistent history. Th
 contract-tested; live credentials were unavailable. General execution and private PR publication
 remain disabled until a validated isolated worker exists. This is not production-ready.
 
-[Private setup](docs/private-workspace.md) · [Deployment](docs/deployment.md) ·
+[Windows startup and diagnostics](docs/local-owner-windows.md) · [Private setup](docs/private-workspace.md) · [Deployment](docs/deployment.md) ·
 [V2 release gates](docs/v2-gaps.md)
 
 [Recruiter walkthrough](docs/recruiter-walkthrough.md) ·
