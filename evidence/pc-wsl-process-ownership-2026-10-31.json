@@ -1,0 +1,282 @@
+{
+  "captured_utc": "2026-10-31T16:46:17.252741+00:00",
+  "mode": "windows_metadata_only",
+  "deadline_seconds": 15,
+  "cleanup_deadline_seconds": 2,
+  "wsl_clients_started": 0,
+  "recovery_executed": false,
+  "current_linux_health": "not_tested",
+  "records": [
+    {
+      "section": "token",
+      "data": {
+        "elevated": false
+      }
+    },
+    {
+      "section": "registrations",
+      "data": {
+        "entries": [
+          {
+            "default_uid": 0,
+            "name": "OpenClawGateway",
+            "version": 2
+          }
+        ],
+        "status": "read"
+      }
+    },
+    {
+      "section": "services",
+      "data": {
+        "entries": [
+          {
+            "exit_code": 0,
+            "pid": 2768,
+            "name": "hns",
+            "configured_account": "LocalSystem",
+            "state": "Running"
+          },
+          {
+            "exit_code": 0,
+            "pid": 1836,
+            "name": "HvHost",
+            "configured_account": "LocalSystem",
+            "state": "Running"
+          },
+          {
+            "exit_code": 0,
+            "pid": 1288,
+            "name": "vmcompute",
+            "configured_account": "LocalSystem",
+            "state": "Running"
+          },
+          {
+            "exit_code": 0,
+            "pid": 4660,
+            "name": "WSLService",
+            "configured_account": "LocalSystem",
+            "state": "Running"
+          }
+        ],
+        "status": "read"
+      }
+    },
+    {
+      "section": "process",
+      "data": {
+        "registered_distro_ids_in_arguments": [],
+        "command_line_readable": false,
+        "owner_result": 2,
+        "created_utc": "2026-10-30T01:59:24.3266140Z",
+        "owner": "unavailable",
+        "name": "wslservice.exe",
+        "parent_pid": 1252,
+        "image_path_readable": false,
+        "pid": 4660
+      }
+    },
+    {
+      "section": "process",
+      "data": {
+        "registered_distro_ids_in_arguments": [],
+        "command_line_readable": false,
+        "owner_result": 2,
+        "created_utc": "2026-10-30T01:59:46.5110560Z",
+        "owner": "unavailable",
+        "name": "vmcompute.exe",
+        "parent_pid": 1252,
+        "image_path_readable": false,
+        "pid": 1288
+      }
+    },
+    {
+      "section": "process",
+      "data": {
+        "registered_distro_ids_in_arguments": [],
+        "command_line_readable": true,
+        "owner_result": 0,
+        "created_utc": "2026-10-31T02:30:32.6936020Z",
+        "owner": "current_windows_user",
+        "name": "OpenClaw.Tray.WinUI.exe",
+        "parent_pid": 6476,
+        "image_path_readable": true,
+        "pid": 15700
+      }
+    },
+    {
+      "section": "process",
+      "data": {
+        "registered_distro_ids_in_arguments": [],
+        "command_line_readable": false,
+        "owner_result": 2,
+        "created_utc": "2026-10-31T02:30:42.4414430Z",
+        "owner": "unavailable",
+        "name": "vmmemWSL",
+        "parent_pid": 23336,
+        "image_path_readable": false,
+        "pid": 2836
+      }
+    },
+    {
+      "section": "process",
+      "data": {
+        "registered_distro_ids_in_arguments": [],
+        "command_line_readable": true,
+        "owner_result": 0,
+        "created_utc": "2026-10-31T02:30:49.4380190Z",
+        "owner": "current_windows_user",
+        "name": "wsl.exe",
+        "parent_pid": 15700,
+        "image_path_readable": true,
+        "pid": 23368
+      }
+    },
+    {
+      "section": "process",
+      "data": {
+        "registered_distro_ids_in_arguments": [],
+        "command_line_readable": true,
+        "owner_result": 0,
+        "created_utc": "2026-10-31T02:30:49.4840390Z",
+        "owner": "current_windows_user",
+        "name": "wsl.exe",
+        "parent_pid": 23368,
+        "image_path_readable": true,
+        "pid": 21196
+      }
+    },
+    {
+      "section": "process",
+      "data": {
+        "registered_distro_ids_in_arguments": [],
+        "command_line_readable": true,
+        "owner_result": 0,
+        "created_utc": "2026-10-31T02:30:54.6216710Z",
+        "owner": "current_windows_user",
+        "name": "wslrelay.exe",
+        "parent_pid": 4660,
+        "image_path_readable": true,
+        "pid": 1556
+      }
+    },
+    {
+      "section": "process",
+      "data": {
+        "registered_distro_ids_in_arguments": [],
+        "command_line_readable": true,
+        "owner_result": 0,
+        "created_utc": "2026-10-31T02:31:16.3068850Z",
+        "owner": "current_windows_user",
+        "name": "wslhost.exe",
+        "parent_pid": 4660,
+        "image_path_readable": true,
+        "pid": 13704
+      }
+    },
+    {
+      "section": "process",
+      "data": {
+        "registered_distro_ids_in_arguments": [
+          "OpenClawGateway"
+        ],
+        "command_line_readable": true,
+        "owner_result": 0,
+        "created_utc": "2026-10-31T02:31:27.7006780Z",
+        "owner": "current_windows_user",
+        "name": "wslhost.exe",
+        "parent_pid": 21196,
+        "image_path_readable": true,
+        "pid": 4980
+      }
+    },
+    {
+      "section": "process",
+      "data": {
+        "registered_distro_ids_in_arguments": [],
+        "command_line_readable": false,
+        "owner_result": 0,
+        "created_utc": "2026-10-31T14:47:39.4026490Z",
+        "owner": "current_windows_user",
+        "name": "wsl.exe",
+        "parent_pid": 28432,
+        "image_path_readable": false,
+        "pid": 24704
+      }
+    },
+    {
+      "section": "process",
+      "data": {
+        "registered_distro_ids_in_arguments": [],
+        "command_line_readable": false,
+        "owner_result": 0,
+        "created_utc": "2026-10-31T14:47:39.4327180Z",
+        "owner": "current_windows_user",
+        "name": "wsl.exe",
+        "parent_pid": 24704,
+        "image_path_readable": false,
+        "pid": 7536
+      }
+    },
+    {
+      "section": "process_query",
+      "data": {
+        "count": 11,
+        "status": "read"
+      }
+    },
+    {
+      "section": "resources",
+      "data": {
+        "d_free_bytes": 138869878784,
+        "available_ram_bytes": 1213472768,
+        "c_free_bytes": 6085529600
+      }
+    },
+    {
+      "section": "completed",
+      "data": true
+    }
+  ],
+  "metadata_worker_pid": 22188,
+  "deadline_exceeded": false,
+  "metadata_worker_exit_code": 0,
+  "output_limit_exceeded": false,
+  "stderr_present": false,
+  "elapsed_seconds": 9.641,
+  "source_checkpoint": "97af028e5552ca84958bf81c9fdb6a943f4b5089",
+  "saved_admin_input_sha256": {
+    "local-event-messages.json": "92A5B8D9A6E2A50A812B641430B1B8749897E414424FA0EFCE597EBD613C9F1D",
+    "pending-client.json": "4CEFDBDB48E1270EBA1B0C60F1EA5021808710F5F4B462DAE48936D82D6BCF26"
+  },
+  "saved_crash_review": {
+    "elf_init_sigabrt_records": 6,
+    "matching_broken_pipe_records": 6,
+    "raw_cores_recollected": false
+  },
+  "assessment": {
+    "openclaw_causality_or_exclusive_lock": "not_established",
+    "launcher_exit_before_recovery": "precaution_for_saved_jobs_and_reconnect_races",
+    "targeted_distro_termination": "would_interrupt_OpenClaw_Linux_processes",
+    "noninterrupting_init_repair": "not_established",
+    "interruption_approved": false
+  },
+  "preserved": {
+    "openclaw_processes": true,
+    "wsl_processes_and_services": true,
+    "distro_registration_and_disks": true,
+    "private_execution_disabled": true,
+    "pr8_unmerged": true
+  },
+  "validation": {
+    "backend_passed": 257,
+    "backend_skipped": 5,
+    "coverage_percent": 95.41,
+    "diagnostic_tests_passed": 13,
+    "ruff_check": "passed",
+    "ruff_format_check_files": 77,
+    "mypy_modules": 25,
+    "frontend_source_changed": false,
+    "live_linux_command_executed": false
+  }
+}

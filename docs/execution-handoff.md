@@ -5,18 +5,30 @@ Saved output records WSL client PID 24704 beyond the deadline; the prior collect
 without a timeout. No completed admin-result.json or successful Linux validation was saved.
 Four administrative event queries had no matches under their filters, not permission denial.
 Six saved real-core reports identify PID 2 init SIGABRTs with Broken pipe at SocketChannel.h:183.
-The live initiating client/current broker state remain unverified.
+The live initiating client/current Linux broker state remain unverified. A later Windows-only
+metadata check completed in 9.641 seconds: WslService and VM services report Running; OpenClaw's
+current-user client chain maps to its distro. The diagnostic leftovers are PIDs 24704 and 7536,
+also current-user owned, with unreadable arguments. No process was terminated by that check.
 
 The live collector is retired. scripts/analyze_wsl_evidence.py reads saved JSON only and starts
-no process. The original OpenClaw process/registration and PR #8 remain preserved; no new live
-WSL diagnostic, restart, distro operation or configuration change was performed in this follow-up.
+no process. scripts/inspect_wsl_windows_metadata.py separately reads fixed Windows metadata with
+15-second and two-second cleanup deadlines; its timeout can end only its own metadata worker,
+never an existing WSL/OpenClaw process. OpenClaw's process/registration and PR #8 remain preserved;
+no WSL client, restart, distro operation or configuration change was performed in this follow-up.
 The proposed recovery targets only OpenClawGateway during a separately approved maintenance
 window, after saving work. It has not run. See [diagnosis](pc-wsl-diagnosis.md) and
 [the exact approval-gated proposal](pc-wsl-recovery-proposal.md).
 
+There is no evidence that OpenClaw blocks recovery. Exiting its launcher is a job-preservation
+and reconnect precaution; terminating the distro would necessarily interrupt its Linux workload.
+The proposal leaves registration/disk/configuration intact. Resume through the original distro
+and normal OpenClaw launcher; unsaved process memory is not recoverable by that resume step.
+
 The desktop remains the 8 GiB Ryzen 5 4500 PC; PR #9 merged at 3545a025. The earlier approved
 cache cleanup reclaimed about 5.07 GiB. Do not reuse the historical laptop measurements below.
 Private execution/publication remain disabled. Windows-only engineering and checks continue.
+The ownership follow-up passed 257 backend tests (five environment skips), 95.41% coverage,
+Ruff/format and mypy. Thirteen diagnostic tests passed. No new WSL client or model was started.
 
 ## Historical laptop WSL2 operational follow-up — 31 October 2026
 

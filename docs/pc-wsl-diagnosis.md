@@ -1,7 +1,8 @@
 # PC WSL diagnosis: saved evidence and collector hang
 
-As of 31 October 2026 (Asia/Jakarta), recovery has **not been validated**. This follow-up reads
-existing files only. It does not run a WSL client or the live Administrator collector.
+As of 31 October 2026 (Asia/Jakarta), recovery has **not been validated**. The saved-evidence
+review is offline; the subsequent bounded check reads Windows process/service/registry metadata.
+Neither starts a WSL client or runs the retired Administrator collector.
 
 ## What the saved evidence establishes
 
@@ -78,6 +79,40 @@ error/source-path signature, never adjacent process memory.
 
 ## Safest targeted recovery proposal
 
+The subsequent Windows-only snapshot completed in 9.641 seconds, inside its 15-second deadline,
+with exit zero and no stderr. It reads no raw command lines into reports. WslService PID 4660,
+vmcompute PID 1288, hns and HvHost report Running / exit code zero / configured LocalSystem.
+Direct owner queries for the system-side processes were unavailable; configuration is not a
+verified token-owner result. OpenClaw PID 15700 and its client chain remain under the current
+Windows user. wslhost PID 4980's arguments associate that chain with OpenClawGateway.
+
+The owner-terminated collector parent PID 28432 is absent. Its old client PID 24704 and that
+client's child PID 7536 still exist under the current Windows user, with creation times matching
+the Administrator attempt. Their elevated arguments remain unreadable. No client was stopped.
+
+The snapshot proves Windows component/ownership metadata, **not current Linux broker health**.
+It cannot establish an exclusive VHDX lock, pending transaction ownership, or that OpenClaw
+caused the abort. Exiting the OpenClaw launcher before a targeted distro restart is a precaution
+against lost jobs/reconnects. Terminating its distro would necessarily interrupt its Linux workload.
+No non-interrupting Linux init repair has been established; interruption is not proved universally
+necessary for every conceivable recovery.
+
+Reproduce only the bounded Windows metadata inspection, without elevation or a WSL launch:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/inspect_wsl_windows_metadata.py
+```
+
+This fixed-query tool has a 15-second worker deadline and a separate two-second cleanup deadline.
+On timeout it may end **only its own newly created metadata PowerShell worker**; it never targets
+an enumerated process or starts WSL. Partial JSON records survive a timeout; full command lines,
+owner names, event messages, environment variables and stderr text are excluded. Historical PIDs
+are read-only observations and must never be reused as an instruction to stop a process.
+
+[Sanitized ownership evidence](../evidence/pc-wsl-process-ownership-2026-10-31.json) records the
+snapshot and unchanged hashes of the original saved Administrator inputs. The six historical
+crash reports were reanalyzed offline; no additional raw memory was collected.
+
 [The reviewed proposal](pc-wsl-recovery-proposal.md) describes a maintenance-window recovery
 candidate for **OpenClawGateway only**, after saving OpenClaw work and separate explicit approval.
 It stops no other distro, edits no registration, and does not request a Windows reboot,
@@ -99,10 +134,15 @@ remains unexecuted. Tests cover incomplete collection, event-query classificatio
 and path bounds, redaction, and rejection of false completion/health claims. A process-spawn
 sentinel verifies that analyzing saved evidence launches nothing.
 
-This follow-up passed Ruff/format, mypy (25 application modules), and the full backend suite:
+At checkpoint 97af028, Ruff/format, mypy (25 application modules), and the full backend suite passed:
 **253 passed, five environment skips, 95.41% statement coverage**. The five skips are four
 unconfigured local PostgreSQL cases and one Windows symlink-privilege case. Nine diagnostic
 tests passed. The retired PowerShell file was parsed only, never executed. No UI code changed.
+The subsequent metadata-tool tests cover its two distinct finite waits, preservation of partial
+evidence, bounded output parsing, and separation of metadata completion from Linux validation.
+The ownership follow-up passed the full Windows backend suite: **257 passed, five environment
+skips, 95.41% coverage**, plus all 13 diagnostic tests, Ruff/format (77 files), and mypy
+(25 application modules). No frontend code changed; its production build was not repeated.
 
 The application, provider adapters, approval gates, deterministic fixture engine and worker
 contracts remain intact. Private execution/publication remain disabled. The experimental
