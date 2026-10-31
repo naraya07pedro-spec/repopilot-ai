@@ -34,53 +34,41 @@ $env:REPOPILOT_SOURCE_ROOTS = '{"naraya07pedro-spec/repopilot-ai":"fixtures/bug"
 
 [Official App registration](https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/registering-a-github-app).
 
-## One provider: OpenAI, with paid generation still denied
+## Local model only: no API keys or billing
 
-1. Sign into the official [API dashboard](https://platform.openai.com/). Select the intended API
-   project. Open **API keys → Create new secret key** and store it in the backend's protected
-   environment as `OPENAI_API_KEY`. A ChatGPT subscription does not establish API billing access.
-   Do not add payment, buy credits, or make a generation call as part of this task.
-2. Select an identifier returned by that project's model discovery and confirm **Chat Completions
-   plus strict JSON-schema output** in its official model documentation. There is no preselected
-   marketing model name or automatic fallback.
-3. Create a private UTF-8 JSON profile outside Git using the template below. Replace every numeric
-   zero with a verified capability bound or conservative current per-million-token price before
-   loading it. Template zeros deliberately do not form a valid usable paid profile.
+The current mandate is **existing Windows laptop, zero paid API, zero rented server**.
+The hardware audit found 4 GB installed RAM and no Ollama/WSL runtime. Read
+[the measured feasibility result](local-feasibility.md) before any download. No model installer
+or model pull was performed. No cloud API key is required, and paid generation stays denied.
 
-```json
-[
-  {
-    "id": "owner-openai",
-    "provider": "openai",
-    "model": "REPLACE_WITH_VERIFIED_MODEL_ID",
-    "structured_output": "json_schema",
-    "context_tokens": 0,
-    "output_tokens": 0,
-    "context_bytes": 0,
-    "input_rate": 0,
-    "output_rate": 0
-  }
-]
+The prepared `deploy/local-models.example.json` profiles select only the local Ollama endpoint
+at http://127.0.0.1:11434 with zero input/output prices. They are candidate configurations, not
+proof that model weights are present or that generation works. The 0.5B model is a smoke-test
+candidate; the 1.5B model needs an actual quality/memory/latency evaluation before being called
+practical. The measured laptop cannot currently demonstrate the full concurrent workload.
+
+After sufficient memory headroom and an existing local runtime are verified, the agent can set
+OLLAMA_NO_CLOUD=1, loopback-only OLLAMA_HOST, one parallel request and one loaded model in the
+Ollama process. No cloud model, proxy/tunnel or external fallback is permitted. The adapter
+already unloads the model after each request with keep_alive=0; contract tests verify this.
+
+For the backend, use the [local environment example](../deploy/local-owner.env.example):
+
+```powershell
+$env:REPOPILOT_MODEL_PROFILES_FILE = (Resolve-Path deploy/local-models.example.json).Path
+$env:REPOPILOT_ALLOW_PAID_MODELS = 'false'
+$env:REPOPILOT_DAILY_USD = '0'
+$env:REPOPILOT_RUN_USD = '0'
 ```
 
-4. Set `REPOPILOT_MODEL_PROFILES_FILE` to that private file. Keep
-   `REPOPILOT_ALLOW_PAID_MODELS=false`, `REPOPILOT_RUN_USD=0`, `REPOPILOT_DAILY_USD=0` until the
-   owner explicitly approves spending. The [profile limits](providers.md) define accepted ranges.
-   `python -m repopilot.doctor` checks presence without printing values or making API calls.
-5. Once spending is separately authorized, set the exact approved positive run/daily ceilings and
-   `REPOPILOT_ALLOW_PAID_MODELS=true` server-side. Restart the backend. The owner must additionally
-   select this profile and approve paid calls for each run; the per-run limit cannot exceed the
-   server ceiling. Configured pricing is a reservation estimate, not a guaranteed provider invoice.
-6. First check model availability, then perform one explicitly approved planning call. Discovery
-   is not generation evidence. Code testing/publication remains blocked until worker validation
-   and the reviewed dispatcher binding are complete.
+Follow [Windows startup](local-owner-windows.md). No model API credential or PostgreSQL service
+is needed for local SQLite. `python -m repopilot.doctor` prints configuration presence only;
+model discovery and successful schema-validated generation must be measured separately.
+An unavailable endpoint remains an error. A synthetic response in CI is not local inference.
 
-[Official server-side authentication](https://developers.openai.com/api/reference/overview) ·
-[structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=chat) ·
-[provider contract and bounds](providers.md).
-
-For zero API spend, an already installed suitable local model is an alternative described in
-providers.md. No local model/hardware is assumed available and RepoPilot downloads no weights.
+The only current Windows admin action and exact GitHub authorization steps are documented in
+[local feasibility](local-feasibility.md#only-owner-only-manual-actions) and above. WSL2 alone
+must not open execution. No cloud/paid activation instructions apply to this target.
 
 ## Real acceptance still blocked
 

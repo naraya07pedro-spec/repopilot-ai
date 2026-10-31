@@ -1,5 +1,10 @@
 # Runtime options and decision gate — 31 October 2026
 
+**Current target correction:** only the existing Windows laptop, local inference and WSL2
+evaluation are authorized. Zero paid API and zero rented server. The audit found 4 GB RAM,
+WSL features disabled and no model runtime. See [local feasibility](local-feasibility.md).
+The comparison below is evidence context, not authorization to pursue a different host or microVM.
+
 No runtime will be implemented or activated until an eligible disposable test host is available.
 No paid resource was provisioned or quoted. Existing hardware may avoid a new cloud invoice;
 power, storage and operating effort still have costs. Provider/model API charges are separate.
@@ -19,10 +24,10 @@ Official evidence: [gVisor rootless modes](https://gvisor.dev/docs/user_guide/ro
 ## Recommendation and acceptance procedure
 
 Release the fail-closed application for portfolio review now; spend no money on a worker.
-First prefer an already owned disposable Linux host plus a reviewed compatible gVisor release.
-If no such combination is available, keep the agent blocked. A microVM is an alternative only
-after an existing KVM-capable environment and a security review are available, not a speculative
-replacement for the current runtime.
+Evaluate WSL2 only after administrator enablement and a fresh memory audit. It must supply the
+reviewed runtime prerequisites and pass the preserved security probes. No known passing WSL2
+configuration has been established. Keep the agent blocked until then; no alternate host,
+microVM implementation, model API billing or paid infrastructure will be pursued.
 
 Before new runtime code: record host/kernel/runtime versions, user identity, cgroup delegation
 and any required virtualization capabilities. Reject candidates that require rootful execution,

@@ -7,7 +7,7 @@ from decimal import Decimal
 import httpx
 import pytest
 from fastapi.testclient import TestClient
-from test_owner import ORIGIN, PASSWORD, REPO, Source, result, snapshot
+from test_owner import ORIGIN, PASSWORD, REPO, Source, result, snapshot, wait
 
 from repopilot.api import create_app
 from repopilot.migrations import migrate
@@ -109,6 +109,8 @@ def test_wire_contract_and_normalized_usage(store, provider):
             assert req.url.path == "/api/chat" and data["stream"] is False
             assert data["options"]["num_predict"] == 4096
             assert data["format"]["additionalProperties"] is False
+            assert data["options"]["num_ctx"] == p.context_tokens
+            assert data["keep_alive"] == 0  # Release model memory before later worker evaluation.
         else:
             assert req.url.path == "/v1/chat/completions"
             assert data["response_format"]["json_schema"]["strict"] is True
@@ -327,3 +329,59 @@ def test_provider_unexpected_content_and_usage(store, provider):
     p = make_planner(store, profile(provider), lambda _: httpx.Response(200, json=data))
     with pytest.raises(PolicyError, match="unexpected_content"):
         p.plan(snapshot())
+
+
+def test_shipped_local_profiles_fit_fixture_and_need_no_paid_budget(store):
+    for p in load_profiles("deploy/local-models.example.json"):
+        assert not p.paid and p.input_rate == p.output_rate == 0
+        planner = make_planner(store, p, lambda _: httpx.Response(200, json=response("ollama")))
+        plan, usage = planner.plan(snapshot(), run_micro=0)
+        assert plan.edits[0].path == "app.py"
+        assert usage["estimated_cost_micro_usd"] == usage["reserved_micro_usd"] == 0
+
+
+def test_zero_budget_local_owner_plan_approval_keeps_execution_closed(tmp_path, monkeypatch):
+    for key in KEYS.values():
+        if key:
+            monkeypatch.delenv(key, raising=False)
+    monkeypatch.setenv("REPOPILOT_ALLOW_PAID_MODELS", "false")
+    p = load_profiles("deploy/local-models.example.json")[0]
+    cfg = OwnerConfig(mode="owner", origin=ORIGIN, password=password_hash(PASSWORD), profiles=(p,))
+    app = create_app(workspace=tmp_path, owner_config=cfg)
+    with TestClient(app, base_url=ORIGIN, headers={"Origin": ORIGIN}) as client:
+        owner = app.state.owner
+        owner.github = Source()
+        owner.service.github = owner.github
+        planner = owner.registry.planners[p.id]
+        with httpx.Client(
+            transport=httpx.MockTransport(lambda _: httpx.Response(200, json=response("ollama"))),
+            trust_env=False,
+        ) as local:
+            planner.client = local
+            client.post("/api/owner/login", json={"password": PASSWORD}).raise_for_status()
+            start = client.post(
+                "/api/owner/runs",
+                json={
+                    "repository": REPO,
+                    "issue_number": 1,
+                    "idempotency_key": "zero-budget-local",
+                    "model_profile": p.id,
+                    "run_limit_micro_usd": 0,
+                },
+            )
+            assert start.status_code == 202
+            identity = start.json()["id"]
+            data = wait(client, identity)
+            assert data["status"] == "awaiting_approval", data
+            assert data["usage"]["estimated_cost_micro_usd"] == 0
+            approve = client.post(
+                f"/api/owner/runs/{identity}/approve", json={"digest": data["approval_digest"]}
+            )
+            assert approve.json()["status"] == "approved"
+            assert client.post(f"/api/owner/runs/{identity}/execute", json={}).status_code == 409
+            assert (
+                client.post(
+                    f"/api/owner/runs/{identity}/publish", json={"digest": data["approval_digest"]}
+                ).status_code
+                == 409
+            )

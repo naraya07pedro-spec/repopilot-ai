@@ -10,6 +10,15 @@ The default provider deterministically selects reviewed edits. An optional OpenA
 planner is implemented and contract-tested; live model quality is not claimed.
 Arbitrary repositories and arbitrary model-generated code cannot execute on the host.
 
+## Local-first target
+
+The private target is the existing Windows laptop: local backend/frontend, SQLite, a genuinely
+local Ollama model and a separately verified sandbox evaluated in WSL2. **Zero paid model API,
+zero rented server.** The hardware audit found 4 GB installed RAM, no WSL runtime and no Ollama;
+concurrent model/app/worker feasibility is not established. No heavy software was installed.
+[Measured audit and exact owner actions](docs/local-feasibility.md) ·
+[Zero-budget local profiles](deploy/local-models.example.json).
+
 ## Public portfolio release
 
 This review branch separates the passing V3 application from the blocked Linux sandbox in

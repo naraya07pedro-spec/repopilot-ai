@@ -3,6 +3,8 @@
 This starts the authenticated planning UI without paid hosting. It does not activate code
 execution. The public Pages site is separate and remains available without this setup.
 Use Python 3.12+, Git, and Node 22.12+. Run these commands from the repository root.
+First run `./scripts/audit-local-windows.ps1` and read [local feasibility](local-feasibility.md).
+The audited machine has 4 GB RAM, not the approximate 8 GB estimate; no heavy install is automatic.
 
 ## Install the locked development environment
 
@@ -26,6 +28,9 @@ In the first PowerShell terminal:
 $env:REPOPILOT_MODE = 'owner'
 $env:REPOPILOT_ORIGIN = 'http://127.0.0.1:3000'
 $env:REPOPILOT_COOKIE_SECURE = 'false'
+$env:REPOPILOT_ALLOW_PAID_MODELS = 'false'
+$env:REPOPILOT_DAILY_USD = '0'
+$env:REPOPILOT_RUN_USD = '0'
 $env:REPOPILOT_OWNER_PASSWORD_HASH = (& .\.venv\Scripts\python.exe scripts/hash_owner_password.py).Trim()
 $env:REPOPILOT_REPOSITORIES = 'naraya07pedro-spec/repopilot-ai'
 $env:REPOPILOT_SOURCE_ROOTS = '{"naraya07pedro-spec/repopilot-ai":"fixtures/bug"}'
@@ -33,7 +38,7 @@ $env:REPOPILOT_SOURCE_ROOTS = '{"naraya07pedro-spec/repopilot-ai":"fixtures/bug"
 .\.venv\Scripts\python.exe -m uvicorn repopilot.api:create_app --factory --host 127.0.0.1 --port 8000
 ```
 
-The password helper prompts without echo. Do not paste API keys or App private keys into chat.
+The password helper prompts without echo. No model API key is required; keep the App private key outside chat.
 The diagnostic prints only presence/status, never credential values; it makes no network calls
 and does not modify the database. Without credentials, login/history and truthful unavailable
 states work; real planning remains unavailable. SQLite is the no-service local default.
@@ -98,6 +103,6 @@ and reliable teardown. Both gVisor configurations tested in PR #8 failed before 
 see [runtime requirements and costs](runtime-options.md). Neither
 WSL nor Docker alone establishes adequate isolation. No Linux worker is available here.
 
-External gates: GitHub App installation/key; configured local model or explicitly approved
-paid API credential/budget; and a suitable worker environment. No cloud resources or spending
+External gates: GitHub App installation/key, sufficient memory for a genuinely local model,
+and verified WSL2/sandbox prerequisites. Paid APIs and rented workers are excluded. No cloud resources or spending
 are required to inspect the local workspace and execute deterministic/contract tests.

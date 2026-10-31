@@ -1,0 +1,87 @@
+{
+  "date": "2026-10-31",
+  "method": "Read-only CIM queries, tool/service discovery and bounded wsl status/version/list commands; scripts/audit-local-windows.ps1 rerun",
+  "physical_module_bytes": [
+    4294967296
+  ],
+  "windows_visible_ram_bytes": 4126380032,
+  "available_memory_samples_kib": [
+    496912,
+    561860
+  ],
+  "cpu": "Intel Core i3-8130U",
+  "physical_cores": 2,
+  "logical_processors": 4,
+  "gpu": "Intel UHD Graphics 620; no dedicated inference acceleration verified",
+  "os": "Windows 11 Home Single Language",
+  "windows_build": "26300",
+  "firmware_virtualization": true,
+  "slat": true,
+  "hypervisor_present": false,
+  "drive_c_free_bytes": 35845840896,
+  "optional_features": {
+    "VirtualMachinePlatform": "disabled (InstallState 2)",
+    "Microsoft-Windows-Subsystem-Linux": "disabled (InstallState 2)"
+  },
+  "admin_session": false,
+  "ollama_present": false,
+  "podman_present": false,
+  "docker_present": false,
+  "wsl_launcher_present": true,
+  "wsl_runtime_installed": false,
+  "wsl_commands": [
+    {
+      "command": "wsl --status",
+      "exit_code": 50
+    },
+    {
+      "command": "wsl --version",
+      "exit_code": 1
+    },
+    {
+      "command": "wsl --list --verbose",
+      "exit_code": 1
+    }
+  ],
+  "wsl_error": "The Windows Subsystem for Linux is not installed.",
+  "candidate_models": [
+    {
+      "id": "qwen2.5-coder:0.5b",
+      "catalog_size": "398 MB Q4_K_M",
+      "purpose": "smoke-test candidate",
+      "live_tested": false
+    },
+    {
+      "id": "qwen2.5-coder:1.5b",
+      "catalog_size": "986 MB Q4_K_M",
+      "purpose": "smallest coding candidate to evaluate, not established practical on this hardware",
+      "live_tested": false
+    }
+  ],
+  "memory_assessment": "Current 4GB installed / <550MiB available does not establish capacity for concurrent Windows + local inference + API/frontend + WSL sandbox. Weight size is not runtime memory.",
+  "phased_evaluation": "Existing adapter unloads per request; sequential model-then-worker evaluation is a candidate strategy, not a verified fit.",
+  "installs_downloads_or_configuration_changes": false,
+  "cloud_paid_api_calls": false,
+  "rented_resources": false,
+  "actual_model_generation": false,
+  "sandbox_compatibility": "blocked: WSL runtime/features absent; prior gVisor failures remain relevant",
+  "execution_enabled": false,
+  "source_contract_tests": {
+    "provider_tests_passed": 35,
+    "new_tests": 2,
+    "transport": "synthetic HTTP only"
+  },
+  "required_owner_actions": [
+    "Administrator PowerShell: wsl --install --no-distribution; reboot if requested; re-audit before any further install",
+    "GitHub App: selected repository authorization and private key outside Git/chat"
+  ],
+  "real_agent_acceptance": "not run",
+  "official_sources": [
+    "https://ollama.com/library/qwen2.5-coder:0.5b",
+    "https://ollama.com/library/qwen2.5-coder:1.5b",
+    "https://docs.ollama.com/windows",
+    "https://docs.ollama.com/faq",
+    "https://learn.microsoft.com/en-us/windows/wsl/basic-commands",
+    "https://learn.microsoft.com/en-us/windows/wsl/wsl-config"
+  ]
+}

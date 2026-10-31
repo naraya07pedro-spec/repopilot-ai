@@ -1,3 +1,42 @@
+# Local-first correction — 31 October 2026
+
+PR #9 source 18837c52354bc68ba0b9bc7917a8f2edb417f8cd was reverified: open/unmerged,
+CI 41165868963 green (247 backend, zero skips, 96.10%; 13 frontend/six browser; builds/audits).
+Do not merge automatically. Current follow-up replaces the paid-provider activation path with
+local-only setup and records a real read-only Windows audit. It adds bounded zero-cost Ollama
+profiles, a repeatable hardware audit and two deterministic zero-budget regression tests.
+
+Actual hardware: one 4 GB module, 3.84 GiB visible, 485–549 MiB available during samples,
+i3-8130U 2C/4T, Intel UHD 620, about 33.4 GiB disk free. Firmware virtualization/SLAT true;
+hypervisor absent. WSL/VirtualMachinePlatform disabled, wsl --status exits 50, no distro or
+Ollama/Podman/Docker. Current session is not elevated. No heavy installs, downloads or settings
+changes were made. CPU/GPU/OS model identifiers only are recorded; no hostnames/serials/secrets.
+
+**Zero paid API, zero rented server.** No OpenAI or other model API keys are required. Keep all
+paid flags false and budgets zero. The existing Ollama adapter already sets num_ctx/num_predict
+and keep_alive=0. Local-only contract checks: 35 passed, including both shipped profiles and
+an authenticated zero-budget plan/approval with execution/publication still denied. These use
+synthetic HTTP responses, not a real installed model. Full current follow-up CI must be checked.
+
+No practical local model has been validated. Qwen2.5-Coder 0.5B (398 MB Q4) is a smoke candidate;
+1.5B (986 MB Q4) is the smallest coding candidate to evaluate, not a measured capability claim.
+Weight sizes exclude runtime/context RAM. Current headroom cannot support a credible concurrent
+model + app + WSL worker demonstration. No speculative runtime code was added.
+
+Next exact dependency: owner may enable WSL only in Administrator PowerShell using
+`wsl --install --no-distribution` and reboot if requested. Then re-audit memory, WSL and kernel
+capabilities before any distro/model download. Do not blindly rerun the known failing gVisor
+configuration. Verify separation from Windows files/interop and all six preserved live probes
+before dispatch activation. Exact GitHub App owner authorization is in owner-activation.md.
+Do not ask for model credentials, a VPS or cloud hosting. Do not buy hardware/services.
+
+See [feasibility](local-feasibility.md), [audit record](../evidence/local-hardware-audit-2026-10-31.json)
+and [local profiles](../deploy/local-models.example.json). PR #8 remains preserved at 37c01e9.
+A genuine Issue → local model → actual isolated tests → draft PR has NOT run. Dispatcher binding,
+verified worker lifecycle/recovery and that acceptance remain blocked. Unsafe execution stays off.
+
+## Previous portfolio checkpoint (historical)
+
 # Portfolio release recovery — 31 October 2026
 
 Current branch: `release/v3-portfolio`, based on main `68bf412d6451c7982509d7c5c0ca3ba27826db86`.
