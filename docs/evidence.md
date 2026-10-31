@@ -1,4 +1,49 @@
+# Application release evidence — 31 October 2026
+
+This branch's verification is separate from preserved PR #8. See the [release boundary](portfolio-release.md).
+Current release checks are being rerun; historical counts below are pinned to their original commits.
+The six Linux isolation failures remain [visible in PR #8](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41161973178).
+Passing application checks do not supersede them or prove real-agent activation.
+
+## Historical evidence
+
 # Verified execution evidence
+
+## Final V3 implementation verification — 29 October 2026
+
+[Verify 40886579341](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40886579341)
+passed on `4d4768d7a34c07aeb9440d43edbfaa9be156f1a2`: **203 backend tests, no skips, 96.05%
+statement coverage** (1,555/1,619). Twelve component tests, six Chromium cases, PostgreSQL
+integration, container HTTP smoke, TypeScript, production builds, Ruff/mypy and dependency audits
+passed. The new private diff preview is verified before approval, including no-op/oversize rejection.
+No live model/App or sandbox execution occurred. Public demo checks passed separately as below.
+The [handoff](execution-handoff.md) identifies remaining runtime engineering and credential gates.
+
+## Earlier V3 worker checkpoint — 29 October 2026
+
+Recovery commit `3e49acf56a390f52b6b379d30decdba00bf2e949` preserves the eight interrupted
+files in [PR #8](https://github.com/naraya07pedro-spec/repopilot-ai/pull/8). Its backend and
+container jobs passed; its browser job exposed the existing Model label lookup failure.
+The corrected accessible-role locator passes the actual owner workflow locally.
+
+[Fresh local check record](../evidence/v3-worker-local-checks.json): **198 backend passed,
+5 environment skips, 95.24% coverage** (1,542/1,619 statements). Worker contracts: 38 passed. The later diff preview adds no-op/oversize and new-file/newline
+regressions and a browser assertion before approval.
+Twelve component tests, four local Chromium cases, Ruff lint/format, mypy (22 sources),
+TypeScript, owner/Pages production builds and locked Python/full npm audits passed.
+The five local skips are four PostgreSQL cases and one Windows symlink privilege case.
+No coverage exclusions were added. [Follow-up Verify 40885395485](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40885395485)
+passed at `49a920fa87789413117448ad1ead382adf37fe19`: **201 backend tests, 96.02% coverage**
+(1,544/1,608 statements), 12 component tests, six Chromium cases (Pages/owner: four; root: two),
+PostgreSQL checks, Docker Compose smoke, lint/types/builds and dependency audits.
+Two additional local Chromium cases passed against the deployed HTTPS site at 1440px/390px.
+The live mobile screenshot and test-only owner screenshot were visually inspected; two garbled
+owner labels were found and corrected. The owner screenshot is synthetic test data, not live AI.
+
+Worker receipts and provider responses are synthetic contract fixtures. No live model,
+GitHub App credential validation, hostile-code sandbox or private PR publication ran.
+The authenticated protocol does not prove execution isolation; dispatch remains disabled.
+
 
 ## Portfolio release verification — 29 October 2026
 

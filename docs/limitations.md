@@ -19,7 +19,12 @@
 
 V2 private planning supports only small Python/TypeScript repositories, with strict context
 limits. Live GitHub App authentication and real-model calls await credentials and approved
-budget. Private modification, isolated verification and PR publication are not implemented.
+budget. Candidate text staging, bounded worker transport and publication reconciliation are
+implemented and contract-tested. Isolated verification and private publication remain disabled
+as a connected runtime. Worker receipts in tests are synthetic, not execution evidence.
+The experimental sandbox and all six failed live probes remain preserved in
+[PR #8](https://github.com/naraya07pedro-spec/repopilot-ai/pull/8). They are not part of this
+application release; passing its CI does not establish worker security or real-agent completion.
 Private deployment, production PostgreSQL recovery and hostile-code sandbox validation remain
 deferred. The public GitHub Pages demo is deployed; Netlify publication is pending by owner
 decision. Additional cloud resources, paid models and private hosting are outside the current

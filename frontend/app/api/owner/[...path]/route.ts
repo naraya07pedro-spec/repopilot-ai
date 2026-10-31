@@ -3,7 +3,7 @@ const ownerOrigin=process.env.REPOPILOT_ORIGIN||"http://localhost:3000";
 const backend=process.env.REPOPILOT_BACKEND||"http://127.0.0.1:8000";
 async function proxy(request:NextRequest,{params}:{params:Promise<{path:string[]}>}){
  const path=(await params).path.join("/");
- if(!/^(login|logout|settings|repositories|runs(?:\/[a-f0-9]{32}(?:\/(?:approve|reject|cancel|execute))?)?)$/.test(path))return NextResponse.json({detail:"Unknown owner route"},{status:404});
+ if(!/^(login|logout|settings|repositories|models\/[a-z][a-z0-9_-]{0,39}\/discover|runs(?:\/[a-f0-9]{32}(?:\/(?:approve|reject|cancel|execute|publication|publish|reconcile))?)?)$/.test(path))return NextResponse.json({detail:"Unknown owner route"},{status:404});
  if(request.method==="POST"&&request.headers.get("origin")!==ownerOrigin)return NextResponse.json({detail:"Same-origin request required"},{status:403});
  const headers:Record<string,string>={"Content-Type":"application/json"};
  const cookie=request.cookies.get("repopilot_owner");if(cookie)headers.Cookie="repopilot_owner="+cookie.value;

@@ -67,3 +67,13 @@ Next.js proxy forwards sessions to FastAPI, which holds App/model credentials an
 PostgreSQL-compatible state. Private planning never calls the fixture executor. Approval
 binds a pinned snapshot and proposed edits; execution remains disabled. See
 [private workspace](private-workspace.md) and [deployment](deployment.md).
+
+## V3 providers and worker protocol
+
+An owner-selected registry supplies five wire adapters through the validated plan/edit contract.
+Approval binds the snapshot, provider/model configuration, spending limit and expiry. The separate
+[worker contract](worker-contract.md) extends private durable states with authenticated jobs,
+atomic claims, bounded receipts, cancellation acknowledgements and restart recovery. It is a
+control-plane protocol. Authenticated loopback transport and reconciled publication are implemented;
+no sandbox runtime is packaged, and production dispatch/publication remains closed.
+The fixture threads described above cannot accept these arbitrary candidate files.

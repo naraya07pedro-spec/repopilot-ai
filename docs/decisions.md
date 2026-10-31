@@ -25,3 +25,11 @@ without including owner routes. Existing fixture execution stays unchanged. Priv
 uses installation-scoped reads and conservative database-backed spend reservations; uncertain
 requests retain their reservations. Additive schema version 2 preserves existing runs. A real
 isolated worker is a release prerequisite, not a Docker flag or a promise in a prompt.
+
+## V3 worker protocol before runtime activation
+
+Use the existing private run table and compare-and-set transitions for worker lifecycle records.
+Signed jobs and receipts define transport-independent boundaries without adding a broker or
+pretending host subprocesses are a sandbox. Keep dispatch disabled until an independently reviewed
+execution environment enforces quotas, denies network and proves teardown. Verification-passed
+is distinct from completion/publication. See [contract and threat model](worker-contract.md).

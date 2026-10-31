@@ -53,3 +53,20 @@ spend reservations and approval digests. Cancellation preserves concurrently com
 evidence. Restart marks uncertain work interrupted. These are single-process controls, not
 production penetration-test evidence. The public export has no privileged routes. Private
 source remains in the protected database. Model-generated code never reaches host execution.
+
+## Worker protocol review
+
+[Worker contracts](worker-contract.md) authenticate job/receipt messages, enforce input/output
+shape and lease limits, reject source path aliases and prevent duplicate state transitions.
+Claims recheck repository authorization and immutable approval/configuration. Cancellation
+requires an acknowledgement; uncertain restart states never become success. These are protocol
+controls only. A compromised trusted worker could forge its own evidence, and no HMAC signature
+proves OS isolation. No worker key is sent to tested code; no runtime or transport is enabled.
+
+## Integration controls
+
+Server-approved source roots are bound into run identity and the immutable snapshot. Private
+publication requires a separate digest and a successful matching receipt; it shares the closed
+runtime gate. Unknown writes are reconciled using exact branch/commit/PR identities, never
+blindly retried. Worker transport denies redirects/non-loopback endpoints and bounds responses.
+No worker authentication secret is sent to candidate files. See [integration](private-publication.md).

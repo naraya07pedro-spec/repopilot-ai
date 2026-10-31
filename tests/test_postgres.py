@@ -38,7 +38,11 @@ def test_postgres_owner_migration_persistence_and_recovery():
     service = PrivateService(store.engine, Source(), planner(store))
     key = uuid.uuid4().hex
     with ThreadPoolExecutor(max_workers=4) as pool:
-        rows = list(pool.map(lambda _: service.create(Source.allowed[0], 1, key), range(4)))
+        rows = list(
+            pool.map(
+                lambda _: service.create(Source.allowed[0], 1, key, paid_approved=True), range(4)
+            )
+        )
     assert sum(fresh for _, fresh in rows) == 1
     identity = rows[0][0]["id"]
     store.engine.dispose()
@@ -84,7 +88,7 @@ def test_private_schema_isolation_and_recovery():
         auth = OwnerAuth(store.engine, password_hash("schema-test-password"))
         token = auth.login("schema-test-password")
         service = PrivateService(store.engine, Source(), planner(store))
-        run, _ = service.create(Source.allowed[0], 1, uuid.uuid4().hex)
+        run, _ = service.create(Source.allowed[0], 1, uuid.uuid4().hex, paid_approved=True)
         store.engine.dispose()
         reopened = Store(scoped_url_text, schema=schema)
         migrate(reopened.engine)

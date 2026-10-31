@@ -12,6 +12,19 @@ Arbitrary repositories and arbitrary model-generated code cannot execute on the 
 
 ## Public portfolio release
 
+This review branch separates the passing V3 application from the blocked Linux sandbox in
+[PR #8](https://github.com/naraya07pedro-spec/repopilot-ai/pull/8). It includes
+[five provider adapters](docs/providers.md), owner authentication and scoped planning/review,
+approval/budget controls, durable history, and contract-tested transport/publication logic.
+Owner execution and private publication fail closed through DisabledWorker. Live model/App
+validation and isolated Issue-to-PR acceptance remain incomplete.
+
+The release is based on main and retains its existing CI workflow unchanged. Experimental
+runtime code and all six failing isolation tests remain intact in PR #8; no failed test was
+removed from that PR or converted to a skip. Application CI is evidence only for this branch's
+scope. [Release boundary](docs/portfolio-release.md) · [Current evidence](docs/evidence.md) ·
+[Owner actions](docs/owner-activation.md) · [Runtime prerequisites/costs](docs/runtime-options.md).
+
 [Open the public demo](https://naraya07pedro-spec.github.io/repopilot-ai/) — no login, API key,
 payment or installation. Explore clearly labeled recordings, actual diffs, checks and PR links.
 [PR #4](https://github.com/naraya07pedro-spec/repopilot-ai/pull/4) is merged, integrating the
@@ -23,7 +36,7 @@ real-model planning, approval/rejection, cancellation and persistent history. Th
 contract-tested; live credentials were unavailable. General execution and private PR publication
 remain disabled until a validated isolated worker exists. This is not production-ready.
 
-[Private setup](docs/private-workspace.md) · [Deployment](docs/deployment.md) ·
+[Windows startup and diagnostics](docs/local-owner-windows.md) · [Private setup](docs/private-workspace.md) · [Deployment](docs/deployment.md) ·
 [V2 release gates](docs/v2-gaps.md)
 
 [Recruiter walkthrough](docs/recruiter-walkthrough.md) ·
