@@ -5,7 +5,20 @@ SQLite, GitHub only for authorized repository operations, and a verified sandbox
 WSL2. No paid model API, rented server or cloud deployment is required or authorized.
 PR #9 is the independently reviewed application; PR #8 preserves the failed runtime experiment.
 
-## Measured machine, not the approximate 8 GB estimate
+## Current WSL installation and local app result
+
+The owner has now installed Ubuntu 24.04 under WSL2. The new [WSL audit](wsl-evaluation.md)
+verified kernel 6.18.54.1, 1.78 GiB guest RAM, non-root user/network namespace creation and
+explicit cgroup CPU/memory/PID settings in a bounded child service. Windows still has 4 GB physical
+RAM and about 29.8 GiB disk free. WSL's large thin-provisioned ext4 capacity is not physical space.
+The real local backend/dashboard login, unavailable-model status and SQLite-session restart
+smoke passed. No model/runtime was installed and no sandbox verification is claimed.
+
+The earlier Windows measurements below are historical, before the owner completed WSL setup.
+Do not repeat the administrator installation step. Current manual/engineering prerequisites are
+listed in [the WSL follow-up](wsl-evaluation.md#owner-only-actions).
+
+## Initial Windows audit (before WSL installation)
 
 | Check | Actual read-only result |
 | --- | --- |
@@ -74,7 +87,7 @@ All new local-owner tests use explicitly synthetic HTTP responses, not invented 
 
 ## WSL2 evaluation boundary
 
-WSL2 is unavailable until Windows administrator setup/reboot. It is a Linux evaluation host,
+WSL2 is now installed; the initial administrator setup below is historical. It is an evaluation host,
 not the hostile-code sandbox. Do not enable owner execution merely because Ubuntu boots.
 Before any adversarial probe, a disposable dedicated distro must be separated from Windows
 credentials/files: disable drive automount/fstab processing and Windows interop in its wsl.conf,
@@ -88,20 +101,21 @@ approved bounded fixture bytes after the controller/guest boundary is reviewed. 
 Ollama with 0.0.0.0 as a cross-WSL workaround; local inference can remain on the Windows control
 plane, and a future worker uses a separately authenticated transport.
 
-The released gVisor/systemd and cgroupfs failures in PR #8 remain relevant in WSL. No WSL
-kernel, cgroup delegation or compatible sandbox has been tested here. Inspect these prerequisites
-read-only after installation; **do not rerun the known incompatible configuration unchanged**.
+The released gVisor/systemd and cgroupfs failures in PR #8 remain relevant in WSL. No compatible
+sandbox has been tested here. The follow-up verifies kernel/cgroup prerequisites only;
+**do not rerun the known incompatible configuration unchanged**.
 Only a reviewed compatible runtime may run the six preserved live probes and actual resource/
 network/filesystem/cancellation/recovery checks. The production dispatch/publication gate remains
 closed until those pass. No speculative WSL/microVM worker code was added.
 
-## Only owner-only manual actions
+## Initial owner actions (WSL action now completed)
 
-1. **Windows administrator:** if proceeding with WSL prerequisites, open Start → PowerShell →
+1. **Windows administrator (completed; do not repeat):** the initial prerequisite was Start → PowerShell →
    Run as administrator, run `wsl --install --no-distribution`, approve Windows elevation and
    reboot if requested. This avoids a default Ubuntu download. After reboot the agent can
    re-audit `wsl --status` and memory before deciding whether a distro/model download is feasible.
-   No distro or model installation is recommended under the currently measured memory load.
+   Ubuntu is now installed; the new audit supersedes the initial no-distro observation. No model
+   installation was performed under the measured memory load.
 2. **GitHub account authorization:** follow the exact App creation/selected-repository/key steps
    in [owner activation](owner-activation.md). Keep the private key outside Git/chat. Read-only
    issue inspection comes first; approve Contents/Pull requests write only for the later draft-PR

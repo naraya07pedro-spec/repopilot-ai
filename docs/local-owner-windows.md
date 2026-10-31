@@ -31,6 +31,7 @@ $env:REPOPILOT_COOKIE_SECURE = 'false'
 $env:REPOPILOT_ALLOW_PAID_MODELS = 'false'
 $env:REPOPILOT_DAILY_USD = '0'
 $env:REPOPILOT_RUN_USD = '0'
+$env:REPOPILOT_MODEL_PROFILES_FILE = (Resolve-Path deploy/local-models.example.json).Path
 $env:REPOPILOT_OWNER_PASSWORD_HASH = (& .\.venv\Scripts\python.exe scripts/hash_owner_password.py).Trim()
 $env:REPOPILOT_REPOSITORIES = 'naraya07pedro-spec/repopilot-ai'
 $env:REPOPILOT_SOURCE_ROOTS = '{"naraya07pedro-spec/repopilot-ai":"fixtures/bug"}'
@@ -40,8 +41,9 @@ $env:REPOPILOT_SOURCE_ROOTS = '{"naraya07pedro-spec/repopilot-ai":"fixtures/bug"
 
 The password helper prompts without echo. No model API key is required; keep the App private key outside chat.
 The diagnostic prints only presence/status, never credential values; it makes no network calls
-and does not modify the database. Without credentials, login/history and truthful unavailable
-states work; real planning remains unavailable. SQLite is the no-service local default.
+and does not modify the database. Without GitHub App authorization or a reachable local model,
+login/history and truthful unavailable states work; real planning remains unavailable.
+SQLite is the no-service local default.
 
 ## Start the owner frontend
 
@@ -101,7 +103,8 @@ The worker controller must run in a dedicated Linux environment with a reviewed 
 secret-free guest, network denial, CPU/memory/disk/process limits, process-tree cancellation
 and reliable teardown. Both gVisor configurations tested in PR #8 failed before guest execution;
 see [runtime requirements and costs](runtime-options.md). Neither
-WSL nor Docker alone establishes adequate isolation. No Linux worker is available here.
+WSL nor Docker alone establishes adequate isolation. Ubuntu now boots and its non-root prerequisite
+probes pass; no verified sandbox worker is available. See the [actual WSL audit](wsl-evaluation.md).
 
 External gates: GitHub App installation/key, sufficient memory for a genuinely local model,
 and verified WSL2/sandbox prerequisites. Paid APIs and rented workers are excluded. No cloud resources or spending

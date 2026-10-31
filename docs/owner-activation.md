@@ -37,7 +37,7 @@ $env:REPOPILOT_SOURCE_ROOTS = '{"naraya07pedro-spec/repopilot-ai":"fixtures/bug"
 ## Local model only: no API keys or billing
 
 The current mandate is **existing Windows laptop, zero paid API, zero rented server**.
-The hardware audit found 4 GB installed RAM and no Ollama/WSL runtime. Read
+The hardware audit found 4 GB installed RAM. Ubuntu now runs under WSL2, but Ollama is absent. Read
 [the measured feasibility result](local-feasibility.md) before any download. No model installer
 or model pull was performed. No cloud API key is required, and paid generation stays denied.
 
@@ -66,8 +66,8 @@ is needed for local SQLite. `python -m repopilot.doctor` prints configuration pr
 model discovery and successful schema-validated generation must be measured separately.
 An unavailable endpoint remains an error. A synthetic response in CI is not local inference.
 
-The only current Windows admin action and exact GitHub authorization steps are documented in
-[local feasibility](local-feasibility.md#only-owner-only-manual-actions) and above. WSL2 alone
+WSL installation is complete; no additional Windows admin action is currently required. Remaining
+[local prerequisites](wsl-evaluation.md#owner-only-actions) and GitHub authorization are documented above. WSL2 alone
 must not open execution. No cloud/paid activation instructions apply to this target.
 
 ## Real acceptance still blocked

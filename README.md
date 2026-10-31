@@ -14,9 +14,12 @@ Arbitrary repositories and arbitrary model-generated code cannot execute on the 
 
 The private target is the existing Windows laptop: local backend/frontend, SQLite, a genuinely
 local Ollama model and a separately verified sandbox evaluated in WSL2. **Zero paid model API,
-zero rented server.** The hardware audit found 4 GB installed RAM, no WSL runtime and no Ollama;
-concurrent model/app/worker feasibility is not established. No heavy software was installed.
+zero rented server.** The audit found 4 GB installed RAM. Ubuntu 24.04 now boots under WSL2;
+non-root namespace creation and bounded cgroup configuration were measured successfully.
+Ollama is not installed; concurrent model/app/worker feasibility and sandbox isolation remain
+unverified. No model, Docker Desktop or container runtime was installed by this audit.
 [Measured audit and exact owner actions](docs/local-feasibility.md) ·
+[WSL prerequisites and remaining gates](docs/wsl-evaluation.md) ·
 [Zero-budget local profiles](deploy/local-models.example.json).
 
 ## Public portfolio release

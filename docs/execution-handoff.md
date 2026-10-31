@@ -1,3 +1,60 @@
+# WSL2 operational follow-up — 31 October 2026
+
+Branch: release/v3-portfolio / PR #9; recovered source a8ac5c56c90924c5621fb6914253d82241e136bb.
+That exact remote head passed [CI 41169808465](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41169808465):
+249 backend, zero skips, 96.10%; PostgreSQL, 13 frontend, six Chromium cases, builds/audits.
+This follow-up changes audit tooling, setup/evidence/docs only; verify its new head CI in PR #9.
+No application/provider/worker implementation, workflow or dependency was replaced.
+
+The owner completed WSL setup. Ubuntu 24.04.5 runs as repopilot/UID1000 on
+6.18.54.1-microsoft-standard-WSL2, systemd, four logical CPUs, 1.78 GiB guest RAM, about 1.4 GiB
+guest available and 1 GiB swap. Non-root user/network namespace creation exits 0. A fixed trusted
+transient user service reads actual cpu.max=25000/100000, memory.max=67108864,
+memory.swap.max=0, pids.max=16 and NoNewPrivs=1. It becomes inactive after cleanup.
+These are prerequisite/configuration checks, NOT hostile-code isolation or stress enforcement.
+The audit script is scripts/audit_wsl.py; it installs nothing and cannot open owner dispatch.
+
+Host RAM remains 4 GB; available Windows samples were below 800 MiB (about 446 MiB with
+API/Next running). About 29.8 GiB remains on physical C:. Do not mistake WSL's thin virtual
+1 TB filesystem for real free disk or add guest/host available memory. No Ollama, model weights,
+Podman, Docker, runsc or Linux uidmap helpers were installed. No inference was attempted.
+Windows drives and interop remain exposed in this owner's Ubuntu. /dev/kvm exists but the user
+cannot open it. No hypervisor permission, WSL setting, pagefile or execution policy was changed.
+
+An actual production API/Next/Chromium smoke, without mocked GitHub/model services, passed:
+login/logout, origin/authorization denial, local profile selection, unavailable Ollama error,
+closed controls, mobile login layout and SQLite session persistence across actual API restart.
+No task/model code executed. Services/data were temporary and cleaned up; the screenshot is a
+local work artifact. Reproduce ordinary startup via docs/local-owner-windows.md; the shipped
+local profiles are now explicitly included in that startup command.
+
+Local full checks: Ruff/format (69 files) and mypy (25 application modules) passed;
+244 backend passed, five environment skips, 95.36% statement coverage (1787/1874). Skips are
+four unconfigured PostgreSQL cases and one Windows symlink privilege case, not sandbox tests.
+No new coverage exclusion. CI provides the disposable PostgreSQL service. Backend source,
+frontend source and lockfiles are unchanged; no heavy local production rebuild was repeated.
+
+Next exact step: check new PR #9 application CI, preserve its independent review scope, then
+re-measure memory when the machine has real headroom before installing even the local smoke
+runtime/model. The 398 MB 0.5B weights exclude runner/context RAM; no practical model is yet
+validated. Use loopback, cloud disabled, one loaded model/request, explicit bounded context,
+zero paid flags/budgets and keep_alive=0. Do not install larger weights or rent a host.
+
+WSL boot does not fix PR #8's released gVisor cgroup failure. Keep all six failed probes and
+37c01e9 preserved there; no speculative runtime experiment was repeated. Before any hostile
+probe, choose a reviewed compatible sandbox, separate Windows drives/interop/credentials, verify
+capacity and run resource/network/filesystem/cancellation/cleanup/recovery acceptance. Only
+then review owner dispatcher binding and a real Issue → local model → isolated tests → draft PR.
+Those gates remain unperformed and closed. No automatic merge is authorized.
+
+No additional Windows administrator action is currently needed. Only GitHub account authorization
+remains owner-only: the read-only selected-repository App/key steps in docs/owner-activation.md;
+do not request keys in chat. Write permissions remain deferred until isolation acceptance and
+separate draft-PR approval. [Current WSL report](wsl-evaluation.md),
+[sanitized evidence](../evidence/wsl-local-readiness-2026-10-31.json).
+
+## Earlier checkpoints (historical; superseded where noted)
+
 # Local-first correction — 31 October 2026
 
 PR #9 source 18837c52354bc68ba0b9bc7917a8f2edb417f8cd was reverified: open/unmerged,
