@@ -63,5 +63,6 @@
   "live_model_validated": false,
   "github_app_live_validated": false,
   "sandbox_validated": false,
-  "release_ci": "pending measurement; do not reuse PR8 counts"
+  "release_ci": "https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41165328471",
+  "release_ci_scope": "success for b611e8272e4318c981006ce4db239f3dd97ee647 application only; PR8 isolation failure remains"
 }

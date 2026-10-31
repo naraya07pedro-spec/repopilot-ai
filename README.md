@@ -25,6 +25,12 @@ removed from that PR or converted to a skip. Application CI is evidence only for
 scope. [Release boundary](docs/portfolio-release.md) · [Current evidence](docs/evidence.md) ·
 [Owner actions](docs/owner-activation.md) · [Runtime prerequisites/costs](docs/runtime-options.md).
 
+[Application release CI](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41165328471)
+at `b611e82`: **247 backend tests, zero skips, 96.10% coverage**, 13 component tests and six
+Chromium cases passed, with builds, PostgreSQL and audits. Two additional browser tests verified
+the live HTTPS demo on desktop/mobile. [Review PR #9](https://github.com/naraya07pedro-spec/repopilot-ai/pull/9) ·
+[Measured release evidence](evidence/portfolio-release-checks.json).
+
 [Open the public demo](https://naraya07pedro-spec.github.io/repopilot-ai/) — no login, API key,
 payment or installation. Explore clearly labeled recordings, actual diffs, checks and PR links.
 [PR #4](https://github.com/naraya07pedro-spec/repopilot-ai/pull/4) is merged, integrating the

@@ -1,9 +1,26 @@
 # Application release evidence — 31 October 2026
 
-This branch's verification is separate from preserved PR #8. See the [release boundary](portfolio-release.md).
-Current release checks are being rerun; historical counts below are pinned to their original commits.
-The six Linux isolation failures remain [visible in PR #8](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41161973178).
-Passing application checks do not supersede them or prove real-agent activation.
+[PR #9](https://github.com/naraya07pedro-spec/repopilot-ai/pull/9) separates the fail-closed
+application from PR #8. [CI 41165328471](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41165328471)
+passed on `b611e8272e4318c981006ce4db239f3dd97ee647`: **247 backend tests, zero skips,
+96.10% coverage** (1,801/1,874), PostgreSQL, Ruff/format, mypy (25 sources), 13 component tests,
+six Chromium cases, private/public production builds, container smoke and dependency audits.
+The configured credential-pattern scan checked 141 tracked files without matches.
+
+Local full backend: **242 passed, five environment skips, 95.36%** (1,787/1,874). Four cases need
+PostgreSQL; one needs Windows symlink privilege. All run in Linux CI. No new coverage exclusions.
+TypeScript, 13 component tests, private/public builds and four serial Chromium tests passed.
+Two additional live HTTPS Chromium tests passed at desktop/mobile sizes, inspecting recordings,
+actual diff/test/PR evidence, rejected regression and denied private endpoints. The actual mobile
+screenshot was visually inspected. The public URL remains https://naraya07pedro-spec.github.io/repopilot-ai/.
+
+The approved-plan API regression confirms private execution/publication remains denied.
+All sandbox files and six failed live probes remain preserved in
+[PR #8's failed run](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41161973178).
+This branch never contained that runtime; its CI workflow is identical to main and no tests or
+workflows are deleted relative to main. Application success does not supersede the isolation failure.
+No live model, App installation or real-agent Issue-to-PR acceptance was run.
+[Structured release record](../evidence/portfolio-release-checks.json) · [Release boundary](portfolio-release.md).
 
 ## Historical evidence
 

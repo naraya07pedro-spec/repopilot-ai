@@ -16,17 +16,29 @@ No sandbox driver/server/image/harness or live sandbox tests are packaged in thi
 Their six mandatory failed probes remain in PR #8, which is not being merged wholesale.
 See [release boundary](portfolio-release.md) and [source manifest](../evidence/release-scope.json).
 
-## Validation checkpoint
+## Validated application release checkpoint
 
-Before release-specific changes: 141 selected provider/owner/transport/publication contract tests
-passed locally. Ruff/format/mypy, full backend coverage, frontend checks/builds/browser and current
-GitHub CI must be measured on this new branch and recorded before claiming release readiness.
-Historical PR #8 test counts are not this release's counts. No live provider or App validation
-is available. Public Pages and Issue #1 → draft PR #2 remain deterministic recording evidence.
+Published source: `b611e8272e4318c981006ce4db239f3dd97ee647`.
+[PR #9](https://github.com/naraya07pedro-spec/repopilot-ai/pull/9), open/unmerged.
+[CI 41165328471](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41165328471)
+passed all three application jobs: 247 backend passed, zero skipped, 96.10% (1,801/1,874),
+PostgreSQL, Ruff/format/mypy, 13 component and six Chromium tests, private/public builds,
+container smoke and audits. No new coverage exclusions; workflow unchanged from main.
+
+Local: 242 backend passed, five environment skips, 95.36%; 141 targeted contracts and the
+approved-plan publication-denial regression passed. TypeScript, 13 frontend tests, private/public
+builds and four serial browser cases passed. Two live HTTPS Pages desktop/mobile cases passed;
+the real mobile screenshot was inspected. Public private-endpoint requests returned 404.
+[Structured evidence](../evidence/portfolio-release-checks.json). This documentation follow-up
+records the measured source checkpoint; verify its current CI in PR #9 before review approval.
+
+PR #8 remains unchanged at 37c01e9 and still fails its mandatory sandbox job. No runtime
+experiment was repeated. The app release is eligible for independent human review; the
+real coding agent remains incomplete. No automatic merge or deployment occurred.
 
 ## Remaining blockers and next action
 
-Finish the current release checks and review PR, retain its exact source commit and CI links.
+Review PR #9 and verify the current application CI before any separately approved integration.
 No automatic merge or deployment is authorized. Public Pages is already deployed independently.
 
 Real-agent activation remains blocked on a reviewed compatible runtime and dedicated disposable
