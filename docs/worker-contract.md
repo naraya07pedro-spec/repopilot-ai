@@ -21,6 +21,7 @@ stateDiagram-v2
     executing --> verification_passed: all three checks pass
     executing --> verification_failed: failed or incomplete checks
     worker_queued --> cancel_requested
+    worker_queued --> cancelled: owner cancels before atomic claim
     executing --> cancel_requested
     cancel_requested --> cancelled: authenticated acknowledgement
     worker_queued --> interrupted: restart
@@ -56,6 +57,24 @@ baseline, matching candidate bytes and the closed runtime gate. Tests use synthe
   history page. Recovery never automatically repeats uncertain execution or publication.
 
 ## Tests and remaining runtime work
+
+The Windows-compatible owner dispatcher now connects authenticated execute/cancel routes to
+the existing ledger and transport. Production constructs it without a worker, so execution
+still returns 409 before creating a job, acquiring capacity or sending a request. There is no
+environment setting that enables it. Publication retains its separate DisabledWorker gate.
+
+With explicit synthetic test dependencies, scheduling persists the exact approved candidate,
+shares bounded application capacity, submits concurrent duplicate requests once, and permits
+queued cancellation to win against the atomic claim without sending code. Active cancellation
+requires an authenticated acknowledgement; an unknown result is not replayed automatically.
+Submission failure/restart marks unclaimed work interrupted and never replays it. Changes to
+model timeout/configuration invalidate the selection binding just as model/budget changes do.
+
+The owner HTTP workflow test covers plan -> exact approval -> text staging -> signed receipt ->
+separate publication approval -> draft-PR reconciliation. Model/worker/GitHub replies in that
+test are synthetic, and no staged source is imported or executed. Publication additionally
+checks the accepted receipt digest, unchanged model binding and an independently read open
+draft PR. These tests do not establish local inference or sandbox enforcement.
 
 `python -m pytest tests/test_worker_contract.py -q` exercises signed-message tampering, forged
 receipts, duplicate/concurrent claims, revoked repositories, expired approval/leases, changed

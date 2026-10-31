@@ -104,7 +104,14 @@ class BudgetedPlanner:
             if reservation:
                 self.reserve(reservation)
             try:
-                data = bounded_json(self.client, "POST", url, self.adapter.headers(), payload)
+                data = bounded_json(
+                    self.client,
+                    "POST",
+                    url,
+                    self.adapter.headers(),
+                    payload,
+                    timeout_seconds=self.profile.request_timeout_seconds,
+                )
                 plan, prompt, completion = self.adapter.parse(data)
                 if (
                     type(prompt) is not int

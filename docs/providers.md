@@ -72,7 +72,10 @@ REPOPILOT_ALLOW_PAID_MODELS=true; use profiles for the model selector.
 
 Input is limited to 40 KB or the profile's smaller limit. A conservative admission estimate
 uses UTF-8 bytes plus 4,096 protocol tokens; it must fit the configured context and output cap.
-Output is capped at 4,096 tokens and 64 KB. Requests have a 30-second HTTP timeout. Only explicit
+Output is capped at 4,096 tokens and 64 KB. Profiles set request_timeout_seconds from 1 to 120
+(default 30), included in the approval binding. This is an HTTP I/O timeout, not proof of a total
+wall-clock execution limit. A slow local runtime can explicitly use 120 without changing paid
+provider defaults. Only explicit
 429/502/503 responses get one retry, with a second budget reservation. Unknown transport outcomes
 are not retried. Provider error bodies and credentials are never returned to the browser.
 

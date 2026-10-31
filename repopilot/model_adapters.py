@@ -34,6 +34,7 @@ class ModelProfile(BaseModel):
     context_tokens: int = Field(ge=8192, le=1000000)
     output_tokens: int = Field(default=4096, ge=128, le=4096)
     context_bytes: int = Field(default=40000, ge=1024, le=40000)
+    request_timeout_seconds: int = Field(default=30, ge=1, le=120)
     endpoint: str = ""
     input_rate: float = Field(default=0, ge=0, allow_inf_nan=False)
     output_rate: float = Field(default=0, ge=0, allow_inf_nan=False)
@@ -203,10 +204,13 @@ class ModelAdapter:
                 data["eval_count"],
             )
         choice = data["choices"][0]
-        if choice["finish_reason"] != "stop" or choice["message"].get("refusal"):
+        message = choice["message"]
+        if choice["finish_reason"] != "stop" or message.get("refusal"):
             raise PolicyError("provider_incomplete_or_refused")
+        if message.get("tool_calls") or message.get("function_call"):
+            raise PolicyError("provider_unexpected_content")
         return (
-            Plan.model_validate_json(choice["message"]["content"]),
+            Plan.model_validate_json(message["content"]),
             data["usage"]["prompt_tokens"],
             data["usage"]["completion_tokens"],
         )
@@ -241,6 +245,7 @@ def bounded_json(
     headers: dict[str, str],
     payload: dict[str, Any] | None = None,
     params: dict[str, str | int] | None = None,
+    timeout_seconds: int = 30,
 ) -> dict[str, Any]:
     try:
         with client.stream(
@@ -249,7 +254,7 @@ def bounded_json(
             headers=headers,
             json=payload,
             params=params,
-            timeout=30,
+            timeout=timeout_seconds,
             follow_redirects=False,
         ) as response:
             if response.status_code >= 300:

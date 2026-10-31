@@ -50,6 +50,7 @@ class Remote:
                     "number": 42,
                     "body": body["body"],
                     "state": "open",
+                    "draft": True,
                     "head": {"sha": "d" * 40, "repo": {"full_name": REPO}},
                     "base": {"ref": "main"},
                 }
@@ -103,6 +104,32 @@ def test_production_gate_and_explicit_publication_approval(store):
     with pytest.raises(PolicyError, match="approval_required"):
         publisher.publish(identity, "f" * 64)
     assert remote.writes == []
+
+
+@pytest.mark.parametrize("change", ["receipt", "model"])
+def test_changed_verification_or_model_binding_blocks_publication(store, change):
+    s, remote, publisher, identity = ready(store)
+    data = s.get(identity)
+    if change == "receipt":
+        data["worker_receipt"]["checks"][0]["output"] = "changed after acceptance"
+        s.transition(identity, ["verification_passed"], "verification_passed", data)
+    else:
+        s.planner.profile = s.planner.profile.model_copy(update={"request_timeout_seconds": 120})
+    with pytest.raises(PolicyError, match="evidence_invalid|model_configuration_changed"):
+        publisher.artifact(identity)
+    assert not remote.writes
+
+
+@pytest.mark.parametrize("field,value", [("draft", False), ("state", "closed")])
+def test_reconcile_requires_an_open_draft_pr(store, field, value):
+    s, remote, publisher, identity = ready(store)
+    remote.lose = "pulls"
+    with pytest.raises(PolicyError, match="outcome_unknown"):
+        publisher.publish(identity, publisher.artifact(identity)["digest"])
+    remote.pr[field] = value
+    with pytest.raises(PolicyError, match="pr_conflict"):
+        publisher.reconcile(identity)
+    assert s.get(identity)["status"] == "publication_unknown"
 
 
 @pytest.mark.parametrize("operation", ["trees", "commits", "refs", "pulls"])
