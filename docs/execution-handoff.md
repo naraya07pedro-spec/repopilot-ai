@@ -1,21 +1,22 @@
-# PC WSL failure diagnosis — 31 October 2026
+# PC WSL evidence follow-up — 31 October 2026
 
-The project was recovered on the desktop PC; PR #9 was verified and merged at 3545a025.
-PR #8 remains open/preserved at 37c01e9. This PC has 8 GiB installed RAM, a Ryzen 5 4500,
-and about 6.3 GiB free on C: / 129 GiB on D: after approved cache cleanup. Do not reuse
-the historical laptop measurements below for this PC.
+The owner terminated the hung Administrator PowerShell collector (PID 28432). Do not rerun it.
+Saved output records WSL client PID 24704 beyond the deadline; the prior collector then waited
+without a timeout. No completed admin-result.json or successful Linux validation was saved.
+Four administrative event queries had no matches under their filters, not permission denial.
+Six saved real-core reports identify PID 2 init SIGABRTs with Broken pipe at SocketChannel.h:183.
+The live initiating client/current broker state remain unverified.
 
-Actual Linux launches still fail with Wsl/Service/E_UNEXPECTED, including explicit root/cwd
-and a terminal. Services, Windows features and virtualization report enabled/running. Six
-bounded ELF core-note inspections confirm repeated PID 2 init SIGABRTs, and strict local
-signature matching confirms Broken pipe at SocketChannel.h:183 (SendMessage) in every core.
-The initiating client and current broker state still require Administrator VM/log inspection; no speculative
-configuration change or interruption has been applied. The reviewed read-only collector is
-scripts/collect_wsl_admin.ps1. The owner approved read-only elevation, but Windows reported
-the UAC launch canceled; no elevated collection ran. An Administrator terminal run remains
-owner-only. No restart approval has been given.
-See [the PC diagnosis, evidence and conditional D: worker assessment](pc-wsl-diagnosis.md).
-Private execution/publication remain disabled. No new distro/runtime/model is installed.
+The live collector is retired. scripts/analyze_wsl_evidence.py reads saved JSON only and starts
+no process. The original OpenClaw process/registration and PR #8 remain preserved; no new live
+WSL diagnostic, restart, distro operation or configuration change was performed in this follow-up.
+The proposed recovery targets only OpenClawGateway during a separately approved maintenance
+window, after saving work. It has not run. See [diagnosis](pc-wsl-diagnosis.md) and
+[the exact approval-gated proposal](pc-wsl-recovery-proposal.md).
+
+The desktop remains the 8 GiB Ryzen 5 4500 PC; PR #9 merged at 3545a025. The earlier approved
+cache cleanup reclaimed about 5.07 GiB. Do not reuse the historical laptop measurements below.
+Private execution/publication remain disabled. Windows-only engineering and checks continue.
 
 ## Historical laptop WSL2 operational follow-up — 31 October 2026
 
