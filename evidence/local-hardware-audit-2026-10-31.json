@@ -83,5 +83,28 @@
     "https://docs.ollama.com/faq",
     "https://learn.microsoft.com/en-us/windows/wsl/basic-commands",
     "https://learn.microsoft.com/en-us/windows/wsl/wsl-config"
-  ]
+  ],
+  "validation": {
+    "source_commit": "d1c0e651b2ab035e88725048bf4d120300787255",
+    "ci_url": "https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41169549936",
+    "ci_conclusion": "success",
+    "ci_backend_passed": 249,
+    "ci_backend_skipped": 0,
+    "ci_covered": 1800,
+    "ci_statements": 1874,
+    "ci_coverage_percent": 96.051227321238,
+    "frontend_components": 13,
+    "ci_chromium": 6,
+    "postgres_types_lint_builds_audits": "passed",
+    "local_backend_passed": 244,
+    "local_environment_skips": 5,
+    "local_covered": 1788,
+    "local_statements": 1874,
+    "local_coverage_percent": 95.41088580576307,
+    "provider_contracts": 35,
+    "actual_ollama_inference": false,
+    "actual_wsl_sandbox": false
+  },
+  "ollama_standard_install_path_present": false,
+  "ollama_api_11434_available": false
 }

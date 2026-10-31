@@ -35,6 +35,20 @@ and [local profiles](../deploy/local-models.example.json). PR #8 remains preserv
 A genuine Issue → local model → actual isolated tests → draft PR has NOT run. Dispatcher binding,
 verified worker lifecycle/recovery and that acceptance remain blocked. Unsafe execution stays off.
 
+## Completed local-first checks
+
+Published follow-up source: d1c0e651b2ab035e88725048bf4d120300787255.
+[CI 41169549936](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41169549936)
+passed: 249 backend, zero skips, 96.05% (1,800/1,874), PostgreSQL, Ruff/format/mypy,
+13 frontend component and six Chromium cases, private/public builds and audits. Local full
+suite: 244 passed, five environment skips, 95.41% (1,788/1,874). No production source change
+or new coverage exclusion was needed; the two added tests verify existing local behavior.
+The saved PowerShell audit was executed successfully. Standard Ollama install path is absent
+and its loopback API is unavailable. No local inference or WSL/sandbox execution is claimed.
+Owner WSL administrator action has been requested; no completion was received at this checkpoint.
+Next: re-audit only after owner enables WSL. Do not install heavy runtimes/models under the
+measured memory load. No paid/provider credential, rented host or automatic merge is required.
+
 ## Previous portfolio checkpoint (historical)
 
 # Portfolio release recovery — 31 October 2026

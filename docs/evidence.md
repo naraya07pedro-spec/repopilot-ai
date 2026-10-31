@@ -1,3 +1,19 @@
+# Local-first follow-up — 31 October 2026
+
+[PR #9](https://github.com/naraya07pedro-spec/repopilot-ai/pull/9) source d1c0e651b2ab035e88725048bf4d120300787255
+passed [CI 41169549936](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41169549936):
+249 backend tests, no skips, 96.05% statement coverage, PostgreSQL, types/lint, 13 component
+and six Chromium tests, both builds and audits. Local: 244 passed, five environment skips,
+95.41% coverage; 35 provider contracts passed. The extra tests use synthetic local responses.
+
+A real read-only Windows audit found 4 GB installed RAM, 485–549 MiB available during samples,
+WSL features disabled and no model runtime. No software/model download or host change occurred.
+[Sanitized evidence](../evidence/local-hardware-audit-2026-10-31.json) ·
+[Feasibility and owner actions](local-feasibility.md). This does not prove local model generation
+or sandbox compatibility. Paid APIs/rented servers are excluded from the current target.
+
+## Previous application release evidence
+
 # Application release evidence — 31 October 2026
 
 [PR #9](https://github.com/naraya07pedro-spec/repopilot-ai/pull/9) separates the fail-closed
