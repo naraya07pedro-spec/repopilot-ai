@@ -21,7 +21,10 @@ IMAGE = "sha256:" + "a" * 64
 
 
 def driver(tmp_path):
-    return LinuxSandbox(IMAGE, str(tmp_path / "podman"), str(tmp_path / "runsc"))
+    runtime = LinuxSandbox(IMAGE, str(tmp_path / "podman"), str(tmp_path / "runsc"))
+    runtime.cgroup_root = tmp_path
+    runtime.cgroup_parent = str(tmp_path / "repopilot-jobs")
+    return runtime
 
 
 def test_runtime_needs_pinned_local_image_and_preflight(tmp_path):
@@ -44,6 +47,8 @@ def test_command_enforces_scope_limits_and_no_secret_environment(tmp_path, monke
     runtime = driver(tmp_path)
     command = runtime.arguments(job(), "pytest")
     assert "--network=none" in command and "--user=65532:65532" in command
+    assert "--cgroup-manager=cgroupfs" in command and "--cgroups=enabled" in command
+    assert "--cgroup-parent=/repopilot-jobs" in command
     assert "--pids-limit=32" in command and "--memory=512m" in command
     assert "--cpus=1.0" in command and "--pull=never" in command
     assert "--read-only-tmpfs=false" in command and "--unsetenv-all" in command
@@ -89,8 +94,10 @@ def test_preflight_fails_closed_on_unenforceable_host(tmp_path, monkeypatch, fai
     monkeypatch.setattr("repopilot.sandbox.sys.platform", "linux")
     monkeypatch.setattr("repopilot.sandbox.os.geteuid", lambda: 1000, raising=False)
     monkeypatch.setattr("repopilot.sandbox.os.access", lambda *a: True)
+    monkeypatch.setattr(runtime, "validate_delegation", lambda: None)
     host = {
         "security": {"rootless": failure != "rootful"},
+        "cgroupManager": "cgroupfs",
         "cgroupVersion": "v1" if failure == "v1" else "v2",
         "cgroupControllers": [] if failure == "controllers" else ["cpu", "memory", "pids"],
     }
@@ -112,6 +119,31 @@ def test_preflight_fails_closed_on_unenforceable_host(tmp_path, monkeypatch, fai
     else:
         assert runtime.preflight()["isolated"] == "unverified"
         assert runtime.checked is True
+
+
+@pytest.mark.parametrize("failure", [None, "missing", "escape", "controllers", "owner"])
+def test_delegation_requires_owned_bounded_subtree(tmp_path, monkeypatch, failure):
+    monkeypatch.setattr("repopilot.sandbox.sys.platform", "linux")
+    runtime = driver(tmp_path)
+    parent = Path(runtime.cgroup_parent)
+    parent.mkdir()
+    (parent / "cgroup.subtree_control").write_text(
+        "memory pids" if failure == "controllers" else "cpu memory pids"
+    )
+    monkeypatch.setattr(
+        "repopilot.sandbox.os.geteuid",
+        lambda: parent.stat().st_uid + (1 if failure == "owner" else 0),
+        raising=False,
+    )
+    if failure == "missing":
+        runtime.cgroup_parent = ""
+    if failure == "escape":
+        runtime.cgroup_parent = str(tmp_path.parent)
+    if failure:
+        with pytest.raises(PolicyError, match="delegated_cgroupfs"):
+            runtime.validate_delegation()
+    else:
+        runtime.validate_delegation()
 
 
 @pytest.mark.parametrize("mode", ["success", "overflow", "cancel", "timeout"])

@@ -134,7 +134,7 @@ jobs:
           image=$(podman image inspect localhost/repopilot-worker:probe --format '{{.Id}}')
           echo "REPOPILOT_LIVE_SANDBOX_IMAGE=$image" >> "$GITHUB_ENV"
       - name: Run actual isolated resource and cancellation probes
-        run: python -m pytest tests/test_sandbox_live.py -v --junitxml=evidence/sandbox-live.xml
+        run: systemd-run --user --scope --property=Delegate=yes python scripts/run_sandbox_probes.py
         env:
           REPOPILOT_SANDBOX_ACK: disposable-test-host
       - uses: actions/upload-artifact@v4

@@ -6,7 +6,9 @@ Normal CI skips them because it does not supply a reviewed rootless runsc host.
 
 import os
 import threading
+import time
 from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
 
 import pytest
 from test_worker_contract import job
@@ -133,8 +135,36 @@ def test_process_limit():
 
 def test_live_cpu_deadline_and_cancellation(runtime):
     source = "def test_cpu():\n    while True:\n        pass\n"
-    result = run_source(runtime, source, timeout_seconds=5)
+    order = job().model_copy(
+        update={"files": {"test_cpu.py": source}, "timeout_seconds": 5, "cpu_millis": 250}
+    )
+    observed = False
+    throttled = False
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        future = pool.submit(runtime.run, order, threading.Event())
+        while not future.done():
+            for limit in Path(runtime.cgroup_parent).rglob("cpu.max"):
+                try:
+                    quota, period = limit.read_text().split()
+                    if quota == "max" or int(quota) * 1000 != int(period) * order.cpu_millis:
+                        continue
+                    group = limit.parent
+                    assert int((group / "memory.max").read_text()) == order.memory_mib * 1048576
+                    assert int((group / "memory.swap.max").read_text()) == 0
+                    assert int((group / "pids.max").read_text()) == order.process_limit
+                    observed = True
+                    stats = dict(
+                        line.split() for line in (group / "cpu.stat").read_text().splitlines()
+                    )
+                    throttled |= int(stats.get("nr_throttled", "0")) > 0
+                except FileNotFoundError:
+                    continue  # Runtime teardown may remove a group between reads.
+            time.sleep(0.05)
+        result = future.result(timeout=30)
     assert result.outcome == "failed" and result.checks[0].timed_out, result.model_dump()
+    assert observed, "Kernel CPU/memory/swap/PID limits were not observed"
+    assert throttled, "Kernel CPU throttling was not observed"
+    print("Kernel limits observed: cpu=250m memory=512MiB swap=0 pids=32; CPU throttled")
     order = job().model_copy(update={"files": {"test_cpu.py": source}})
     cancel = threading.Event()
     with ThreadPoolExecutor(max_workers=1) as pool:

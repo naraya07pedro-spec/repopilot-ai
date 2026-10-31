@@ -19,6 +19,8 @@ from repopilot.worker_contract import COMMANDS, ExecutionReceipt, VerificationJo
 
 
 class LinuxSandbox:
+    cgroup_root = Path("/sys/fs/cgroup")
+
     def __init__(
         self, image: str, podman: str = "/usr/bin/podman", runsc: str = "/usr/local/bin/runsc"
     ):
@@ -29,6 +31,8 @@ class LinuxSandbox:
         if not all(Path(p).is_absolute() for p in (podman, runsc)):
             raise PolicyError("sandbox_requires_absolute_runtime_paths")
         self.image, self.podman, self.runsc = image, podman, runsc
+        self.prefix = [podman, "--remote=false", "--cgroup-manager=cgroupfs"]
+        self.cgroup_parent = os.environ.get("REPOPILOT_WORKER_CGROUP_PARENT", "")
         # Never inherit model keys, App credentials, proxies or remote Podman configuration.
         self.env = {k: os.environ[k] for k in ("HOME", "XDG_RUNTIME_DIR") if k in os.environ}
         self.env.update(PATH="/usr/local/bin:/usr/bin:/bin", LANG="C.UTF-8")
@@ -36,7 +40,7 @@ class LinuxSandbox:
 
     def control(self, args: list[str]) -> subprocess.CompletedProcess[bytes]:
         return subprocess.run(
-            [self.podman, "--remote=false", *args],
+            [*self.prefix, *args],
             env=self.env,
             capture_output=True,
             timeout=10,
@@ -48,12 +52,14 @@ class LinuxSandbox:
             raise PolicyError("sandbox_requires_nonroot_linux")
         if not all(Path(p).is_file() and os.access(p, os.X_OK) for p in (self.podman, self.runsc)):
             raise PolicyError("sandbox_runtime_missing")
+        self.validate_delegation()
         response = self.control(["info", "--format=json"])
         if response.returncode or len(response.stdout) > 1048576:
             raise PolicyError("sandbox_preflight_failed")
         host = json.loads(response.stdout)["host"]
         if (
             host["security"]["rootless"] is not True
+            or host["cgroupManager"] != "cgroupfs"
             or host["cgroupVersion"] != "v2"
             or not {"cpu", "memory", "pids"}.issubset(host["cgroupControllers"])
         ):
@@ -68,9 +74,27 @@ class LinuxSandbox:
         return {
             "rootless": True,
             "cgroup_version": "v2",
+            "cgroup_manager": "cgroupfs",
             "image": self.image,
             "isolated": "unverified",
         }
+
+    def validate_delegation(self) -> None:
+        if sys.platform != "linux":
+            raise PolicyError("sandbox_requires_nonroot_linux")
+        parent = Path(self.cgroup_parent).resolve()
+        root = self.cgroup_root.resolve()
+        if (
+            not self.cgroup_parent
+            or not parent.is_relative_to(root)
+            or parent.name != "repopilot-jobs"
+            or parent.stat().st_uid != os.geteuid()
+            or not os.access(parent, os.W_OK)
+            or not {"cpu", "memory", "pids"}.issubset(
+                (parent / "cgroup.subtree_control").read_text().split()
+            )
+        ):
+            raise PolicyError("sandbox_requires_delegated_cgroupfs_parent")
 
     @staticmethod
     def name(job: VerificationJob, check: str) -> str:
@@ -81,8 +105,7 @@ class LinuxSandbox:
             raise PolicyError("sandbox_command_not_allowed")
         # All writable space is bounded tmpfs; no bind mounts, sockets, devices or host namespace.
         return [
-            self.podman,
-            "--remote=false",
+            *self.prefix,
             "--runtime",
             self.runsc,
             "create",
@@ -104,6 +127,8 @@ class LinuxSandbox:
             "--ipc=private",
             "--uts=private",
             "--cgroupns=private",
+            "--cgroups=enabled",
+            "--cgroup-parent=/" + Path(self.cgroup_parent).relative_to(self.cgroup_root).as_posix(),
             f"--memory={job.memory_mib}m",
             f"--memory-swap={job.memory_mib}m",
             f"--cpus={job.cpu_millis / 1000}",
@@ -141,7 +166,7 @@ class LinuxSandbox:
         deadline: float,
     ) -> WorkerCheck:
         started = time.monotonic()
-        created = self.control(self.arguments(job, check)[2:])
+        created = self.control(self.arguments(job, check)[len(self.prefix) :])
         if created.returncode:
             detail = redact(created.stderr.decode("utf-8", errors="replace")[:2000])
             raise PolicyError(f"sandbox_create_failed: exit={created.returncode}; {detail}")
@@ -150,8 +175,7 @@ class LinuxSandbox:
         overflow = threading.Event()
         process = subprocess.Popen(
             [
-                self.podman,
-                "--remote=false",
+                *self.prefix,
                 "start",
                 "--attach",
                 "--interactive",

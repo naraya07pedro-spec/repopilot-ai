@@ -1,3 +1,18 @@
+# Cgroupfs evaluation checkpoint — 31 October 2026
+
+Recovered clean branch at `d22bb6a`; latest failure and upstream #13853 rechecked (still open).
+This checkpoint tests Podman's documented cgroupfs manager inside an unprivileged delegated
+systemd scope. gVisor no longer needs system-wide systemd authorization. The driver requires
+an owned `repopilot-jobs` subtree with CPU/memory/pids enabled and keeps all existing limits.
+The six live tests remain mandatory; the CPU case additionally observes kernel CPU/memory/swap/
+PID limit files and actual CPU throttling. No owner dispatch has been enabled.
+
+Local controller regression tests: 33 passed. Current-head CI must verify host delegation and
+actual execution; if delegation or effective limits fail, retain the failure and document that
+precise host requirement. No live isolation success is claimed at this checkpoint.
+
+## Previous verified diagnosis
+
 # Current checkpoint — sandbox blocked by released runtime integration
 
 Branch `feat/v3-providers`; [PR #8](https://github.com/naraya07pedro-spec/repopilot-ai/pull/8)
