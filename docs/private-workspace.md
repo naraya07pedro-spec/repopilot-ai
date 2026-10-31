@@ -1,9 +1,9 @@
-# Private owner workspace (V2, partial)
+# Private owner workspace (V3, partial)
 
 The owner UI at `/owner` supports login, repository validation, issue planning, plan
 approval/rejection, cancellation and durable history. It does **not** execute arbitrary
 code or publish private PRs: those routes remain closed until a validated isolated worker
-is implemented and available. No live model or GitHub App installation call has been verified.
+has passed host validation and is wired into owner dispatch. No live model or GitHub App installation call has been verified.
 Contract tests use mock HTTP responses, real signing and real database transactions.
 
 ## Configure locally
@@ -41,11 +41,18 @@ required after revocation rather than silently retrying writes.
 
 The inspection profile accepts up to eight Python/TypeScript source files, 12 KB per file,
 24 KB aggregate, and a maximum 1,000-entry tree. Larger repositories are rejected explicitly.
-The current project itself exceeds this small-repository profile. Use an explicitly approved
-small test repository for a future live planning check; approval to access an unrelated
-repository must be obtained separately. Inspection reads a pinned commit and never clones or runs code.
+Set REPOPILOT_SOURCE_ROOTS to {"naraya07pedro-spec/repopilot-ai":"fixtures/bug"} for
+this repository. Whole-repository inspection exceeds this profile; the server-selected scope
+keeps the acceptance task within the existing authorization. Inspection reads a pinned commit and never clones or runs code.
 
 ## Real provider and budgets
+
+The owner model selector now uses the server-side registry described in [providers.md](providers.md).
+It supports OpenAI, Anthropic, Gemini, Ollama and explicit local compatible profiles. All are
+contract-tested; none is presented as live-validated. Paid requests require server opt-in and
+per-run consent. Model/budget selection is included in the approval digest and expires in one hour.
+The legacy single-model configuration below is retained for API clients, with the additional
+required REPOPILOT_ALLOW_PAID_MODELS=true gate; use profiles for the current owner UI.
 
 Set server-only `OPENAI_API_KEY` and `REPOPILOT_MODEL` to a model supporting Chat Completions
 structured JSON-schema output. Set `REPOPILOT_DAILY_USD`, `REPOPILOT_RUN_USD`,
@@ -62,6 +69,9 @@ Reported usage comes from provider fields when present and valid. No paid reques
 
 ## Approval, persistence and recovery
 
+The owner sees a bounded unified diff derived from the pinned snapshot and proposed full-file
+edits before approval. New-file and missing-newline markers are preserved. No-op plans and
+overlarge previews fail closed. This preview only manipulates text; it never writes or runs code.
 The approval digest binds the inspected commit, source snapshot and exact proposed edits.
 Approval records intent but never starts arbitrary execution. `/execute` returns 409 with
 `isolated_worker_unavailable`. No private PR write is attempted. V1 fixture PR publication
@@ -70,7 +80,12 @@ remains a distinct operator workflow described in `demo.md`.
 Sessions expire in one hour; only token digests are stored. Login is limited to five attempts
 per minute per process. Mutation routes require the configured Origin. Logout revokes the
 session. Run creation uses a unique idempotency key plus request fingerprint. On restart,
-queued/planning runs become interrupted; uncertain calls are never automatically replayed.
-There is no distributed worker lease or automatic resume. Use a new request only after review.
+queued/planning and worker-protocol active states become interrupted; uncertain calls are never
+automatically replayed. The [worker ledger](worker-contract.md) is tested but not dispatched.
+There is no distributed scheduling or automatic resume. Publication restart state is
+publication_unknown; reconciliation reads confirmed remote identities without repeating writes.
+The separate worker journal also prevents replay after a crash. Use a new request only after review.
 Private snapshots and plans reside in the database: apply storage encryption, access control,
 backups and retention at the hosting layer. They are never copied into public recordings.
+
+See [Windows local startup](local-owner-windows.md) and [scoped inspection/publication](private-publication.md). REPOPILOT_SOURCE_ROOTS can restrict this repository to fixtures/bug, so it no longer needs whole-repository inspection for that scenario. The configured mapping cannot be changed by browser requests.

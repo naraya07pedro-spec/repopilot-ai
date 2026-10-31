@@ -1,4 +1,91 @@
+# Cgroupfs evaluation — 31 October 2026
+
+[CI 41161569981](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41161569981)
+tested a real unprivileged delegated cgroupfs scope on `7ddafa7`. The delegation enabled CPU,
+memory and pids successfully. All six live probes then failed before guest execution because
+released gVisor writes an ancestor subtree-control file outside delegation (permission denied,
+exit 125). No container objects or child job cgroups remained after failed-start cleanup.
+Effective resource behavior and running cancellation/recovery remain unverified; owner execution
+stays disabled. Backend: 280 passed, six separate-job skips, 93.96% coverage. Frontend: 13 component
+and six Chromium passed. Other builds, types, PostgreSQL and audits passed. Overall CI **FAILED**.
+[Diagnosis and procedure](sandbox-ci-diagnosis.md) · [Structured record](../evidence/cgroupfs-evaluation.json).
+
+# Previous sandbox validation — 30 October 2026
+
+Runtime correction `0c3ae880dea735f2cd083a3170efd40d9217f5e5` was exercised in
+[CI 41090628500](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41090628500).
+Backend/frontend/container passed: 275 backend tests, six separate-job skips, 94.03% statement
+coverage (2,046/2,176), PostgreSQL, 13 component and six Chromium tests, types/builds and audits.
+The mandatory live sandbox job ran **six tests: all failed, none skipped**. Every guest command
+exited 125 during gVisor startup with a systemd authentication error; no candidate Python ran.
+The known upstream rootless-systemd defect remains unresolved in the tested release.
+
+[Detailed diagnosis and reproducible Linux commands](sandbox-ci-diagnosis.md) ·
+[Structured evidence](../evidence/sandbox-ci-diagnosis.json).
+Full CI is failed and PR #8 remains unmerged. Private execution/publication stays disabled.
+Earlier results below are pinned historical evidence, not claims about current sandbox success.
+
+# V3 runtime continuation — 30 October 2026 (historical)
+
+[CI 41044345258](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41044345258)
+passed on `34bfb83eeb93d043b2b62e92860400be19eae212`: 270 backend tests, six explicitly skipped
+live-isolation probes, 94.02% statement coverage (2,027/2,156), PostgreSQL, frontend and container
+jobs. [Structured check record](../evidence/v3-runtime-checks.json).
+
+Local full suite: 265 passed, 11 skips, 93.37% (2,013/2,156). Skips are four PostgreSQL cases,
+one Windows symlink case and six live-host probes. Ruff/format, mypy (27 sources), TypeScript,
+13 component tests and production frontend build passed. Four serial Chromium cases and two
+live Pages desktop/mobile cases passed. One earlier browser case timed out under competing
+local work; it passed serially with unchanged assertions and in CI. Mobile/public and synthetic
+owner screenshots were inspected. Real factory startup/authentication/logout HTTP smoke passed.
+Locked Python and npm audits found no known vulnerabilities; configured credential scanning found
+no matches. Neither check proves comprehensive security. No paid calls or resources were used.
+
+The new Linux-only controller, rootless Podman/gVisor driver, pinned tooling image, HTTP service,
+journal/recovery, publication reconciliation and malicious-resource harness are implemented.
+Controller tests use fake runtime outputs. The live harness did not run; private owner dispatch
+remains disabled. Coverage fell from the earlier 96.10% because the new Linux startup/lifecycle
+paths are included without new exclusions. No live model/App/sandbox or private deployment claim.
+
+## Historical evidence below
+
 # Verified execution evidence
+
+## Final V3 implementation verification — 29 October 2026
+
+[Verify 40886579341](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40886579341)
+passed on `4d4768d7a34c07aeb9440d43edbfaa9be156f1a2`: **203 backend tests, no skips, 96.05%
+statement coverage** (1,555/1,619). Twelve component tests, six Chromium cases, PostgreSQL
+integration, container HTTP smoke, TypeScript, production builds, Ruff/mypy and dependency audits
+passed. The new private diff preview is verified before approval, including no-op/oversize rejection.
+No live model/App or sandbox execution occurred. Public demo checks passed separately as below.
+The [handoff](execution-handoff.md) identifies remaining runtime engineering and credential gates.
+
+## Earlier V3 worker checkpoint — 29 October 2026
+
+Recovery commit `3e49acf56a390f52b6b379d30decdba00bf2e949` preserves the eight interrupted
+files in [PR #8](https://github.com/naraya07pedro-spec/repopilot-ai/pull/8). Its backend and
+container jobs passed; its browser job exposed the existing Model label lookup failure.
+The corrected accessible-role locator passes the actual owner workflow locally.
+
+[Fresh local check record](../evidence/v3-worker-local-checks.json): **198 backend passed,
+5 environment skips, 95.24% coverage** (1,542/1,619 statements). Worker contracts: 38 passed. The later diff preview adds no-op/oversize and new-file/newline
+regressions and a browser assertion before approval.
+Twelve component tests, four local Chromium cases, Ruff lint/format, mypy (22 sources),
+TypeScript, owner/Pages production builds and locked Python/full npm audits passed.
+The five local skips are four PostgreSQL cases and one Windows symlink privilege case.
+No coverage exclusions were added. [Follow-up Verify 40885395485](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/40885395485)
+passed at `49a920fa87789413117448ad1ead382adf37fe19`: **201 backend tests, 96.02% coverage**
+(1,544/1,608 statements), 12 component tests, six Chromium cases (Pages/owner: four; root: two),
+PostgreSQL checks, Docker Compose smoke, lint/types/builds and dependency audits.
+Two additional local Chromium cases passed against the deployed HTTPS site at 1440px/390px.
+The live mobile screenshot and test-only owner screenshot were visually inspected; two garbled
+owner labels were found and corrected. The owner screenshot is synthetic test data, not live AI.
+
+Worker receipts and provider responses are synthetic contract fixtures. No live model,
+GitHub App credential validation, hostile-code sandbox or private PR publication ran.
+The authenticated protocol does not prove execution isolation; dispatch remains disabled.
+
 
 ## Portfolio release verification — 29 October 2026
 

@@ -1,7 +1,9 @@
 """Durable private planning; arbitrary execution fails closed until a worker is validated."""
 
+import difflib
 import json
 import re
+import time
 import uuid
 from typing import Any
 
@@ -17,8 +19,15 @@ from repopilot.store import now
 
 
 class PrivateService:
-    def __init__(self, engine: Engine, github: GitHubApp | None, planner: BudgetedPlanner | None):
+    def __init__(
+        self,
+        engine: Engine,
+        github: GitHubApp | None,
+        planner: BudgetedPlanner | None,
+        planners: dict[str, BudgetedPlanner] | None = None,
+    ):
         self.engine, self.github, self.planner = engine, github, planner
+        self.planners = planners or {}
 
     def get(self, identity: str) -> dict[str, Any]:
         with self.engine.connect() as conn:
@@ -46,12 +55,39 @@ class PrivateService:
             reverse=True,
         )
 
-    def create(self, repository: str, number: int, key: str) -> tuple[dict[str, Any], bool]:
+    def selected(self, profile: str | None) -> BudgetedPlanner:
+        planner = self.planners.get(profile) if profile else self.planner
+        if planner is None:
+            raise PolicyError("model_credentials_or_budget_missing")
+        return planner
+
+    def create(
+        self,
+        repository: str,
+        number: int,
+        key: str,
+        *,
+        model_profile: str | None = None,
+        run_micro: int | None = None,
+        paid_approved: bool = False,
+    ) -> tuple[dict[str, Any], bool]:
         if not self.github or repository not in self.github.allowed:
             raise PolicyError("github_app_or_repository_not_configured")
-        if not self.planner:
-            raise PolicyError("model_credentials_or_budget_missing")
-        request = {"repository": repository, "issue_number": number}
+        planner = self.selected(model_profile)
+        if planner.profile.paid and not paid_approved:
+            raise PolicyError("paid_call_requires_explicit_approval")
+        limit = planner.run_micro if run_micro is None else run_micro
+        if limit < 0 or limit > planner.run_micro:
+            raise PolicyError("run_budget_not_allowed")
+        request = {
+            "repository": repository,
+            "issue_number": number,
+            "paid_approved": paid_approved,
+            "model_profile": model_profile,
+            "selection": planner.binding(limit),
+            "source_root": getattr(self.github, "source_roots", {}).get(repository, ""),
+        }
+
         fingerprint, identity = digest(request), uuid.uuid4().hex
         payload = {
             "id": identity,
@@ -102,14 +138,21 @@ class PrivateService:
             return
         data = self.get(identity)
         try:
-            if self.github is None or self.planner is None:
+            if self.github is None:
                 raise PolicyError("provider_not_configured")
+            planner = self.selected(data.get("model_profile"))
+            if planner.binding(data["selection"]["run_micro"]) != data["selection"]:
+                raise PolicyError("model_configuration_changed")
+            if getattr(self.github, "source_roots", {}).get(data["repository"], "") != data.get(
+                "source_root", ""
+            ):
+                raise PolicyError("repository_scope_changed")
             snapshot = self.github.snapshot(data["repository"], data["issue_number"])
             if SECRET.search(json.dumps(snapshot)):
                 raise PolicyError("context_secret_pattern")
             if self.get(identity)["status"] != "planning":
                 return
-            plan, usage = self.planner.plan(snapshot)
+            plan, usage = planner.plan(snapshot, data["selection"]["run_micro"])
             paths = [edit.path for edit in plan.edits]
             if len(set(paths)) != len(paths):
                 raise PolicyError("duplicate_edit")
@@ -124,12 +167,31 @@ class PrivateService:
                     raise PolicyError("private_edit_scope")
                 if SECRET.search(edit.content):
                     raise PolicyError("edit_secret_pattern")
+            preview = []
+            for edit in plan.edits:
+                before = snapshot["files"].get(edit.path, "")
+                for line in difflib.unified_diff(
+                    before.splitlines(keepends=True),
+                    edit.content.splitlines(keepends=True),
+                    fromfile="a/" + edit.path if edit.path in snapshot["files"] else "/dev/null",
+                    tofile="b/" + edit.path,
+                ):
+                    preview.append(
+                        line if line.endswith("\n") else line + "\n\\ No newline at end of file\n"
+                    )
+            diff = "".join(preview)
+            if not diff:
+                raise PolicyError("private_no_change")
+            if len(diff.encode()) > 128000:
+                raise PolicyError("private_diff_limit")
             data.update(
+                diff=diff,
                 snapshot=snapshot,
                 plan=plan.model_dump(),
                 usage=usage,
-                approval_digest=digest({"snapshot": snapshot, "plan": plan.model_dump()}),
+                approval_expires=int(time.time()) + 3600,
             )
+            data["approval_digest"] = self.approval_digest(data)
             data["events"].append(
                 {
                     "at": now(),
@@ -149,11 +211,29 @@ class PrivateService:
             )
             self.transition(identity, ["planning"], "failed", data)
 
+    @staticmethod
+    def approval_digest(data: dict[str, Any]) -> str:
+        return digest(
+            {
+                key: data.get(key)
+                for key in (
+                    "id",
+                    "repository",
+                    "issue_number",
+                    "paid_approved",
+                    "snapshot",
+                    "plan",
+                    "selection",
+                    "approval_expires",
+                )
+            }
+        )
+
     def approve(self, identity: str, approved: str) -> dict[str, Any]:
         data = self.get(identity)
-        if data.get("approval_digest") != approved or approved != digest(
-            {"snapshot": data.get("snapshot"), "plan": data.get("plan")}
-        ):
+        if data.get("approval_expires", 0) < time.time():
+            raise PolicyError("approval_expired")
+        if data.get("approval_digest") != approved or approved != self.approval_digest(data):
             raise PolicyError("approval_digest_mismatch")
         data["events"].append(
             {"at": now(), "name": "approved", "detail": "Plan accepted; no code has executed"}
@@ -176,9 +256,30 @@ class PrivateService:
 
     def recover(self) -> None:
         # One application process is supported; never reissue an uncertain model/GitHub write.
-        with self.engine.begin() as conn:
-            conn.execute(
-                update(private_runs)
-                .where(private_runs.c.status.in_(["queued", "planning"]))
-                .values(status="interrupted")
+        states = [
+            "queued",
+            "planning",
+            "worker_queued",
+            "executing",
+            "cancel_requested",
+            "preparing_pr",
+        ]
+        with self.engine.connect() as conn:
+            identities: list[str] = list(
+                conn.execute(
+                    select(private_runs.c.id).where(private_runs.c.status.in_(states))
+                ).scalars()
             )
+        for identity in identities:
+            data = self.get(identity)
+            if data["status"] in states:
+                data["events"].append(
+                    {
+                        "at": now(),
+                        "name": "interrupted",
+                        "detail": "Restart recovery; no operation replayed",
+                    }
+                )
+                after = "publication_unknown" if data["status"] == "preparing_pr" else "interrupted"
+                data["events"][-1]["name"] = after
+                self.transition(identity, [data["status"]], after, data)

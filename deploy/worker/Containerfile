@@ -1,0 +1,11 @@
+# Build explicitly on the reviewed Linux host. Runtime accepts only the resulting image ID.
+ARG PYTHON_BASE
+FROM ${PYTHON_BASE}
+RUN python -m venv /opt/tools
+COPY requirements.lock /opt/requirements.lock
+RUN /opt/tools/bin/pip install --no-cache-dir -c /opt/requirements.lock pytest==9.0.3 ruff==0.17.3
+COPY deploy/worker/bootstrap.py /opt/bootstrap.py
+RUN mkdir /work && chmod 755 /opt/bootstrap.py /work
+USER 65532:65532
+WORKDIR /work
+ENTRYPOINT ["/opt/tools/bin/python", "-I", "-B", "/opt/bootstrap.py"]

@@ -1,131 +1,206 @@
-# Execution handoff — 29 October 2026
+# Cgroupfs evaluation checkpoint — 31 October 2026
 
-Current scope: zero-additional-cost public portfolio release. Preserve the working Pages site.
-Do not expand private infrastructure, provision resources, call a paid model or resume Netlify
-publication; the owner deferred those activities.
+**Evaluation completed: BLOCKED.** Published experiment `7ddafa79caf2f4d9eec439313f815ee8dd3e07fa`.
+[CI 41161569981](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41161569981)
+passed backend/frontend/container; all six real probes failed, none skipped. The unprivileged
+scope successfully enabled `cpu memory pids`, but released gVisor's filesystem driver attempts
+to write `/sys/fs/cgroup/cgroup.subtree_control` outside delegation and exits 125, permission denied.
+The harness confirmed no remaining probe containers or child job cgroups. No guest code ran.
+Kernel limit observations and running cancellation/recovery remain unverified. No further flag
+experiments or repeated same-version retries are justified; execution/publication stays disabled.
 
-Branch: `feat/hosting-readiness`. Existing review PR: #7 (reuse it).
-Verified implementation commit: `06a7171cf43f8063f58b6f59c6bea21effa41f3e`.
-The release documentation follows that commit; inspect the current PR head before continuing.
-The recovered 22 files were committed locally in 8a796ac; the remaining five-file correction
-was published in 7286e55. CI exposed a schema-owner REVOKE failure, fixed in 06a7171 without
-relaxing NOINHERIT or the regression test. Local and API metadata histories were preserved.
+Local: 275 backend passed, 11 environment skips, 93.42%; 33 controller tests passed. CI: 280 backend
+passed, six separate-job skips, 93.96% (2,055/2,187); PostgreSQL, Ruff/format/mypy, 13 component and
+six Chromium tests, private/public builds, container smoke and audits passed. Overall CI FAILED.
+See [diagnosis and exact host procedure](sandbox-ci-diagnosis.md) and
+[machine-readable evidence](../evidence/cgroupfs-evaluation.json).
 
-Verified CI: 40812511056 — 130 backend tests, 95.69% coverage, 10 component tests, 5 browser
-cases, PostgreSQL bootstrap/recovery, Docker smoke, lint/types/builds/audits/secret scan passed.
-Local: 125 passed, 5 environment skips, 94.59%; 10 frontend tests, 3 local browser cases,
-2 browser cases against the live HTTPS site, TypeScript/builds/audits passed.
-Coverage scope and exact evidence links are in docs/evidence.md. Public URL:
-https://naraya07pedro-spec.github.io/repopilot-ai/ (verified 29 October).
+**Next action:** evaluate a reviewed runtime release/configuration that confines cgroup operations
+to the delegated subtree or supports user-systemd correctly. Do not grant global root-cgroup
+access. Re-run the harness only when that prerequisite changes. Then review dispatcher binding
+and run real-model/App Issue-to-PR acceptance. Model/App credentials, paid-call approval and a
+validated persistent worker are still absent; cloud deployment remains deferred.
 
-Next executable action: inspect PR #7 and checks on its current head; integrate only after
-review and green CI, then verify main CI/Pages. If already merged, do not recreate the PR.
-No forced history changes or automatic merge of demonstration draft PR #2.
+## Experiment setup (historical checkpoint)
 
-Private V2 remains PARTIAL: no live App/model result, production database connection or private
-HTTPS host. A validated isolated worker is not implemented; private execution remains 409.
-The final SQL regression ran on disposable CI PostgreSQL. No existing Supabase data changed.
-Netlify stays pending by owner decision. These are explicitly deferred expansion gates;
-credentials alone do not supply a secure worker. No new spending is authorized.
+Recovered clean branch at `d22bb6a`; latest failure and upstream #13853 rechecked (still open).
+This checkpoint tests Podman's documented cgroupfs manager inside an unprivileged delegated
+systemd scope. gVisor no longer needs system-wide systemd authorization. The driver requires
+an owned `repopilot-jobs` subtree with CPU/memory/pids enabled and keeps all existing limits.
+The six live tests remain mandatory; the CPU case additionally observes kernel CPU/memory/swap/
+PID limit files and actual CPU throttling. No owner dispatch has been enabled.
 
-## Historical handoff — 28 October 2026
+Local controller regression tests: 33 passed. Current-head CI must verify host delegation and
+actual execution; if delegation or effective limits fail, retain the failure and document that
+precise host requirement. No live isolation success is claimed at this checkpoint.
 
-The following records prior context. Its expansion steps are superseded by the scope above.
+## Previous verified diagnosis
 
-Overall status: PARTIAL. Public recruiter demo: DEPLOYED AND VERIFIED.
-Public URL: https://naraya07pedro-spec.github.io/repopilot-ai/
+# Current checkpoint — sandbox blocked by released runtime integration
 
-## Published state
+Branch `feat/v3-providers`; [PR #8](https://github.com/naraya07pedro-spec/repopilot-ai/pull/8)
+is open, unmerged and **not ready for integration**. Latest runtime correction:
+`0c3ae880dea735f2cd083a3170efd40d9217f5e5`. The current PR head adds the diagnosis/evidence below.
 
-V2 PR #4 merged normally into main at 1e79482783675c0b74a980e5cb2714442b66b978 after
-fresh green CI and review of public/private separation. PR #5 introduced an incompatible
-root-level Next.js workflow; the owner deleted it in 71f5002. That deletion is preserved.
-Only public-demo.yml publishes, only from main. No reset, force-push or unrelated repo changes.
-Actual fixture Issue #1 -> draft PR #2 remains separate and unmerged.
+Final repeat on published `9cc4bae9adb9dc6b358d50d321038a9f283a3956`:
+[CI 41092402645](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41092402645)
+again passed backend/frontend/container and failed all six sandbox probes with the same startup
+exit 125. Backend: 275 passed, six separate-job skips, 93.98% (2,045/2,176); frontend: 13 component
+and six Chromium passed. Ruff/format/mypy, both builds, PostgreSQL and audits passed; 148 tracked
+files scanned. Local full repeat: 270 passed, 11 environment skips, 93.38% (2,032/2,176).
+This follow-up only records those completed checks; no further runtime changes were made.
 
-Documentation PR #6 merged at c64c0cf548039725f1c53c155c98630198780f6a with green Verify
-40639976253 and Pages 40639976294 (including two live Chromium tests).
-Current development branch: feat/hosting-readiness, based on that main commit.
-Inspect current git status/log and PRs before resuming. Local/API commit metadata may differ;
-publication verifies exact tree equality. Never rewrite histories to reconcile metadata.
+[Full CI 41090628500](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41090628500):
+backend/frontend/container passed; **all six actual Linux probes failed, none skipped**.
+Container create and configuration inspection succeed. Startup exits 125 with
+`creating container: systemd error: Interactive authentication required.`
+Released gVisor `release-20261026.0` uses system-wide systemd for rootless Podman 4.9.3;
+[upstream #11543](https://github.com/google/gvisor/issues/11543) reproduces this and
+[fix #13853](https://github.com/google/gvisor/pull/13853) is still open/unmerged.
+This is a specific runtime/host incompatibility, not a generic absence of cgroup v2 in Actions.
 
-## Hosting preparation continuation
+Saved corrections: bounded/redacted diagnostics; canonical exact image ID; supported tmpfs
+options with private non-root 0700 staging; exact configured runsc path recognition. No security
+assertion, resource cap or execution boundary was weakened. No provider/frontend features added.
 
-The owner selected Netlify for the public export and an accessible existing Supabase project
-for PostgreSQL; no paid provisioning is authorized. The intended Netlify account is not the
-working connected account, and the owner explicitly asked to keep its deployment pending.
-An active Supabase project has other applications' tables. Only their metadata was inspected.
-A rollback-only bootstrap/probe validated creating and using the new restricted role/schema;
-a separate query confirmed neither object remained. No existing data or global settings changed.
+Actual checks: 28 local controller tests passed; full local backend at ea86ad0 was 268 passed,
+11 environment skips, 93.42%. Current runtime CI: 275 backend passed, six separate-job skips,
+94.03% (2,046/2,176); PostgreSQL, Ruff/format, mypy, 13 frontend tests, six Chromium cases,
+TypeScript, public/private builds, container smoke and dependency/secret-pattern audits passed.
+CI overall remains FAILED. See [exact six outcomes and host reproduction](sandbox-ci-diagnosis.md)
+and [structured evidence](../evidence/sandbox-ci-diagnosis.json).
 
-Prepared netlify.toml for the root-path static export, deploy/render-preview.yaml with two
-free control-plane web services (no database/worker), and exact external steps in
-docs/hosting-setup.md. No resources are provisioned by those files alone.
-Production/Supabase startup now requires a private PostgreSQL schema and verified TLS.
-Private-schema migrations revoke public/browser-role access and enable RLS. Added a real
-PostgreSQL restricted-role, schema-isolation and restart-recovery test for CI.
+**Next exact action:** validate a reviewed upstream runtime release/configuration that supports
+rootless user-systemd cgroups on a disposable host, then rerun the unchanged six-probe harness
+and full CI. Do not use ignore-cgroups, rootful/privileged execution, broader polkit permission,
+an unreviewed runtime fork, or skips. A different Linux host alone does not fix this version bug.
 
-Local checks so far: 124 backend tests passed, 4 environment skips (three PostgreSQL, one
-Windows symlink), 94.42% statement coverage; affected database/owner checks 43 passed.
-Ruff, formatting and mypy passed. Frontend: 10 tests, TypeScript, owner production build and
-root-path public production build passed. Render configuration passed the official JSON
-schema; Netlify TOML parsed. Three actual local Chromium tests passed (root-path public demo
-at desktop/mobile sizes and private owner login/logout/disabled execution). Both dependency
-audits found no known vulnerabilities; the tracked-file credential-pattern scan passed.
-PR #7 publishes this stage. Verify run 40652011337 at 296bae7e8ef7c7cdd9506453b9121b4b7f4c2658
-passed 128 backend tests with 95.69% coverage, including the restricted PostgreSQL role,
-RLS/private schema and recovery test. Frontend passed 10 component tests and 5 browser flows
-(Pages/owner 3, root-path public 2); container smoke and audits passed.
-A final hostname-normalization regression adds coverage for uppercase/trailing-dot Supabase
-hosts; its 14 database configuration tests passed locally. Check CI on the updated PR head
-before integrating, rather than using an older green run as approval.
-Supabase's non-superuser administrator required explicit SET membership in the newly created
-role. The bootstrap now grants that membership without INHERIT and a new PostgreSQL regression
-test exercises the real bootstrap script under a non-superuser role. The corrected Supabase
-transactional probe passed and was rolled back; no persistent DB installation is claimed.
+Activation still needs a validated worker host/runtime, a configured real model (or installed local
+model; paid calls still unauthorized), and a repository-scoped GitHub App installation/key.
+Owner dispatch/publication remain deliberately unwired/disabled. After host evidence review,
+the remaining engineering step is the dispatcher binding and real Issue-to-PR acceptance run.
+Neither live model/App use nor running-sandbox recovery has been demonstrated. No cloud was
+provisioned, no unrelated repo was modified, and no merge occurred. Public Pages is unchanged.
 
-## Actual verification
+## Earlier diagnostic checkpoints (historical)
 
-Main Verify 40639065402: 114 backend tests, 95.57% statement coverage, 10 component tests,
-3 Chromium E2E tests, Ruff/mypy, TypeScript, production builds, PostgreSQL migration/session
-recovery, Docker HTTP smoke, locked Python/full npm audits and secret-pattern scan passed.
-Deployment 40639065386: public build/deploy passed; 2 additional Chromium flows passed against
-the actual HTTPS site at desktop/mobile widths. Artifact 12794941485 has live screenshots.
-Independent HTTPS checks saved in evidence/public-https.json: homepage 200, 8 assets 200,
-owner/API routes 404. Earlier Pages 404 reports are historical and resolved.
+# Podman tmpfs compatibility correction — 30 October 2026
 
-## Remaining blockers and implementation gaps
+CI 41090255712 on `aac5a2164abbc33d9b4cb5f86205cb010ab4db47` identifies the next
+driver defect: Podman reports OCIRuntime as the configured absolute `/usr/local/bin/runsc`,
+not the alias `runsc`. All other inspected controls matched. Accept only that exact configured
+path or the existing alias; reject other paths/runtimes. Live assertions now show the already
+bounded/redacted command evidence when execution fails. No assertion or limit was removed.
 
-Owner sessions, App installation scoping, real-model planning adapter, budget reservations,
-approval binding, idempotency, cancellation and recovery are implemented and contract-tested.
-Live GitHub App and real-model calls are unverified: no App ID/installation/key, model API key,
-authorized spending limits or production DATABASE_URL are configured in the current environment.
-No secrets have been requested in chat or added to the public site.
+Correction published as `ea86ad067fad416fb7c3e20fceac3c6cf08a3238`.
+CI 41089848261 now creates containers successfully but fails the effective-configuration check
+before starting candidate code. This follow-up reports only the bounded checked settings,
+excluding environment and mount paths, so the next correction can use the actual mismatch.
+Full local suite at ea86ad0: 268 passed, 11 environment skips, 93.42% (2,031/2,174).
 
-A validated isolated worker is NOT implemented or provisioned. General private modifications,
-verification and PR publication remain disabled (409). Docker is absent locally; CI Docker
-smoke is not evidence of a hostile-code sandbox. Do not remove the exact-byte host fixture gate.
-No private HTTPS deployment, production recovery, comprehensive accessibility or adversarial
-sandbox review is claimed. A Netlify connection is now reachable, but the intended hosting
-account connection is incorrect for the requested target; publication stays pending by owner
-request. Render is an evaluated free preview option; no hosting resource was created.
+Diagnostic commit `5b00c77c6ed9b41fc215379be072d530454126b0` is published.
+[CI 41088871352](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41088871352):
+backend, frontend and container passed. All six live probes failed at Podman create, exit 125:
+`Error: unknown mount option "uid=65532": invalid mount option` (Podman 4.9.3).
+This is a driver compatibility defect, not evidence of unavailable host isolation.
 
-## Next exact actions
+The correction uses supported bounded sticky tmpfs mounts. The non-root guest creates its own
+private 0700 candidate directory; the live boundary probe now asserts its owner and mode.
+Rootless runsc, resource limits, read-only image, no host mounts and no network remain enforced.
+Local validation: 26 controller tests passed; Ruff, formatting and mypy passed. Next: inspect
+all six real probes and the full CI suite on this correction. Owner dispatch stays disabled;
+no live isolation or real-model acceptance success is claimed before those checks execute.
 
-1. Check the latest head of PR #7 and finish review/integration if still open, then verify
-   main CI/Pages. Preserve the working Pages host and Netlify publication hold.
-2. Follow docs/hosting-setup.md: reconnect the intended Netlify account when the owner resumes
-   publication; bootstrap only a private Supabase schema/role in the selected existing project,
-   inject its verified-TLS connection secret, and connect an approved container hosting account.
-   Configure App/model server-only variables and explicit spending limits; never paste keys in chat.
-3. Implement and validate a disposable secret-free VM/microVM worker with denied network,
-   filesystem/resource/time limits, cancellation, cleanup and immutable evidence transfer.
-   Keep private execution closed until this review passes.
-4. Validate real App/model planning on an explicitly authorized small repository, then bounded
-   edits, independent verification and reconciled PR publication with human approval.
-5. Deploy the private control plane behind HTTPS with PostgreSQL/backups and test actual recovery.
+# CI diagnostic follow-up — 30 October 2026
 
-The existing small-repository inspection profile is limited to 8 source files / 24 KB total;
-this project exceeds it. A future live private task must use an explicitly approved compatible
-repository or a separately reviewed scoped-inspection enhancement. Do not create a new repo
-or access unrelated repositories merely to satisfy that test.
+Image-ID correction published as 6857df3903b8b1b871366a75168a5825b461929f.
+CI 41087651221: backend/frontend/container passed; all six live probes now reach Podman create
+and fail with sandbox_create_failed. Rootless/cgroup/image preflight passed. The prior generic
+exception discarded the actual Podman stderr; this change adds bounded redacted exit/stderr
+reporting, tested locally. Do not guess or relax the isolation configuration.
+Next: inspect the sandbox job at this head for the exact creation failure, fix its verified cause,
+and rerun all six probes/full CI. Owner execution stays disabled.
+
+# Live CI probe correction — 30 October 2026
+
+CI 41046517451 installed gVisor and built the image successfully. All six isolation cases stopped
+before execution because Podman returns a bare 64-digit image ID while the driver expected its
+sha256: prefix. The driver now canonicalizes the exact 64-digit digest; mutable tags remain denied.
+Local sandbox-controller suite: 25 passed. Next: inspect the rerun on this new head; keep owner
+execution disabled. No model/App credentials or deployed worker have been supplied.
+
+# Disposable CI isolation experiment — 30 October 2026
+
+All backend/frontend/container checks passed on `d9b57896f60dfb1b430a09afdd77bb8e6de83e12`
+([CI 41045767443](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41045767443)),
+including the worker tooling-image build. This follow-up tries the existing disposable Linux CI
+VM as a real rootless runsc test host. It contains no model/App credentials and runs only the six
+bounded security fixtures. No host security settings are weakened; no private runtime is deployed.
+
+Next exact action: inspect the sandbox job on this PR head. Fix actual driver/test defects; if the
+runner lacks required rootless/cgroup/runtime properties, record the specific failure without
+weakening controls. The owner execution gate remains closed regardless of CI test availability.
+
+## Prior implementation handoff
+
+# RepoPilot V3 continuation — 30 October 2026
+
+Repository: naraya07pedro-spec/repopilot-ai. Branch: `feat/v3-providers`.
+[PR #8](https://github.com/naraya07pedro-spec/repopilot-ai/pull/8) remains open and unmerged.
+Latest verified runtime implementation: `34bfb83eeb93d043b2b62e92860400be19eae212`.
+This follow-up adds shutdown/claim-race protection, worker tooling-image CI and final setup/evidence.
+Use the current PR head for the exact published documentation commit; no history was rewritten.
+
+## Saved milestones
+
+- `d3efcb7`: server-approved source scoping and pinned remote path mapping.
+- `fd9273f`: bounded transport/staging, owner evidence UI and private publication reconciliation.
+- `95bed12`: proxy inheritance rejection, serial browser verification and startup smoke.
+- `34bfb83`: Linux-only rootless Podman/gVisor runtime, authenticated worker service, durable journal,
+  pinned image and six-case opt-in isolation harness. Production owner dispatch remains disabled.
+
+## Actual validation
+
+[CI 41044345258](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41044345258)
+passed on `34bfb83`: 270 backend tests, six live-host skips, 94.02% statement coverage
+(2,027/2,156), PostgreSQL integration, Ruff/format, mypy, TypeScript, 13 component tests,
+six Chromium cases, private/public production builds, application container smoke and audits.
+Local full suite: 265 passed, 11 skips, 93.37% (2,013/2,156). Four PostgreSQL and one symlink
+case are local environment skips; six require a real isolated Linux host in both environments.
+No new coverage exclusions. The lower percentage includes new Linux runtime/startup paths.
+
+Follow-up shutdown/claim guards: 25 sandbox-controller tests passed; diagnostic test passed;
+Ruff/format and mypy (27 source modules) passed. Current-head CI must also verify the newly added
+trusted worker-image build/import smoke, which is explicitly not a hostile-code isolation test.
+
+Four local Chromium tests passed serially, after an initial timeout under competing work; no
+assertion or timeout was weakened. Two live HTTPS Pages desktop/mobile cases passed. Public
+mobile and test-only owner screenshots were inspected. A real temporary owner factory process
+passed health/authentication/logout HTTP checks with no external calls. Python/npm audits found
+no known vulnerabilities and configured secret patterns found no matches. See
+[evidence record](../evidence/v3-runtime-checks.json) and [evidence narrative](evidence.md).
+
+## Exact remaining gates
+
+1. No configured real model/API key or installed local model. Paid execution has no authorization.
+2. No GitHub App installation/key; live installation-scoped operations remain unvalidated.
+3. No suitable Linux worker, Podman or runsc in this Windows environment. The runtime exists but
+   its effective isolation, resource enforcement and teardown have not run on a real host.
+4. Owner `/execute` and private publication deliberately remain closed. After actual host evidence
+   passes review, wire the existing WorkerDispatcher into that route; do not add a bypass switch.
+5. Real-model → isolated verification → genuine private PR acceptance has not run. Issue #1 →
+   draft PR #2 remains authentic deterministic fixture evidence, not a real-model result.
+6. Private cloud is not deployed; Netlify stays pending by owner choice. No cloud resources or
+   unrelated databases/repositories were changed. Local operation does not require paid hosting.
+
+## Next executable action
+
+Finish/check current PR CI, particularly the new tooling-image build, and record its result in PR #8.
+Do not rerun/rebuild unchanged provider or worker contracts. With current external resources absent,
+keep execution disabled. When the owner can supply them, follow the concrete
+[activation checklist](activation-checklist.md), [Windows startup](local-owner-windows.md) and
+[Linux worker setup/harness](linux-worker.md). Run `python -m repopilot.doctor` first; it prints
+presence and platform status without credentials or network calls. Never paste secrets into chat.
+
+Overall real-agent status: INCOMPLETE. No live model/App/sandbox or production-readiness claim.
+No automatic merge, paid services, force push, unrelated fork or portfolio edit is authorized.

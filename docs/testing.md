@@ -73,3 +73,23 @@ These tests create unique roles/schemas only in the disposable `TEST_POSTGRES_UR
 never point that variable at a production/shared Supabase database. The separate Supabase
 management SQL probe was rollback-only and is not counted as an application integration test.
 CI builds the public export at both `/repopilot-ai/` and `/` and tests both in Chromium.
+
+## V3 contract checks
+
+Provider tests use synthetic HTTP responses for OpenAI, Anthropic, Gemini, Ollama and compatible
+protocols, plus a real unavailable-loopback connection. Worker tests exercise durable claims,
+approval/configuration binding, authenticated receipts, cancellation and recovery without running
+candidate code. The new Chromium owner case uses the actual API and production frontend with a
+test-only GitHub source and MockTransport provider; it checks model selection/discovery, planning,
+approval and cancellation. It is not a live provider or GitHub App integration.
+
+Run `python -m pytest tests/test_worker_contract.py tests/test_owner.py tests/test_model_adapters.py`
+for affected contracts. Full backend coverage includes worker_contract.py with no new exclusions.
+
+## Linux runtime checks
+
+`python -m pytest tests/test_sandbox.py tests/test_worker_dispatch.py tests/test_private_publish.py`
+checks actual controller/state code with synthetic runtime/GitHub responses. The separate
+`tests/test_sandbox_live.py` suite contains six opt-in cases and skips without an explicitly approved
+disposable Linux host and pinned image. See [setup and evidence boundary](linux-worker.md).
+CI builds the trusted worker image but never substitutes ordinary Docker for these isolation tests.

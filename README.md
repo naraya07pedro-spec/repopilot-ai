@@ -12,6 +12,26 @@ Arbitrary repositories and arbitrary model-generated code cannot execute on the 
 
 ## Public portfolio release
 
+V3 development adds [five provider adapters and explicit owner model selection](docs/providers.md).
+The [worker job/receipt lifecycle](docs/worker-contract.md) is also contract-tested, with no
+production dispatcher. Live provider execution and a validated isolated worker remain open
+release gates. The public recordings and their deterministic provenance are unchanged.
+
+**Current PR #8 blocker:** the six mandatory live Linux probes fail at gVisor startup with
+released rootless cgroup integration defects. A delegated cgroupfs evaluation also fails because
+the runtime writes outside delegation. Backend/frontend/container CI passes; overall CI
+is failed. Owner execution remains disabled. [Exact failure and reproduction](docs/sandbox-ci-diagnosis.md).
+
+[PR #8 verification](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41044345258)
+at `34bfb83`: **270 backend tests passed, six live-isolation skips, 94.02% coverage**.
+Thirteen component checks, six CI Chromium cases, PostgreSQL integration, type checks and
+production/container builds passed. Locally: 265 passed, 11 environment skips, 93.37% coverage.
+The experimental [Linux worker](docs/linux-worker.md), authenticated transport and reconciled
+publisher are implemented, but the owner execution gate remains closed pending actual isolation
+validation. Coverage includes the new runtime; no exclusions were added. These results do not
+establish live-model coding or production readiness. [Evidence](evidence/v3-runtime-checks.json) ·
+[Exact activation steps](docs/activation-checklist.md) · [Handoff](docs/execution-handoff.md).
+
 [Open the public demo](https://naraya07pedro-spec.github.io/repopilot-ai/) — no login, API key,
 payment or installation. Explore clearly labeled recordings, actual diffs, checks and PR links.
 [PR #4](https://github.com/naraya07pedro-spec/repopilot-ai/pull/4) is merged, integrating the
@@ -23,7 +43,7 @@ real-model planning, approval/rejection, cancellation and persistent history. Th
 contract-tested; live credentials were unavailable. General execution and private PR publication
 remain disabled until a validated isolated worker exists. This is not production-ready.
 
-[Private setup](docs/private-workspace.md) · [Deployment](docs/deployment.md) ·
+[Windows startup and diagnostics](docs/local-owner-windows.md) · [Private setup](docs/private-workspace.md) · [Deployment](docs/deployment.md) ·
 [V2 release gates](docs/v2-gaps.md)
 
 [Recruiter walkthrough](docs/recruiter-walkthrough.md) ·

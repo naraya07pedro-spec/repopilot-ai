@@ -134,3 +134,52 @@ def test_snapshot_immutable_context(key):
     app.cache[REPO + ":read"] = ("synthetic", time.time() + 3600)
     data = app.snapshot(REPO, 1)
     assert data["files"] == {"app.py": "x=1\n"} and data["base_sha"] == "a" * 40
+
+
+def test_scoped_snapshot_preserves_remote_mapping(key):
+    requested = []
+
+    def handler(req):
+        requested.append(req.url.path)
+        if "/issues/" in req.url.path:
+            return httpx.Response(200, json={"number": 1, "title": "Fix", "body": ""})
+        if "/commits/" in req.url.path:
+            return httpx.Response(
+                200, json={"sha": "a" * 40, "commit": {"tree": {"sha": "b" * 40}}}
+            )
+        if "/git/trees/" in req.url.path:
+            return httpx.Response(
+                200,
+                json={
+                    "tree": [
+                        {"path": p, "mode": "100644", "type": "blob"}
+                        for p in [
+                            "fixtures/bug/app.py",
+                            "fixtures/bug/test_app.py",
+                            *[f"outside/file{i}.py" for i in range(10)],
+                        ]
+                    ]
+                },
+            )
+        if "/contents/" in req.url.path:
+            assert "/contents/fixtures/bug/" in req.url.path
+            return httpx.Response(
+                200,
+                json={"type": "file", "size": 4, "content": base64.b64encode(b"x=1\n").decode()},
+            )
+        return httpx.Response(200, json={"default_branch": "main"})
+
+    app = adapter(key, handler)
+    app.source_roots = {REPO: "fixtures/bug"}
+    app.cache[REPO + ":read"] = ("synthetic", time.time() + 3600)
+    data = app.snapshot(REPO, 1)
+    assert set(data["files"]) == {"app.py", "test_app.py"}
+    assert data["source_root"] == "fixtures/bug/"
+    assert data["base_tree"] == "b" * 40
+    assert not any("outside" in path for path in requested)
+
+
+@pytest.mark.parametrize("root", ["../bad", "/root", ".github", "fixtures//bug", "fixtures/../bug"])
+def test_source_scope_rejects_unsafe_prefix(root):
+    with pytest.raises(PolicyError, match="source_root"):
+        GitHubApp(httpx.Client(), "id", "unused", 1, (REPO,), {REPO: root})

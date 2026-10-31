@@ -1,0 +1,134 @@
+{
+  "date": "2026-10-30",
+  "implementation_commit": "0c3ae880dea735f2cd083a3170efd40d9217f5e5",
+  "ci_url": "https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41090628500",
+  "ci_conclusion": "failure",
+  "sandbox_job": 124183254613,
+  "environment": {
+    "runner_image": "ubuntu-24.04 20261025.353.1",
+    "kernel": "7.0.0-1017-azure",
+    "python": "3.12.15",
+    "pytest": "9.0.3",
+    "podman": "4.9.3",
+    "runsc": "release-20261026.0",
+    "oci_spec": "1.2.1",
+    "rootless": true,
+    "cgroups": "v2",
+    "cgroup_manager": "systemd"
+  },
+  "command": "python -m pytest tests/test_sandbox_live.py -v --junitxml=evidence/sandbox-live.xml",
+  "root_cause": {
+    "phase": "OCI runtime startup after successful Podman create and inspection",
+    "guest_command_exit": 125,
+    "error": "creating container: systemd error: Interactive authentication required.",
+    "upstream_issue": "https://github.com/google/gvisor/issues/11543",
+    "upstream_fix": "https://github.com/google/gvisor/pull/13853",
+    "fix_state_at_review": "open, unmerged",
+    "classification": "released gVisor rootless/systemd integration incompatibility; not general lack of cgroup v2 on Actions"
+  },
+  "probes": [
+    {
+      "name": "benign_checks_and_teardown",
+      "result": "failed",
+      "candidate_started": false,
+      "isolation_verified": false
+    },
+    {
+      "name": "filesystem_identity_network_and_secret_boundary",
+      "result": "failed",
+      "candidate_started": false,
+      "isolation_verified": false
+    },
+    {
+      "name": "disk_limit",
+      "result": "failed",
+      "candidate_started": false,
+      "isolation_verified": false
+    },
+    {
+      "name": "memory_limit",
+      "result": "failed",
+      "candidate_started": false,
+      "isolation_verified": false
+    },
+    {
+      "name": "process_limit",
+      "result": "failed",
+      "candidate_started": false,
+      "isolation_verified": false
+    },
+    {
+      "name": "cpu_deadline_and_cancellation",
+      "result": "failed",
+      "candidate_started": false,
+      "isolation_verified": false
+    }
+  ],
+  "sandbox_pytest": {
+    "exit_code": 1,
+    "passed": 0,
+    "failed": 6,
+    "skipped": 0,
+    "cancellation_phase_reached": false
+  },
+  "cleanup": "driver confirmed removal of named container objects; running-sandbox teardown and crash recovery remain unverified",
+  "backend": {
+    "passed": 275,
+    "skipped": 6,
+    "skip_scope": "live sandbox probes run separately in mandatory sandbox job",
+    "statements": 2176,
+    "covered": 2046,
+    "coverage_percent": 94.02573529411765,
+    "postgres": "passed"
+  },
+  "frontend": {
+    "components": 13,
+    "chromium": 6,
+    "typecheck": "passed",
+    "private_public_builds": "passed",
+    "audit": "no known vulnerabilities"
+  },
+  "quality": {
+    "ruff": "passed",
+    "format": "passed",
+    "mypy_sources": 27,
+    "python_audit": "no known vulnerabilities",
+    "secret_scan": "146 tracked files; no configured credential patterns",
+    "container": "passed"
+  },
+  "local": {
+    "controller_tests": 28,
+    "full_suite_commit": "ea86ad067fad416fb7c3e20fceac3c6cf08a3238",
+    "full_suite_passed": 268,
+    "environment_skips": 11,
+    "coverage_percent": 93.42226310947562
+  },
+  "owner_dispatch_enabled": false,
+  "live_model": "not run",
+  "live_github_app": "not run",
+  "real_agent_issue_to_pr": "not run",
+  "repeat_validation": {
+    "commit": "9cc4bae9adb9dc6b358d50d321038a9f283a3956",
+    "ci_url": "https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41092402645",
+    "ci_conclusion": "failure",
+    "sandbox_job": 124189385983,
+    "sandbox_failed": 6,
+    "sandbox_skipped": 0,
+    "same_startup_error": true,
+    "backend_passed": 275,
+    "backend_skipped": 6,
+    "backend_covered": 2045,
+    "backend_statements": 2176,
+    "backend_coverage_percent": 93.97977941176471,
+    "frontend_components": 13,
+    "chromium": 6,
+    "container": "passed",
+    "audits": "passed",
+    "secret_scan_tracked_files": 148,
+    "local_passed": 270,
+    "local_environment_skips": 11,
+    "local_covered": 2032,
+    "local_statements": 2176,
+    "local_coverage_percent": 93.38235294117648
+  }
+}

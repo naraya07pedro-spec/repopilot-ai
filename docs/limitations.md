@@ -19,7 +19,12 @@
 
 V2 private planning supports only small Python/TypeScript repositories, with strict context
 limits. Live GitHub App authentication and real-model calls await credentials and approved
-budget. Private modification, isolated verification and PR publication are not implemented.
+budget. Private full-file edits, safe text staging, signed transport, the experimental Linux
+runtime and reconciled PR publication are implemented. Actual Linux isolation and live provider/App
+acceptance remain unverified; owner dispatch/publication remain disabled. Controller receipts in
+tests are synthetic. Actual Linux CI probes now fail at gVisor startup with the released runtime's
+rootless systemd integration error; no candidate code executes. See
+[diagnosis and remaining isolation gate](sandbox-ci-diagnosis.md).
 Private deployment, production PostgreSQL recovery and hostile-code sandbox validation remain
 deferred. The public GitHub Pages demo is deployed; Netlify publication is pending by owner
 decision. Additional cloud resources, paid models and private hosting are outside the current

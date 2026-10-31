@@ -44,3 +44,24 @@ test("owner session, authorization, unavailable execution, logout",async({page,r
  await expect(page.getByRole("button",{name:"Sign in",exact:true})).toBeVisible();
  expect((await page.request.get("http://127.0.0.1:3011/api/owner/settings")).status()).toBe(401);
 });
+test("contract-only owner provider selection, plan approval and cancellation",async({page},testInfo)=>{
+ await page.goto("http://127.0.0.1:3011/owner");
+ await page.getByLabel("Owner password").fill("browser-test-password-only");
+ await page.getByRole("button",{name:"Sign in",exact:true}).click();
+ await page.getByRole("button",{name:"Validate approved repositories"}).click();
+ await expect(page.getByLabel("Repository")).toHaveValue("naraya07pedro-spec/repopilot-ai");
+ await page.getByLabel("AI provider").selectOption("ollama");
+ await page.getByRole("combobox",{name:"Model",exact:true}).selectOption("browser-local");
+ await page.getByRole("button",{name:"Check model availability"}).click();
+ await expect(page.getByRole("status")).toContainText('"discovered":true');
+ await page.getByRole("button",{name:"Generate AI plan"}).click();
+ await expect(page.getByRole("region",{name:"Proposed code diff"})).toContainText("+    return sum(values) / len(values)");
+ await page.getByRole("button",{name:"Approve exact plan"}).click();
+ await expect(page.getByText("Plan accepted; no code has executed")).toBeVisible();
+ await expect(page.getByRole("heading",{name:"Proposed plan and edits: unexecuted",exact:true})).toBeVisible();
+ await expect(page.getByRole("button",{name:"Isolated execution unavailable"})).toBeDisabled();
+ await page.screenshot({path:testInfo.outputPath("owner-contract-plan.png"),fullPage:true});
+ await page.getByRole("button",{name:"Cancel run"}).click();
+ await expect(page.locator(".console-head .status")).toHaveText("cancelled");
+ await page.getByRole("button",{name:"Sign out"}).click();
+});

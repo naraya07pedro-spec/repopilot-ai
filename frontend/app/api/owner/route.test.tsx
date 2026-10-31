@@ -1,6 +1,14 @@
 import {afterEach,expect,test,vi} from "vitest";
 import {NextRequest} from "next/server";
 afterEach(()=>{vi.restoreAllMocks();vi.unstubAllEnvs();vi.resetModules();});
+test("model discovery proxy allows only bounded configured-profile paths",async()=>{
+ const fetcher=vi.spyOn(globalThis,"fetch").mockImplementation(async()=>new Response('{"discovered":true}'));
+ const {POST}=await import("./[...path]/route");
+ const request=()=>new NextRequest("http://localhost:3000/api/owner/models/local/discover",{method:"POST",headers:{Origin:"http://localhost:3000"}});
+ expect((await POST(request(),{params:Promise.resolve({path:["models","local","discover"]})})).status).toBe(200);
+ expect((await POST(request(),{params:Promise.resolve({path:["models","..","discover"]})})).status).toBe(404);
+ expect(fetcher).toHaveBeenCalledOnce();
+});
 test("proxy binds mutations to configured public origin despite normalized request URL",async()=>{
  vi.stubEnv("REPOPILOT_ORIGIN","http://127.0.0.1:3011");vi.resetModules();
  const fetcher=vi.spyOn(globalThis,"fetch").mockImplementation(async()=>new Response(JSON.stringify({authenticated:true}),{headers:{"set-cookie":"repopilot_owner=synthetic; HttpOnly; SameSite=Strict","x-request-id":"test-id"}}));

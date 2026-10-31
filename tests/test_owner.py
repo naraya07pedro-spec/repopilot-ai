@@ -142,7 +142,12 @@ def test_private_plan_approval_cancel_and_no_execution(tmp_path, config):
         owner.service = PrivateService(app.state.store.engine, owner.github, owner.planner)
         client.post("/api/owner/login", json={"password": PASSWORD}).raise_for_status()
         assert client.get("/api/owner/repositories").json() == [REPO]
-        req = {"repository": REPO, "issue_number": 1, "idempotency_key": "private-plan"}
+        req = {
+            "repository": REPO,
+            "issue_number": 1,
+            "idempotency_key": "private-plan",
+            "paid_approved": True,
+        }
         start = client.post("/api/owner/runs", json=req)
         assert start.status_code == 202
         identity = start.json()["id"]
@@ -150,6 +155,8 @@ def test_private_plan_approval_cancel_and_no_execution(tmp_path, config):
         assert client.post("/api/owner/runs", json={**req, "issue_number": 2}).status_code == 409
         run = wait(client, identity)
         assert run["status"] == "awaiting_approval", run
+        assert "+    return sum(values) / len(values)" in run["diff"]
+        assert "--- a/app.py" in run["diff"]
         assert client.get("/api/demo/runs").json() == []
         assert client.get("/api/demo/runs/" + identity).status_code == 404
         assert (
@@ -237,16 +244,16 @@ def test_production_configuration(monkeypatch):
 
 def test_service_recovery_rejection_and_conflicts(store):
     s = service(store)
-    item, fresh = s.create(REPO, 1, "recovery-key")
+    item, fresh = s.create(REPO, 1, "recovery-key", paid_approved=True)
     assert fresh
-    assert s.create(REPO, 1, "recovery-key")[1] is False
+    assert s.create(REPO, 1, "recovery-key", paid_approved=True)[1] is False
     with pytest.raises(PolicyError):
-        s.create(REPO, 2, "recovery-key")
+        s.create(REPO, 2, "recovery-key", paid_approved=True)
     s.recover()
     assert s.get(item["id"])["status"] == "interrupted"
     s.prepare(item["id"])
     assert s.get(item["id"])["status"] == "interrupted"
-    item, _ = s.create(REPO, 1, "reject-key")
+    item, _ = s.create(REPO, 1, "reject-key", paid_approved=True)
     s.prepare(item["id"])
     assert s.stop(item["id"], "rejected")["status"] == "rejected"
     assert len(s.history()) == 2
@@ -268,7 +275,7 @@ def test_private_path_policy(store, path):
     plan["edits"][0]["path"] = path
     data["choices"][0]["message"]["content"] = json.dumps(plan)
     s.planner = planner(store, lambda r: httpx.Response(200, json=data))
-    item, _ = s.create(REPO, 1, "unsafe-key")
+    item, _ = s.create(REPO, 1, "unsafe-key", paid_approved=True)
     s.prepare(item["id"])
     assert s.get(item["id"])["status"] == "failed"
 
@@ -365,7 +372,7 @@ def test_budget_atomic_concurrent_reservation(store):
 
 def test_cancel_preserves_plan_completed_during_race(store, monkeypatch):
     s = service(store)
-    item, _ = s.create(REPO, 1, "cancel-race")
+    item, _ = s.create(REPO, 1, "cancel-race", paid_approved=True)
     original = s.transition
     raced = False
 
@@ -381,3 +388,67 @@ def test_cancel_preserves_plan_completed_during_race(store, monkeypatch):
     assert stopped["status"] == "cancelled"
     assert stopped["plan"] and stopped["usage"]
     assert [event["name"] for event in stopped["events"]][-2:] == ["plan_ready", "cancelled"]
+
+
+def test_private_diff_is_derived_without_execution(store, monkeypatch):
+    from repopilot.models import Edit, Plan
+
+    s = service(store)
+    plan = Plan.model_validate_json(result()["choices"][0]["message"]["content"])
+    plan.edits = [Edit(path="tests/test_added.py", content="assert 1 == 1")]
+    monkeypatch.setattr(s.planner, "plan", lambda *args: (plan, {}))
+    row, _ = s.create(REPO, 1, "preview-new-file", paid_approved=True)
+    s.prepare(row["id"])
+    data = s.get(row["id"])
+    assert data["status"] == "awaiting_approval"
+    assert "--- /dev/null" in data["diff"]
+    assert "+assert 1 == 1\n\\ No newline at end of file\n" in data["diff"]
+    assert "worker_receipt" not in data
+
+
+def test_noop_and_oversize_private_diffs_fail_closed(store, monkeypatch):
+    from repopilot.models import Edit, Plan
+
+    s = service(store)
+    plan = Plan.model_validate_json(result()["choices"][0]["message"]["content"])
+    plan.edits = [Edit(path="app.py", content=snapshot()["files"]["app.py"])]
+    monkeypatch.setattr(s.planner, "plan", lambda *args: (plan, {}))
+    row, _ = s.create(REPO, 1, "preview-no-change", paid_approved=True)
+    s.prepare(row["id"])
+    assert s.get(row["id"])["failure_category"] == "private_no_change"
+    plan.edits = [Edit(path=f"tests/test_new_{i}.py", content="x\n" * 12000) for i in range(4)]
+    row, _ = s.create(REPO, 1, "preview-too-large", paid_approved=True)
+    s.prepare(row["id"])
+    assert s.get(row["id"])["failure_category"] == "private_diff_limit"
+
+
+def test_queued_scope_change_and_conflicting_idempotency_fail_closed(store):
+    s = service(store)
+    s.github.source_roots = {REPO: "fixtures/bug"}
+    row, _ = s.create(REPO, 1, "scope-change-key", paid_approved=True)
+    s.github.source_roots = {REPO: "fixtures/feature"}
+    with pytest.raises(PolicyError, match="idempotency_conflict"):
+        s.create(REPO, 1, "scope-change-key", paid_approved=True)
+    s.prepare(row["id"])
+    assert s.get(row["id"])["failure_category"] == "repository_scope_changed"
+
+
+@pytest.mark.parametrize("roots", [["wrong"], {"unapproved/repo": "fixtures"}, {REPO: "../escape"}])
+def test_owner_rejects_invalid_source_root_configuration(roots):
+    with pytest.raises(PolicyError, match="source_root"):
+        OwnerConfig(source_roots=roots, repositories=(REPO,)).validate()
+
+
+def test_local_doctor_never_reports_secret_values(monkeypatch):
+    from repopilot.doctor import report
+
+    monkeypatch.setenv("OPENAI_API_KEY", "private-value-never-print")
+    monkeypatch.setenv("REPOPILOT_MODE", "owner")
+    monkeypatch.delenv("REPOPILOT_OWNER_PASSWORD_HASH", raising=False)
+    result = report()
+    assert not result["execution_enabled"] and not result["live_integrations_validated"]
+    assert not result["owner_configuration_valid"]
+    assert result["provider_credentials_present"]["OPENAI_API_KEY"]
+    assert "private-value-never-print" not in json.dumps(result)
+    monkeypatch.setenv("REPOPILOT_MODE", "local")
+    assert report()["model_profiles"] == 0
