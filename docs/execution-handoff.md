@@ -10,11 +10,22 @@ and an open draft PR. No experimental PR #8 runtime was imported or merged.
 A checksum-verified portable llama.cpp Vulkan binary on D: starts and detects the RX 580.
 Existing Llama 3.2 weights pass their manifest SHA-256 check, but a guarded loading trial ended
 before readiness as free RAM fell below 512 MiB. No live generation succeeded, no inference GPU
-utilization was measured, and no new weights were downloaded for that trial. A smaller-model
-download choice is pending; do not treat silence as approval. Private execution/publication
+utilization was measured, and no new weights were downloaded for that trial. The owner then
+approved a smaller Qwen 0.5B model: 428,730,240 bytes downloaded to D: with a verified pinned
+SHA-256. After the owner freed memory, CPU-only structured generation succeeded on an explicitly
+guided one-file fixture: 11.0 seconds, 262 prompt / 212 completion tokens, real schema-valid edit
+saved at awaiting_approval. Static bytes match the // -> / fix; no approval, execution or PR
+occurred. Earlier incomplete/no-change outputs and GPU/context memory-guard aborts remain evidence.
+No apps were closed by the agent and the guards were not lowered. Private execution/publication
 remain disabled. See [the milestone and exact limitations](windows-local-agent-milestone.md).
 Local Windows checks: 273 passed, five environment skips, 95.44% coverage; Ruff/format (80 files)
 and mypy (26 modules) passed. The additional model/worker/GitHub workflow tests are synthetic.
+GitHub Verify run 41230279122 passed all three application jobs for exact commit 2da0e9b.
+scripts/preview_local_fixture.py provides a repeatable local-only JSON review without worker,
+candidate-code execution or publication. This wrapper is contract-tested; the live smoke used
+the underlying production adapter/planner/service with fixed public data, not a GitHub App Issue.
+Final local checks after the wrapper: 277 passed, five environment skips, 95.44% coverage;
+Ruff/format (83 files), mypy (26 modules), and the shipped profile's context admission passed.
 
 ## Owner decision — 1 November 2026 (Asia/Jakarta)
 

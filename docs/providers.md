@@ -1,7 +1,10 @@
 # Provider integration and model compatibility
 
 V3 supports five explicit wire protocols behind the same validated Plan contract (including
-complete file contents). These adapters are **contract-tested**, not live-model validated.
+complete file contents). All adapters are contract-tested. On 1 November 2026 the local compatible
+adapter also passed a real CPU-only Qwen 0.5B structured-generation smoke for one explicitly
+guided fixture; see [measured evidence and limitations](windows-local-agent-milestone.md).
+Other provider/model pairs are not live-validated by that result.
 The deterministic fixture provider remains separate and unchanged. No model is selected
 automatically; no provider fallback or cross-provider transfer exists.
 
@@ -100,5 +103,5 @@ Reviewed 29 October 2026:
   and [models](https://ai.google.dev/api/models).
 - [Ollama chat](https://docs.ollama.com/api/chat) and [local model list](https://docs.ollama.com/api/tags).
 
-No provider/model pair has a live success record in this environment. Official credentials,
+The local compatible/Qwen fixture result does not validate other provider/model pairs. Official credentials,
 paid-call authorization or an installed local model are still required for that release gate.

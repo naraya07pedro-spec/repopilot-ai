@@ -34,6 +34,9 @@ Local Windows verification: **273 passed, five environment skips, 95.44% stateme
 privilege case. Ruff check, format check (80 files) and mypy (26 application modules) passed.
 No UI source changed, so a local production frontend build was not repeated. The development
 branch's normal GitHub CI must be reported separately from these local results.
+Remote [Verify run 41230279122](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41230279122)
+passed backend, frontend and container jobs for exact commit
+2da0e9bd8730f1f70ac751416928ace75074e022. No live sandbox job is present on this release branch.
 
 ## Actual local runtime and model evidence
 
@@ -52,8 +55,8 @@ startup and device enumeration, not model inference or a driver performance guar
 
 One bounded Llama loading trial used loopback port 18434, offline mode, one request slot,
 two CPU threads, below-normal CPU priority, two logical-CPU affinity, 8,192 context tokens,
-quantized KV cache and explicit Vulkan offload. It used fixed public fixture data and did not
-load credentials or an external provider. A 1 GiB initial-headroom check and a 512 MiB
+quantized KV cache and explicit Vulkan offload. It used fixed public fixture data, supplied no
+credentials in model requests and made no external provider call. A 1 GiB initial-headroom check and a 512 MiB
 available-RAM floor protect the ongoing workload; only the test-owned server can be stopped.
 
 The RAM guard stopped the owned server after 4.328 seconds before readiness. The minimum
@@ -64,12 +67,60 @@ utilization was not captured because readiness was never reached. The exit is an
 abort, not proof of model corruption or a Vulkan compatibility failure. No generated plan exists
 from this trial and no generated code ran. The owned server was confirmed exited.
 
-The smaller-model download choice is pending. Do not fetch new weights automatically while that
-choice is pending; the existing 3B trial does not justify weakening the memory guard or closing
-OpenClaw/other applications. The owner can instead make headroom available without a WSL change.
+The owner subsequently approved one smaller test model. Qwen2.5-Coder-0.5B-Instruct Q4_0 was
+downloaded to D:, 428,730,240 bytes (about 409 MiB), from the official Qwen repository pinned at
+ebb2015119c907b064c512bf053e945850b5875f. Its SHA-256 matches the published LFS object digest.
+The [separate provenance record](../evidence/qwen-local-provenance-2026-11-01.json) preserves the
+approval, exact source, bytes and digest. No other new model was fetched.
 
-The [compatible-server profile](../deploy/llamacpp-local.example.json) is an unvalidated startup
-template for alias repopilot-local; it is not a running endpoint or a claim of generation success.
+The owner subsequently reported freeing memory. The smaller Vulkan loading trial still reached
+the 512 MiB RAM floor before readiness. Native per-PID counters observed 411,607,040 dedicated
+GPU bytes, 200,298,496 shared GPU bytes and 14.16% engine activity in an initialization sample.
+Those are not inference performance numbers. Only the owned runtime was stopped.
+
+CPU-only loading and inference then worked under the unchanged guards. The first response was
+rejected as incomplete at the smaller output allowance. A later schema-valid response repeated
+the original bug and was correctly rejected as private_no_change. A 16K-context loading attempt
+also hit the memory floor. These outcomes remain in the evidence; a tiny model is not a broadly
+validated coding agent. Memory availability fluctuated even after the owner freed applications.
+
+A final **explicitly guided, one-file fixture** asked for the // -> / operator change. With 8,192
+context tokens and a 1,536-token output cap, the real compatible adapter discovered the local
+model, normalized measured usage, and produced a schema-valid full app.py edit. PrivateService
+saved its exact diff/approval binding and stopped at **awaiting_approval**. Static byte comparison
+matches the expected one-line fix and preserves the empty-list exception. No code was executed,
+no human approval was granted, no worker job/receipt existed and no PR was published.
+
+Measured successful trial: ready in 4.468 seconds; request 11.000 seconds; 262 prompt / 212 output
+tokens; observed process CPU time 22.0 seconds; sampled peak working set 726,618,112 bytes and
+private memory 410,042,368 bytes; minimum available RAM 863,236,096 bytes. CPU affinity was two
+logical CPUs with below-normal priority. GPU offload was explicitly disabled for this successful
+trial; GPU inference throughput was not measured. This was an in-process planning smoke with
+fixed public fixture data, not a live GitHub App Issue or the full Next/API/model/worker workload.
+
+[Live inference evidence](../evidence/qwen-local-inference-2026-11-01.json) contains the actual
+plan/diff, measured usage and earlier failures separately from synthetic integration tests.
+The test-owned server exited after the trial. No external application was closed by the agent.
+
+The [compatible-server profile](../deploy/llamacpp-local.example.json) is a startup template for
+alias repopilot-local; it does not start a service or download a model. Its output cap now allows
+the complete bounded response. scripts/preview_local_fixture.py provides a repeatable data-only
+preview against an already running local runtime. It refuses paid profiles, proxy inheritance
+and existing output directories, and never approves, writes candidate Python, executes or publishes.
+Its wrapper tests use synthetic replies; the live measurement used the same underlying adapter,
+planner and service. A later wrapper live preflight was refused for insufficient starting RAM.
+
+Against an already owned, resource-guarded loopback server, with sufficient headroom:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/preview_local_fixture.py deploy/llamacpp-local.example.json pc-local-compatible D:\Projects\repopilot-local\new-local-review
+```
+
+The output directory must be new. Inspect review.json as untrusted model output; this is a
+guided public fixture preview, not real GitHub intake or approval to run its edit.
+Final wrapper milestone checks: **277 passed, five environment skips, 95.44% coverage**;
+Ruff/format (83 files) and mypy (26 application modules) passed. The shipped profile admits
+the fixture at 2,120 encoded request bytes without contacting an endpoint. No UI source changed.
 The local measurement harness/logs are under D:\Projects\repopilot-local\runtime-evaluation-2026-11-01.
 The sanitized [evidence record](../evidence/windows-local-agent-2026-11-01.json) separates live
 binary/load observations from synthetic component tests.
@@ -81,8 +132,8 @@ bypassed or retested. PR #8's six failed isolation probes remain authoritative f
 There is no verified local model -> isolated tests -> draft PR run. A successful model-only
 generation would still stop at inspection/approval; it would not authorize host execution.
 
-Next: obtain a genuinely schema-valid local model response within measured PC headroom, then
-review it without execution. Separately, a compatible isolated worker must pass all existing
+Local structured generation is verified for the guided fixture only; review the recorded output
+without execution. Separately, a compatible isolated worker must pass all existing
 security/resource/lifecycle probes before any production dispatcher or publication activation.
 The repository-scoped GitHub App and separate publication approval are still required for a
 real agent-authored draft. Git CLI development pushes do not supply or validate that App.

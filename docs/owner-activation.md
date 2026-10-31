@@ -41,8 +41,12 @@ WSL recovery is explicitly deferred; leave OpenClaw running and do not repeat di
 The older 4 GB laptop measurements in [local-feasibility.md](local-feasibility.md) are historical.
 On this PC, existing Llama 3.2/DeepSeek GGUF weights are on D:. A checksum-verified portable
 llama.cpp Vulkan runtime detects the RX 580; the Llama 3.2 loading trial was stopped by its
-free-RAM guard before readiness. This is not successful inference. No new weights were fetched
-for that trial. No cloud API key is required, and paid generation stays denied.
+free-RAM guard before readiness. No new weights were fetched for that initial trial.
+The owner then approved a smaller Qwen 0.5B GGUF download. CPU-only inference produced a
+schema-valid edit for one explicitly guided fixture; it stopped at awaiting_approval and did not
+execute or publish anything. Earlier incomplete/no-change results and memory aborts limit the
+claim. See [the measured PC milestone](windows-local-agent-milestone.md).
+No cloud API key is required, and paid generation stays denied.
 
 The prepared `deploy/local-models.example.json` profiles select only the local Ollama endpoint
 at http://127.0.0.1:11434 with zero input/output prices. They are candidate configurations, not
