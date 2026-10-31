@@ -29,7 +29,7 @@ Local: 242 backend passed, five environment skips, 95.36%; 141 targeted contract
 approved-plan publication-denial regression passed. TypeScript, 13 frontend tests, private/public
 builds and four serial browser cases passed. Two live HTTPS Pages desktop/mobile cases passed;
 the real mobile screenshot was inspected. Public private-endpoint requests returned 404.
-[Structured evidence](../evidence/portfolio-release-checks.json). This documentation follow-up
+[Structured evidence](../evidence/v3-portfolio-release-checks-2026-10-31.json). This documentation follow-up
 records the measured source checkpoint; verify its current CI in PR #9 before review approval.
 
 PR #8 remains unchanged at 37c01e9 and still fails its mandatory sandbox job. No runtime

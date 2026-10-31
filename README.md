@@ -29,7 +29,7 @@ scope. [Release boundary](docs/portfolio-release.md) · [Current evidence](docs/
 at `b611e82`: **247 backend tests, zero skips, 96.10% coverage**, 13 component tests and six
 Chromium cases passed, with builds, PostgreSQL and audits. Two additional browser tests verified
 the live HTTPS demo on desktop/mobile. [Review PR #9](https://github.com/naraya07pedro-spec/repopilot-ai/pull/9) ·
-[Measured release evidence](evidence/portfolio-release-checks.json).
+[Measured release evidence](evidence/v3-portfolio-release-checks-2026-10-31.json).
 
 [Open the public demo](https://naraya07pedro-spec.github.io/repopilot-ai/) — no login, API key,
 payment or installation. Explore clearly labeled recordings, actual diffs, checks and PR links.

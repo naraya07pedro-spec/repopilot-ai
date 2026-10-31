@@ -20,7 +20,7 @@ All sandbox files and six failed live probes remain preserved in
 This branch never contained that runtime; its CI workflow is identical to main and no tests or
 workflows are deleted relative to main. Application success does not supersede the isolation failure.
 No live model, App installation or real-agent Issue-to-PR acceptance was run.
-[Structured release record](../evidence/portfolio-release-checks.json) · [Release boundary](portfolio-release.md).
+[Structured release record](../evidence/v3-portfolio-release-checks-2026-10-31.json) · [Release boundary](portfolio-release.md).
 
 ## Historical evidence
 
