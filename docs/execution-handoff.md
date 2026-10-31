@@ -1,5 +1,28 @@
 # Cgroupfs evaluation checkpoint — 31 October 2026
 
+**Evaluation completed: BLOCKED.** Published experiment `7ddafa79caf2f4d9eec439313f815ee8dd3e07fa`.
+[CI 41161569981](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41161569981)
+passed backend/frontend/container; all six real probes failed, none skipped. The unprivileged
+scope successfully enabled `cpu memory pids`, but released gVisor's filesystem driver attempts
+to write `/sys/fs/cgroup/cgroup.subtree_control` outside delegation and exits 125, permission denied.
+The harness confirmed no remaining probe containers or child job cgroups. No guest code ran.
+Kernel limit observations and running cancellation/recovery remain unverified. No further flag
+experiments or repeated same-version retries are justified; execution/publication stays disabled.
+
+Local: 275 backend passed, 11 environment skips, 93.42%; 33 controller tests passed. CI: 280 backend
+passed, six separate-job skips, 93.96% (2,055/2,187); PostgreSQL, Ruff/format/mypy, 13 component and
+six Chromium tests, private/public builds, container smoke and audits passed. Overall CI FAILED.
+See [diagnosis and exact host procedure](sandbox-ci-diagnosis.md) and
+[machine-readable evidence](../evidence/cgroupfs-evaluation.json).
+
+**Next action:** evaluate a reviewed runtime release/configuration that confines cgroup operations
+to the delegated subtree or supports user-systemd correctly. Do not grant global root-cgroup
+access. Re-run the harness only when that prerequisite changes. Then review dispatcher binding
+and run real-model/App Issue-to-PR acceptance. Model/App credentials, paid-call approval and a
+validated persistent worker are still absent; cloud deployment remains deferred.
+
+## Experiment setup (historical checkpoint)
+
 Recovered clean branch at `d22bb6a`; latest failure and upstream #13853 rechecked (still open).
 This checkpoint tests Podman's documented cgroupfs manager inside an unprivileged delegated
 systemd scope. gVisor no longer needs system-wide systemd authorization. The driver requires

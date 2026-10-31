@@ -1,4 +1,16 @@
-# Current sandbox validation — 30 October 2026
+# Cgroupfs evaluation — 31 October 2026
+
+[CI 41161569981](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41161569981)
+tested a real unprivileged delegated cgroupfs scope on `7ddafa7`. The delegation enabled CPU,
+memory and pids successfully. All six live probes then failed before guest execution because
+released gVisor writes an ancestor subtree-control file outside delegation (permission denied,
+exit 125). No container objects or child job cgroups remained after failed-start cleanup.
+Effective resource behavior and running cancellation/recovery remain unverified; owner execution
+stays disabled. Backend: 280 passed, six separate-job skips, 93.96% coverage. Frontend: 13 component
+and six Chromium passed. Other builds, types, PostgreSQL and audits passed. Overall CI **FAILED**.
+[Diagnosis and procedure](sandbox-ci-diagnosis.md) · [Structured record](../evidence/cgroupfs-evaluation.json).
+
+# Previous sandbox validation — 30 October 2026
 
 Runtime correction `0c3ae880dea735f2cd083a3170efd40d9217f5e5` was exercised in
 [CI 41090628500](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41090628500).

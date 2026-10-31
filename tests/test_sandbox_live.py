@@ -161,6 +161,7 @@ def test_live_cpu_deadline_and_cancellation(runtime):
                     continue  # Runtime teardown may remove a group between reads.
             time.sleep(0.05)
         result = future.result(timeout=30)
+    assert result.checks and result.checks[0].name == "pytest"
     assert result.outcome == "failed" and result.checks[0].timed_out, result.model_dump()
     assert observed, "Kernel CPU/memory/swap/PID limits were not observed"
     assert throttled, "Kernel CPU throttling was not observed"

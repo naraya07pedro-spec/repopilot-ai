@@ -1,0 +1,102 @@
+{
+  "date": "2026-10-31",
+  "implementation_commit": "7ddafa79caf2f4d9eec439313f815ee8dd3e07fa",
+  "ci_url": "https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41161569981",
+  "sandbox_job": 124420048940,
+  "artifact_url": "https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41161569981/artifacts/13027226741",
+  "ci_conclusion": "failure",
+  "environment": {
+    "runner": "ubuntu-24.04",
+    "kernel": "7.0.0-1017-azure",
+    "podman": "4.9.3",
+    "runsc": "release-20261026.0",
+    "rootless": true,
+    "cgroup_version": "v2",
+    "selected_manager": "cgroupfs"
+  },
+  "scope": {
+    "command": "systemd-run --user --scope --property=Delegate=yes python scripts/run_sandbox_probes.py",
+    "enabled_controllers": [
+      "cpu",
+      "memory",
+      "pids"
+    ],
+    "delegation_succeeded": true,
+    "global_cgroup_permissions_changed": false
+  },
+  "failure": {
+    "phase": "runsc startup",
+    "command_exit": 125,
+    "harness_exit": 1,
+    "error": "cannot set up cgroup for root: configuring cgroup: open /sys/fs/cgroup/cgroup.subtree_control: permission denied: OCI permission denied",
+    "release_source": "https://github.com/google/gvisor/blob/release-20261026.0/runsc/cgroup/cgroup_v2.go",
+    "upstream_user_systemd_fix": "https://github.com/google/gvisor/pull/13853",
+    "upstream_fix_state": "open, unmerged as checked 2026-10-31"
+  },
+  "probes": [
+    {
+      "name": "benign_checks_and_teardown",
+      "status": "failed",
+      "guest_started": false
+    },
+    {
+      "name": "filesystem_identity_network_and_secret_boundary",
+      "status": "failed",
+      "guest_started": false
+    },
+    {
+      "name": "disk_limit",
+      "status": "failed",
+      "guest_started": false
+    },
+    {
+      "name": "memory_limit",
+      "status": "failed",
+      "guest_started": false
+    },
+    {
+      "name": "process_limit",
+      "status": "failed",
+      "guest_started": false
+    },
+    {
+      "name": "cpu_deadline_and_cancellation",
+      "status": "failed",
+      "guest_started": false
+    }
+  ],
+  "failed": 6,
+  "passed": 0,
+  "skipped": 0,
+  "effective_cpu_memory_pid_enforcement": "not verified; guest startup failed",
+  "kernel_probe": "requires cpu.max/memory.max/memory.swap.max/pids.max plus CPU throttling; not reached successfully",
+  "cleanup": "harness confirmed no named probe containers or descendant job cgroups remain; running-sandbox cleanup/recovery unverified",
+  "backend": {
+    "passed": 280,
+    "skipped": 6,
+    "covered": 2055,
+    "statements": 2187,
+    "coverage_percent": 93.96433470507544,
+    "postgres": "passed"
+  },
+  "frontend": {
+    "components_passed": 13,
+    "chromium_passed": 6,
+    "typecheck": "passed",
+    "builds": "passed"
+  },
+  "audits": "passed: Python/npm known-vulnerability audits and 149-file configured-secret-pattern scan",
+  "container": "passed; not isolation proof",
+  "local": {
+    "passed": 275,
+    "environment_skips": 11,
+    "controller_tests_passed": 33,
+    "covered": 2043,
+    "statements": 2187,
+    "coverage_percent": 93.4156378600823
+  },
+  "owner_execution_enabled": false,
+  "real_model": "not run",
+  "github_app": "not live tested",
+  "activation": "requires reviewed compatible runtime/host, model/local endpoint, GitHub App, then gated dispatcher binding and real acceptance"
+}

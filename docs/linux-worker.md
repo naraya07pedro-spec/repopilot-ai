@@ -1,7 +1,8 @@
 # Experimental Linux worker: setup and validation
 
 Implemented, **live validation attempted and blocked**. All six mandatory CI probes fail at
-gVisor startup because its released systemd driver cannot create rootless user scopes. See the
+gVisor startup: the systemd driver cannot create rootless user scopes, and its filesystem driver
+attempts to write outside a successfully delegated subtree. See the
 [exact diagnosis, raw CI logs and dedicated-host procedure](sandbox-ci-diagnosis.md).
 Windows cannot run this driver. Owner execution/publication remains closed; there is no bypass
 switch. Controller tests mock Podman and do not prove hostile-code isolation. No worker is deployed.
@@ -68,11 +69,14 @@ repository dependencies. Inspect/scan the image, retain its exact digest and rec
 ```sh
 export REPOPILOT_LIVE_SANDBOX_IMAGE="$REPOPILOT_WORKER_IMAGE"
 export REPOPILOT_SANDBOX_ACK=disposable-test-host
-.venv/bin/python -m pytest tests/test_sandbox_live.py -v --junitxml=worker-live.xml
+systemd-run --user --scope --property=Delegate=yes \
+  "$PWD/.venv/bin/python" scripts/run_sandbox_probes.py
 ```
 
 The six cases check benign execution/teardown, UID/filesystem/socket/secret/network boundaries,
 disk exhaustion, bounded memory pressure, process pressure, CPU timeout and cancellation.
+The CPU case also observes kernel CPU/memory/swap/PID caps and CPU throttling. The driver requires
+the harness's owned, delegated `REPOPILOT_WORKER_CGROUP_PARENT`; a manager change alone is insufficient.
 No candidate is ever executed on the controller. Missing prerequisites cause skips or errors;
 they never trigger an ordinary container or host fallback. Inspect raw receipts and container
 state when a check fails. Keep owner dispatch disabled until this host passes and is reviewed.
@@ -82,6 +86,9 @@ state when a check fails. Keep owner dispatch disabled until this host passes an
 Only after the host validation above, create a dedicated HMAC key file (32 random bytes), mode
 0600, and an empty state directory mode 0700. Keep both outside Git and outside the image.
 Share the key only with the trusted dispatcher, never with tested code or the browser.
+The standalone controller must itself run in an approved delegated scope with an owned
+`REPOPILOT_WORKER_CGROUP_PARENT` and enabled CPU/memory/pids controllers. Its production host
+configuration remains unverified; the disposable probe harness is not a production service installer.
 
 ```sh
 export REPOPILOT_WORKER_STATE=/home/WORKER_USER/repopilot-state

@@ -1,4 +1,87 @@
-# Live sandbox CI diagnosis — 30 October 2026
+# Cgroupfs compatibility result — 31 October 2026
+
+**Still BLOCKED.** Filesystem-based cgroups were tested, with an unprivileged delegated scope,
+on `7ddafa79caf2f4d9eec439313f815ee8dd3e07fa`. No global cgroup permissions were changed.
+[CI 41161569981](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41161569981) ·
+[Actual sandbox job](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41161569981/job/124420048940) ·
+[Structured evidence](../evidence/cgroupfs-evaluation.json).
+
+## What was evaluated
+
+The worker now explicitly selects Podman's documented `--cgroup-manager=cgroupfs` for every
+control/start command. `--cgroups=enabled` and an explicit cgroup parent preserve all resource
+requests. A trusted harness runs inside `systemd-run --user --scope --property=Delegate=yes`;
+systemd delegates the scope but does not manage the guest's cgroups. The harness moves itself
+to a controller leaf, enables CPU/memory/pids on its empty delegation root, and creates an owned
+`repopilot-jobs` subtree. Preflight requires ownership, containment and enabled controllers.
+No sudo, rootful runtime, permission broadening or ignored cgroup errors are used for execution.
+
+Actual log: `Delegated cgroupfs controllers: cpu memory pids`. Podman creation and inspected
+limits pass. Each gVisor startup then exits **125**:
+
+```text
+cannot set up cgroup for root: configuring cgroup:
+open /sys/fs/cgroup/cgroup.subtree_control: permission denied: OCI permission denied
+```
+
+The [released filesystem driver](https://github.com/google/gvisor/blob/release-20261026.0/runsc/cgroup/cgroup_v2.go)
+walks from the unified mount root and attempts to write ancestor subtree-control files. Delegation
+does not grant the worker write access to the host cgroup root, so this failure is expected for
+that driver on this hierarchy. This is a second released-runtime incompatibility; switching
+the Podman manager alone does not solve it. Upstream #13853 remains open/unmerged as rechecked
+on 31 October. Installing its unreviewed commits was not attempted.
+
+## Actual validation and limits
+
+All six live tests **failed**, none skipped; guest Python never started. The CPU test now also
+requires kernel `cpu.max`, `memory.max`, `memory.swap.max`, `pids.max` values and actual throttling.
+Those assertions were **not reached successfully**. CPU/memory/PID/disk enforcement, network and
+filesystem behavior, timeout and running cancellation therefore remain unverified. The harness
+confirmed no remaining named probe containers or descendant job cgroups after the failed starts;
+that does not establish cleanup/recovery of a running sandbox.
+
+Other CI jobs passed: 280 backend tests, six live cases skipped in that separate job, 93.96%
+statement coverage (2,055/2,187), PostgreSQL, Ruff/format/mypy, dependency audits, secret-pattern
+scan, 13 frontend component tests, six Chromium flows, both production exports and container smoke.
+Local backend: 275 passed, 11 environment skips, 93.42% (2,043/2,187); controller suite: 33 passed.
+Full CI remains **FAILED** and owner dispatch/publication stays disabled.
+
+## Precise host requirement and reproducible check
+
+A standard delegated user scope on the tested Ubuntu 24.04 / kernel 7.0.0-1017-azure /
+Podman 4.9.3 / runsc release-20261026.0 combination is **insufficient**. Supply an existing
+disposable Linux VM with rootless subordinate ID mappings, cgroup v2 CPU/memory/pids delegation,
+and a reviewed runtime whose filesystem driver confines controller operations to the delegated
+subtree (or whose user-systemd driver correctly supports unprivileged scopes). An independently
+reviewed private cgroup namespace layout could also be evaluated, but has not been implemented
+or validated here. Do not grant write permission to the host root, run as root, ignore cgroups,
+or assume that another VM with the same runtime version fixes this defect.
+
+To reproduce, prepare the host/tooling image using the commands in the historical section below,
+but check out `7ddafa79caf2f4d9eec439313f815ee8dd3e07fa`. Then replace the direct pytest invocation
+with the following. It runs only synthetic fixture code inside the sandbox and needs no model/App
+credentials. Keep the complete output and JUnit even on failure.
+
+```sh
+export REPOPILOT_LIVE_SANDBOX_IMAGE="$(podman image inspect localhost/repopilot-worker:probe --format '{{.Id}}')"
+export REPOPILOT_SANDBOX_ACK=disposable-test-host
+systemd-run --user --scope --property=Delegate=yes \
+  "$PWD/.venv/bin/python" scripts/run_sandbox_probes.py
+```
+
+The harness passes its private delegated parent to pytest via `REPOPILOT_WORKER_CGROUP_PARENT`.
+The six original probes remain mandatory; the CPU probe adds effective kernel-limit and throttle
+observations. A compatible runtime must pass all six and full CI before any activation work.
+Do not keep rerunning the unchanged incompatible version expecting a different result.
+
+After that gate passes, the minimum real acceptance setup is one configured model/local endpoint,
+explicit approval for any paid calls, a repository-scoped GitHub App installation/key with approved
+publication permissions, and a validated dedicated worker with a private HMAC key/loopback tunnel.
+Review and implement the still-disabled owner dispatcher binding, then approve the exact scoped
+Issue/plan/budget, inspect actual receipts and publish a draft PR. Verify retry/restart does not
+duplicate writes. No real-model or GitHub App acceptance result is claimed here.
+
+## Historical systemd investigation — 30 October 2026
 
 **BLOCKED: isolation is not verified; PR #8 is not ready to merge.** The six tests are mandatory
 and still fail. Owner execution and private publication remain disabled. No security assertion,
