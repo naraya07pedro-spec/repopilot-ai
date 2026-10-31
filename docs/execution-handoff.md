@@ -1,4 +1,22 @@
-# Owner decision — 1 November 2026 (Asia/Jakarta)
+# Windows local-agent engineering — 1 November 2026 (Asia/Jakarta)
+
+Development branch: feat/windows-local-agent, based on 80f91b8. The owner dispatcher now connects
+execute/cancel routes to the existing approval-bound ledger/transport behind the default closed
+worker gate. Component tests join provider planning, approval, text staging, synthetic receipts
+and synthetic draft publication; they do not execute candidate source or prove sandbox isolation.
+Provider timeouts are explicit and approval-bound; publication rechecks receipt/model bindings
+and an open draft PR. No experimental PR #8 runtime was imported or merged.
+
+A checksum-verified portable llama.cpp Vulkan binary on D: starts and detects the RX 580.
+Existing Llama 3.2 weights pass their manifest SHA-256 check, but a guarded loading trial ended
+before readiness as free RAM fell below 512 MiB. No live generation succeeded, no inference GPU
+utilization was measured, and no new weights were downloaded for that trial. A smaller-model
+download choice is pending; do not treat silence as approval. Private execution/publication
+remain disabled. See [the milestone and exact limitations](windows-local-agent-milestone.md).
+Local Windows checks: 273 passed, five environment skips, 95.44% coverage; Ruff/format (80 files)
+and mypy (26 modules) passed. The additional model/worker/GitHub workflow tests are synthetic.
+
+## Owner decision — 1 November 2026 (Asia/Jakarta)
 
 The owner explicitly chose **"Keep OpenClaw running; defer recovery."** No maintenance
 interruption is approved. Preserve OpenClaw, all WSL clients/services, distro registration,

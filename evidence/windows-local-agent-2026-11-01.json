@@ -1,0 +1,64 @@
+{
+  "date": "2026-11-01",
+  "timezone": "Asia/Jakarta",
+  "source_checkpoint": "80f91b808b453699655c2d49b897cc8009be9c7b",
+  "development_branch": "feat/windows-local-agent",
+  "provenance": {
+    "runtime_tag": "b11960",
+    "runtime_archive_sha256": "bac6914b5e83523eb008c6789eaa12669f93fbc196c3b9e8237b6672323b33e9",
+    "runtime_url": "https://github.com/ggml-org/llama.cpp/releases/download/b11960/llama-b11960-bin-win-vulkan-x64.zip",
+    "archive_bytes": 37345851,
+    "model": "llama3.2:latest",
+    "model_bytes": 2019377376,
+    "model_sha256": "dde5aa3fc5ffc17176b5e8bdc82f587b24b2678c6c66101bf7da77af9f7ccdff"
+  },
+  "gpu_enumeration": {
+    "device": "Radeon RX 580 Series",
+    "total_mib": 4096,
+    "available_mib": 3433,
+    "inference_verified": false
+  },
+  "existing_llama_loading_trial": {
+    "runtime_pid": 2168,
+    "generated_code_executed": false,
+    "private_execution_enabled": false,
+    "wsl_commands_invoked": false,
+    "memory_floor_bytes": 536870912,
+    "runtime_exit_code": 1,
+    "elapsed_seconds": 4.328,
+    "guard_triggers": [
+      "available_ram_floor"
+    ],
+    "min_available_ram_bytes": 477200384,
+    "peak_working_set_bytes": 156991488,
+    "peak_private_bytes": 135991296,
+    "cpu_seconds": 0.671875,
+    "error_category": "runtime_not_ready_after_memory_guard",
+    "gpu_inference_metrics": null,
+    "gpu_metrics_limitation": "Runtime did not become ready; no inference metrics or tokens/second claimed.",
+    "measurement_scope": "sampled_initialization_only"
+  },
+  "new_model_weights_downloaded": false,
+  "smaller_model_download": "pending_owner_choice",
+  "component_evidence": "synthetic_model_worker_and_GitHub_contract_tests",
+  "private_execution_enabled": false,
+  "private_publication_enabled": false,
+  "wsl_diagnostics_repeated": false,
+  "openclaw_interrupted": false,
+  "pr8_runtime_imported_or_merged": false,
+  "acceptance_complete": false,
+  "local_validation": {
+    "backend_passed": 273,
+    "environment_skips": 5,
+    "coverage_percent": 95.44,
+    "covered_statements": 1864,
+    "total_statements": 1953,
+    "ruff_check": "passed",
+    "ruff_format_files": 80,
+    "mypy_modules": 26,
+    "frontend_source_changed": false,
+    "real_model_generation_succeeded": false,
+    "real_isolated_tests_executed": false,
+    "real_model_draft_pr_created": false
+  }
+}

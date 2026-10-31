@@ -36,10 +36,13 @@ $env:REPOPILOT_SOURCE_ROOTS = '{"naraya07pedro-spec/repopilot-ai":"fixtures/bug"
 
 ## Local model only: no API keys or billing
 
-The current mandate is **existing Windows laptop, zero paid API, zero rented server**.
-The hardware audit found 4 GB installed RAM. Ubuntu now runs under WSL2, but Ollama is absent. Read
-[the measured feasibility result](local-feasibility.md) before any download. No model installer
-or model pull was performed. No cloud API key is required, and paid generation stays denied.
+The current mandate is the **existing 8 GiB Windows PC, zero paid API, zero rented server**.
+WSL recovery is explicitly deferred; leave OpenClaw running and do not repeat diagnostics.
+The older 4 GB laptop measurements in [local-feasibility.md](local-feasibility.md) are historical.
+On this PC, existing Llama 3.2/DeepSeek GGUF weights are on D:. A checksum-verified portable
+llama.cpp Vulkan runtime detects the RX 580; the Llama 3.2 loading trial was stopped by its
+free-RAM guard before readiness. This is not successful inference. No new weights were fetched
+for that trial. No cloud API key is required, and paid generation stays denied.
 
 The prepared `deploy/local-models.example.json` profiles select only the local Ollama endpoint
 at http://127.0.0.1:11434 with zero input/output prices. They are candidate configurations, not
@@ -66,9 +69,12 @@ is needed for local SQLite. `python -m repopilot.doctor` prints configuration pr
 model discovery and successful schema-validated generation must be measured separately.
 An unavailable endpoint remains an error. A synthetic response in CI is not local inference.
 
-WSL installation is complete; no additional Windows admin action is currently required. Remaining
-[local prerequisites](wsl-evaluation.md#owner-only-actions) and GitHub authorization are documented above. WSL2 alone
-must not open execution. No cloud/paid activation instructions apply to this target.
+The [portable compatible-server profile](../deploy/llamacpp-local.example.json) is an explicit
+template for alias repopilot-local on loopback port 18434, not a running/validated endpoint.
+It neither launches a runtime nor downloads weights. Keep paid flags and budgets at zero.
+Owner dispatcher wiring is contract-tested on Windows, but its production worker and private
+publication gates remain closed. WSL recovery requires a new owner decision; WSL2 availability
+alone must not open execution. No cloud/paid activation instructions apply to this target.
 
 ## Real acceptance still blocked
 
