@@ -1,0 +1,293 @@
+{
+  "measured_at": "2026-10-31T20:53:41.8477349+07:00",
+  "scope": "Windows desktop PC, non-destructive WSL diagnosis",
+  "source_base": "3545a025c29c9d273e36bbc3a296b4cb6a6ed4b8",
+  "windows_build": "26200",
+  "wsl_version": "2.7.11.0",
+  "reported_kernel": "6.18.33.2-2",
+  "installed_ram_bytes": 8589934592,
+  "virtual_machine_platform_enabled": true,
+  "wsl_feature_enabled": true,
+  "hypervisor_feature_enabled": true,
+  "firmware_virtualization_enabled": true,
+  "hypervisor_present": true,
+  "services": [
+    {
+      "name": "hns",
+      "status": "Running",
+      "start_type": "Manual"
+    },
+    {
+      "name": "HvHost",
+      "status": "Running",
+      "start_type": "Manual"
+    },
+    {
+      "name": "vmcompute",
+      "status": "Running",
+      "start_type": "Manual"
+    },
+    {
+      "name": "WslService",
+      "status": "Running",
+      "start_type": "Automatic"
+    }
+  ],
+  "distro": {
+    "name": "OpenClawGateway",
+    "version": 2,
+    "reported_state": "Running",
+    "default_uid": 0,
+    "registration_preserved": true,
+    "vhd_logical_bytes": 4977590272,
+    "storage_drive": "C:"
+  },
+  "linux_launches": {
+    "original_pipe_exit": 4294967295,
+    "explicit_user_and_linux_cwd_pipe_exit": 4294967295,
+    "explicit_user_and_linux_cwd_pty_exit": 4294967295,
+    "error": "Wsl/Service/E_UNEXPECTED",
+    "real_linux_command_passed": false
+  },
+  "crash_metadata_only": true,
+  "raw_crash_memory_copied_or_committed": false,
+  "crash_records": [
+    {
+      "file": "wsl-crash-1793413896-2-_init-6.dmp",
+      "bytes": 507904,
+      "modified_utc": "2026-10-31T09:31:38.870947+07:00",
+      "elf_core": true,
+      "notes": [
+        {
+          "type": "NT_PRSTATUS",
+          "signal": 6,
+          "pid": 4
+        },
+        {
+          "type": "NT_PRPSINFO",
+          "executable": "init-systemd(Op",
+          "pid": 2
+        },
+        {
+          "type": "NT_SIGINFO",
+          "signal": 6,
+          "code": -6
+        },
+        {
+          "type": "NT_PRSTATUS",
+          "signal": 6,
+          "pid": 2
+        }
+      ]
+    },
+    {
+      "file": "wsl-crash-1793310673-2-_init-6.dmp",
+      "bytes": 507904,
+      "modified_utc": "2026-10-30T04:51:13.587198+07:00",
+      "elf_core": true,
+      "notes": [
+        {
+          "type": "NT_PRSTATUS",
+          "signal": 6,
+          "pid": 4
+        },
+        {
+          "type": "NT_PRPSINFO",
+          "executable": "init-systemd(Op",
+          "pid": 2
+        },
+        {
+          "type": "NT_SIGINFO",
+          "signal": 6,
+          "code": -6
+        },
+        {
+          "type": "NT_PRSTATUS",
+          "signal": 6,
+          "pid": 2
+        }
+      ]
+    },
+    {
+      "file": "wsl-crash-1793310489-2-_init-6.dmp",
+      "bytes": 507904,
+      "modified_utc": "2026-10-30T04:48:09.327916+07:00",
+      "elf_core": true,
+      "notes": [
+        {
+          "type": "NT_PRSTATUS",
+          "signal": 6,
+          "pid": 4
+        },
+        {
+          "type": "NT_PRPSINFO",
+          "executable": "init-systemd(Op",
+          "pid": 2
+        },
+        {
+          "type": "NT_SIGINFO",
+          "signal": 6,
+          "code": -6
+        },
+        {
+          "type": "NT_PRSTATUS",
+          "signal": 6,
+          "pid": 2
+        }
+      ]
+    },
+    {
+      "file": "wsl-crash-1793304865-2-_init-6.dmp",
+      "bytes": 507904,
+      "modified_utc": "2026-10-30T03:14:25.963391+07:00",
+      "elf_core": true,
+      "notes": [
+        {
+          "type": "NT_PRSTATUS",
+          "signal": 6,
+          "pid": 4
+        },
+        {
+          "type": "NT_PRPSINFO",
+          "executable": "init-systemd(Op",
+          "pid": 2
+        },
+        {
+          "type": "NT_SIGINFO",
+          "signal": 6,
+          "code": -6
+        },
+        {
+          "type": "NT_PRSTATUS",
+          "signal": 6,
+          "pid": 2
+        }
+      ]
+    },
+    {
+      "file": "wsl-crash-1793297854-2-_init-6.dmp",
+      "bytes": 507904,
+      "modified_utc": "2026-10-30T01:17:34.668366+07:00",
+      "elf_core": true,
+      "notes": [
+        {
+          "type": "NT_PRSTATUS",
+          "signal": 6,
+          "pid": 4
+        },
+        {
+          "type": "NT_PRPSINFO",
+          "executable": "init-systemd(Op",
+          "pid": 2
+        },
+        {
+          "type": "NT_SIGINFO",
+          "signal": 6,
+          "code": -6
+        },
+        {
+          "type": "NT_PRSTATUS",
+          "signal": 6,
+          "pid": 2
+        }
+      ]
+    },
+    {
+      "file": "wsl-crash-1793193833-2-_init-6.dmp",
+      "bytes": 507904,
+      "modified_utc": "2026-10-28T20:23:53.690054+07:00",
+      "elf_core": true,
+      "notes": [
+        {
+          "type": "NT_PRSTATUS",
+          "signal": 6,
+          "pid": 4
+        },
+        {
+          "type": "NT_PRPSINFO",
+          "executable": "init-systemd(Op",
+          "pid": 2
+        },
+        {
+          "type": "NT_SIGINFO",
+          "signal": 6,
+          "code": -6
+        },
+        {
+          "type": "NT_PRSTATUS",
+          "signal": 6,
+          "pid": 2
+        }
+      ]
+    }
+  ],
+  "observations": {
+    "init_core_dump_pid": 2,
+    "init_signal": 6,
+    "init_signal_code": -6,
+    "proximate_failure": "repeated WSL init self-aborts",
+    "specific_trigger_confirmed": false,
+    "broken_pipe_upstream_match_is_inference": true,
+    "recorded_internal_exception_confirmed": true,
+    "initiating_client_identified": false
+  },
+  "access": {
+    "elevated": false,
+    "debug_shell": "Administrator required",
+    "hcsdiag": "Administrator or Hyper-V Administrators required",
+    "compute_worker_hns_admin_logs": "elevated rights required",
+    "admin_collector_executed": false,
+    "read_only_admin_owner_approval": true,
+    "uac_launch_result": "Windows reported operation canceled; elevated collector did not start",
+    "restart_owner_approval": false
+  },
+  "protections": {
+    "services_restarted": false,
+    "openclaw_interrupted": false,
+    "settings_changed": false,
+    "distributions_removed_reset_reinstalled_or_moved": false,
+    "private_execution_enabled": false
+  },
+  "references": [
+    "https://github.com/microsoft/WSL/issues/41592",
+    "https://learn.microsoft.com/en-us/windows/wsl/troubleshooting"
+  ],
+  "known_exception_scan": {
+    "explicit_opt_in": true,
+    "max_bytes_per_core": 1048576,
+    "raw_memory_printed_or_copied": false,
+    "all_six_have_exact_exception": true,
+    "exception": "Broken pipe @C:/__w/1/s/src/shared/inc\\SocketChannel.h:183 (SendMessage)"
+  },
+  "resources": {
+    "initial_available_ram_kib": 504928,
+    "visible_memory_bytes": 8453820416,
+    "volume_snapshot": [
+      {
+        "DriveLetter": "C",
+        "Size": 156402446336,
+        "SizeRemaining": 6757617664
+      },
+      {
+        "DriveLetter": "D",
+        "Size": 354822385664,
+        "SizeRemaining": 138872119296
+      }
+    ]
+  },
+  "validation": {
+    "ruff": "passed",
+    "format": "passed",
+    "mypy": "passed, 25 application modules",
+    "backend_passed": 248,
+    "backend_skipped": 5,
+    "coverage_percent": 95.41,
+    "diagnostic_tests_passed": 4,
+    "powershell_parse": "passed",
+    "ascii_and_wsl_utf16_client": "passed",
+    "nonadmin_guard": "passed",
+    "elevated_collection": "not executed",
+    "credential_pattern_scan": "155 tracked files, no configured matches",
+    "linux_recovery": "not achieved"
+  }
+}

@@ -1,4 +1,23 @@
-# WSL2 operational follow-up — 31 October 2026
+# PC WSL failure diagnosis — 31 October 2026
+
+The project was recovered on the desktop PC; PR #9 was verified and merged at 3545a025.
+PR #8 remains open/preserved at 37c01e9. This PC has 8 GiB installed RAM, a Ryzen 5 4500,
+and about 6.3 GiB free on C: / 129 GiB on D: after approved cache cleanup. Do not reuse
+the historical laptop measurements below for this PC.
+
+Actual Linux launches still fail with Wsl/Service/E_UNEXPECTED, including explicit root/cwd
+and a terminal. Services, Windows features and virtualization report enabled/running. Six
+bounded ELF core-note inspections confirm repeated PID 2 init SIGABRTs, and strict local
+signature matching confirms Broken pipe at SocketChannel.h:183 (SendMessage) in every core.
+The initiating client and current broker state still require Administrator VM/log inspection; no speculative
+configuration change or interruption has been applied. The reviewed read-only collector is
+scripts/collect_wsl_admin.ps1. The owner approved read-only elevation, but Windows reported
+the UAC launch canceled; no elevated collection ran. An Administrator terminal run remains
+owner-only. No restart approval has been given.
+See [the PC diagnosis, evidence and conditional D: worker assessment](pc-wsl-diagnosis.md).
+Private execution/publication remain disabled. No new distro/runtime/model is installed.
+
+## Historical laptop WSL2 operational follow-up — 31 October 2026
 
 Branch: release/v3-portfolio / PR #9; recovered source a8ac5c56c90924c5621fb6914253d82241e136bb.
 That exact remote head passed [CI 41169808465](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41169808465):
