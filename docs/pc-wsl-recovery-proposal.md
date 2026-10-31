@@ -4,6 +4,14 @@ No recovery command in this document has been executed. The live diagnostic coll
 and must not be rerun. This plan does not authorize service restarts, Windows reboot, WSL shutdown,
 installation, registration changes, or disk removal.
 
+## Owner decision — 1 November 2026 (Asia/Jakarta)
+
+The owner chose: **"Keep OpenClaw running; defer recovery."** The targeted maintenance
+proposal below remains unexecuted and is not authorized. Leave OpenClaw, its distro and WSL
+services running; do not restart Windows. Do not repeat the retired collector or terminate
+the historical diagnostic clients. Revisit interruption only if the owner reopens that decision.
+Windows-only RepoPilot engineering and verification may continue with private execution disabled.
+
 ## Specific failures established from saved evidence
 
 1. The six saved real-core reports identify WSL init PID 2 aborting with SIGABRT and the exact

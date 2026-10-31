@@ -1,4 +1,17 @@
-# PC WSL evidence follow-up — 31 October 2026
+# Owner decision — 1 November 2026 (Asia/Jakarta)
+
+The owner explicitly chose **"Keep OpenClaw running; defer recovery."** No maintenance
+interruption is approved. Preserve OpenClaw, all WSL clients/services, distro registration,
+virtual disks and credentials. Do not rerun the retired collector, start a recovery attempt,
+or repeat the approval request unless the owner reopens the decision. Continue Windows-only work.
+
+Remote [Verify run 41221678889](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41221678889)
+for diagnostic commit 86df711239810a17e68fc132328de6fcae2fdd9d completed successfully:
+backend, frontend and container jobs all passed. These checks do not validate this PC's Linux
+broker or the experimental sandbox. Recovery and live private execution remain unverified/disabled;
+PR #8 remains unmerged. The diagnostic branch is chore/pc-wsl-diagnosis; main is preserved.
+
+## PC WSL evidence follow-up — 31 October 2026
 
 The owner terminated the hung Administrator PowerShell collector (PID 28432). Do not rerun it.
 Saved output records WSL client PID 24704 beyond the deadline; the prior collector then waited
