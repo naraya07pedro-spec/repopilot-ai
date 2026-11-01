@@ -1,4 +1,25 @@
-# Windows local-agent engineering — 1 November 2026 (Asia/Jakarta)
+# Local worker alternatives — 1 November 2026 (Asia/Jakarta)
+
+Branch feat/hyperv-worker-evaluation continues from 8c638c1. Model/dispatcher implementations
+are unchanged. WSL recovery remains deferred and no WSL diagnostic or OpenClaw interruption ran.
+Native Hyper-V and management tools are enabled, but this session's Get-VM is permission-denied.
+Windows Sandbox/WHP/Containers are disabled. QEMU TCG is excluded by its upstream security policy.
+See [the alternatives, proposal and blockers](windows-worker-alternatives.md).
+
+A diskless 512 MiB / one-vCPU Hyper-V Linux prototype is proposed with no host shares, disks or
+NICs. Only Plan mode/AST parsing ran; no UAC/VM operation or OS image download occurred.
+Elevated prototype authorization is pending. Guest/controller hardening and live probes remain
+unfinished. No VM configuration or synthetic receipt enables execution.
+
+The six PR #8 stress payloads are preserved byte-for-byte in a pinned packaged catalog. New
+data-only assertion helpers reuse VerificationJob/ExecutionReceipt and reject boot failures,
+missing observations, timeout-as-OOM, absent throttling and unconfirmed cleanup. Their tests are
+synthetic and cannot prove isolation or activate the worker. Main and PR #8 remain preserved.
+Local validation: 299 passed, five environment skips, 95.50% coverage; Ruff/format, mypy and
+wheel catalog integrity passed. The initial existing fixture TimeoutExpired and successful
+targeted/full retries remain recorded; no limits or core model/dispatcher code were changed.
+
+## Windows local-agent engineering — 1 November 2026 (Asia/Jakarta)
 
 Development branch: feat/windows-local-agent, based on 80f91b8. The owner dispatcher now connects
 execute/cancel routes to the existing approval-bound ledger/transport behind the default closed

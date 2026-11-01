@@ -1,0 +1,121 @@
+{
+  "date": "2026-11-01",
+  "timezone": "Asia/Jakarta",
+  "source_checkpoint": "8c638c1f7172b0dab3d1748a23c2090026e55484",
+  "branch": "feat/hyperv-worker-evaluation",
+  "mode": "read_only_platform_inventory_and_data_only_contract_tests",
+  "features": {
+    "Hyper-V": "enabled",
+    "Hyper-V PowerShell": "enabled",
+    "Windows Sandbox": "disabled",
+    "Windows Hypervisor Platform": "disabled",
+    "Windows Containers": "disabled"
+  },
+  "hyperv_management": {
+    "module_present": true,
+    "vmms_running": true,
+    "current_token_query": "permission_denied",
+    "existing_vm_inventory_succeeded": false
+  },
+  "snapshot": {
+    "ram_total_bytes": 8453820416,
+    "ram_available_bytes": 1026154496,
+    "logical_cpus": 12,
+    "d_free_bytes": 138294800384,
+    "c_free_bytes": 5655957504
+  },
+  "runtime_inventory": {
+    "WindowsSandbox.exe": false,
+    "qemu_on_path_or_common_location": false,
+    "docker_on_path_or_common_location": false,
+    "virtualbox_on_path_or_common_location": false
+  },
+  "eligibility": {
+    "preferred_candidate": "dedicated_Hyper-V_Linux_guest",
+    "QEMU_TCG": "rejected_upstream_policy_excludes_guest_isolation_guarantees",
+    "AppContainer": "not_the_existing_Linux_UID_cgroup_profile_and_disk_quota_unproved",
+    "Windows_Sandbox": "disabled_and_documented_minimum_2048_MiB"
+  },
+  "probe_origin": {
+    "commit": "37c01e9c6bb77b75940f4072aa8cf0974a8d8b37",
+    "path": "tests/test_sandbox_live.py",
+    "file_sha256": "d06b58c4970c7aaf459fd397f5b645a4f7282f56e8af9aa2e23664f5ef6134f2",
+    "payloads_preserved": 6,
+    "catalog_sha256": "c6d5f5acb91d0f57dd1de2918caaabd90cbb4d2788a57fb38c8964396e6f55a0",
+    "live_probe_executions": 0
+  },
+  "prototype": {
+    "proposal": "deploy/hyperv-worker.proposal.json",
+    "lifecycle_script": "scripts/hyperv_probe_vm.ps1",
+    "only_executed_mode": "Plan",
+    "powershell_ast": "passed",
+    "installed_command_parameters": "checked",
+    "mutating_modes_tested": false,
+    "elevated_authorization": "pending_owner_reply",
+    "guest_worker_image_built": false,
+    "guest_controller_built": false
+  },
+  "github_app_configuration_presence": {
+    "GITHUB_APP_ID": false,
+    "GITHUB_INSTALLATION_ID": false,
+    "GITHUB_APP_PRIVATE_KEY_FILE": false,
+    "private_files_searched": false
+  },
+  "preserved": {
+    "model_implementation": true,
+    "dispatcher_implementation": true,
+    "existing_projects_and_vms": true,
+    "OpenClaw": true,
+    "WSL_distributions_and_disks": true,
+    "main": true,
+    "PR8": true
+  },
+  "actions_not_performed": [
+    "WSL invocation",
+    "UAC launch",
+    "VM create/start/stop/remove",
+    "feature or security setting change",
+    "OS image/package download or installation",
+    "model inference",
+    "generated source execution",
+    "live worker activation",
+    "GitHub Issue or PR creation"
+  ],
+  "production_execution_enabled": false,
+  "private_publication_enabled": false,
+  "full_acceptance_completed": false,
+  "sources": {
+    "Hyper-V": "https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/get-started/create-a-virtual-machine-in-hyper-v",
+    "Windows Sandbox": "https://learn.microsoft.com/en-us/windows/security/application-security/application-isolation/windows-sandbox/windows-sandbox-configure-using-wsb-file",
+    "AppContainer": "https://learn.microsoft.com/en-gb/windows/security/book/application-security-application-isolation",
+    "QEMU security": "https://www.qemu.org/docs/master/system/security.html",
+    "Alpine": "https://alpinelinux.org/downloads/"
+  },
+  "validation": {
+    "assertion_contract_tests": 22,
+    "assertion_tests_are_synthetic": true,
+    "powershell_executed_modes": [
+      "Plan"
+    ],
+    "powershell_AST": "passed",
+    "packaged_catalog_hash_in_built_wheel": "verified",
+    "initial_full_suite": {
+      "passed": 298,
+      "failed": 1,
+      "environment_skips": 5,
+      "coverage_percent": 95.55,
+      "failure": "existing_fixture_preparation_TimeoutExpired_before_check_results"
+    },
+    "targeted_retry_of_existing_failure": "passed_without_source_or_limit_changes",
+    "final_full_suite": {
+      "passed": 299,
+      "environment_skips": 5,
+      "coverage_percent": 95.5,
+      "duration_seconds": 173.12
+    },
+    "ruff_check": "passed",
+    "ruff_format_files": 85,
+    "mypy_modules": 27,
+    "core_source_unchanged_from_8c638c1": true
+  }
+}

@@ -45,4 +45,4 @@ show_missing = true
 fail_under = 85
 
 [tool.setuptools.package-data]
-repopilot = ["pytest.ini"]
+repopilot = ["pytest.ini", "worker_probes.json"]

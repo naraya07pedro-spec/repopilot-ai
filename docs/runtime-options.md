@@ -1,4 +1,12 @@
-# Runtime options and decision gate — 31 October 2026
+# Current Windows alternatives — 1 November 2026
+
+The owner's current instruction authorizes evaluating alternatives on the 8 GiB PC while WSL
+recovery stays deferred. Read [the current assessment and exact blockers](windows-worker-alternatives.md)
+and [the bounded prototype proposal](../deploy/hyperv-worker.proposal.json).
+The laptop-only scope and restrictions below are historical, superseded by that instruction.
+All earlier sandbox failure evidence remains preserved; no execution gate was opened.
+
+## Historical runtime options and decision gate — 31 October 2026
 
 **Current target correction:** only the existing Windows laptop, local inference and WSL2
 evaluation are authorized. Zero paid API and zero rented server. The audit found 4 GB RAM,
