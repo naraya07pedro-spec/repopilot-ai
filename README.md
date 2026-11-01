@@ -1,5 +1,7 @@
 # RepoPilot AI
 
+> **November 2026 release status:** This `main` README describes the reviewed baseline, not the latest local-model proposal workspace. A self-hosted, review-and-patch-export release candidate is under evaluation in [draft PR #10](https://github.com/naraya07pedro-spec/repopilot-ai/pull/10). Its implementation and setup guide live on [`codex/usable-agent-release`](https://github.com/naraya07pedro-spec/repopilot-ai/tree/codex/usable-agent-release). Real-model end-to-end acceptance and fresh-install verification remain open gates; no arbitrary model-generated code execution or automatic publication is enabled.
+
 **A scoped issue → an isolated change → actual tests → a reviewable pull request.**
 
 RepoPilot records the baseline, structured plan, approval digest, Git diff, command outputs,
