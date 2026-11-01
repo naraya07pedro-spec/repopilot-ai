@@ -1,5 +1,9 @@
 # Self-hosted proposal edition
 
+This is the PR #10 release candidate. Commands below select that existing release branch,
+not the older `main` package. A real model-through-workspace acceptance remains a merge gate;
+transport/browser contract tests and the earlier model-only recording do not replace it.
+
 RepoPilot runs a stateful task → real model → code proposal → human review → patch export
 workflow. It reads selected Python files and never executes, applies or publishes model code.
 No GitHub App or API key is required for a local model. The existing isolated-execution and
@@ -13,7 +17,7 @@ Choose a new environment directory rather than replacing an existing project's e
 
 ```powershell
 python -m venv .venv-repopilot
-.\.venv-repopilot\Scripts\python.exe -m pip install "git+https://github.com/naraya07pedro-spec/repopilot-ai.git@main"
+.\.venv-repopilot\Scripts\python.exe -m pip install "git+https://github.com/naraya07pedro-spec/repopilot-ai.git@codex/usable-agent-release"
 .\.venv-repopilot\Scripts\repopilot.exe local --repo C:\path\to\your\repository --model YOUR_INSTALLED_MODEL
 ```
 
@@ -21,7 +25,7 @@ Linux:
 
 ```sh
 python3 -m venv .venv-repopilot
-.venv-repopilot/bin/python -m pip install "git+https://github.com/naraya07pedro-spec/repopilot-ai.git@main"
+.venv-repopilot/bin/python -m pip install "git+https://github.com/naraya07pedro-spec/repopilot-ai.git@codex/usable-agent-release"
 .venv-repopilot/bin/repopilot local --repo /path/to/your/repository --model YOUR_INSTALLED_MODEL
 ```
 

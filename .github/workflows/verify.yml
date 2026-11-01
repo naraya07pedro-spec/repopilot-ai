@@ -65,6 +65,8 @@ jobs:
           PUBLIC_BASE_PATH: /repopilot-ai
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
+      - name: Verify release setup and local workspace browser contracts
+        run: npx playwright test -c playwright.release.config.ts
       - name: Build public site at domain root for Netlify
         run: npm run build:public
         env:
@@ -81,6 +83,8 @@ jobs:
             frontend/playwright-report
             frontend/test-results
             frontend/test-results-root
+            frontend/playwright-release-report
+            frontend/test-results-release
   container:
     runs-on: ubuntu-latest
     steps:
@@ -93,3 +97,24 @@ jobs:
           curl --fail http://localhost:3000/
       - if: always()
         run: docker compose down
+  installed-package:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build distribution without editable source imports
+        run: python -m pip wheel --no-deps --wheel-dir wheelhouse .
+      - name: Install wheel in a fresh environment and verify local HTTP workspace
+        shell: bash
+        run: python scripts/check_distribution.py wheelhouse/repopilot_ai-0.2.0-py3-none-any.whl "${{ runner.temp }}/repopilot-install" --record "evidence/ci-installed-${{ runner.os }}.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: installed-package-${{ runner.os }}
+          path: evidence/ci-installed-*.json

@@ -37,29 +37,36 @@ def main(argv: list[str] | None = None) -> None:
     args = parser.parse_args(argv)
     if not 1024 <= args.port <= 65535:
         parser.error("Choose a port from 1024 to 65535")
-    if args.profiles:
-        profiles = load_profiles(str(args.profiles))
-    elif args.model:
-        profiles = (
-            ModelProfile(
-                id="local",
-                provider=args.provider,
-                model=args.model,
-                structured_output="json_schema",
-                context_tokens=8192,
-                output_tokens=1536,
-                context_bytes=2560,
-                request_timeout_seconds=120,
-                endpoint=args.endpoint
-                or (
-                    "http://127.0.0.1:11434"
-                    if args.provider == "ollama"
-                    else "http://127.0.0.1:8080/v1"
+    if args.run_budget_micro < 0 or args.daily_budget_micro < 0:
+        parser.error("Provider budgets cannot be negative")
+    try:
+        if args.profiles:
+            profiles = load_profiles(str(args.profiles))
+        elif args.model:
+            profiles = (
+                ModelProfile(
+                    id="local",
+                    provider=args.provider,
+                    model=args.model,
+                    structured_output="json_schema",
+                    context_tokens=8192,
+                    output_tokens=1536,
+                    context_bytes=2560,
+                    request_timeout_seconds=120,
+                    endpoint=args.endpoint
+                    or (
+                        "http://127.0.0.1:11434"
+                        if args.provider == "ollama"
+                        else "http://127.0.0.1:8080/v1"
+                    ),
                 ),
-            ),
-        )
-    else:
-        parser.error("Provide --model NAME for an existing local runtime, or --profiles FILE")
+            )
+        else:
+            parser.error("Provide --model NAME for an existing local runtime, or --profiles FILE")
+        if not profiles:
+            parser.error("Model profiles file is empty; configure at least one model")
+    except (OSError, ValueError) as error:
+        parser.error("Invalid model configuration: " + str(error))
     try:
         app = create_local_app(
             args.repo,
@@ -81,7 +88,7 @@ def main(argv: list[str] | None = None) -> None:
         flush=True,
     )
     print(
-        "Proposal → review → patch export. Generated code is never executed or applied. "
+        "Proposal -> review -> patch export. Generated code is never executed or applied. "
         "Ctrl+C stops this workspace.\n",
         flush=True,
     )

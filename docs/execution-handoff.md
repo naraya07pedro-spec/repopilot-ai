@@ -1,3 +1,18 @@
+# Current release candidate: PR #10
+Continue `codex/usable-agent-release`; do not rebuild the verified local model, dispatcher or
+redesign the architecture. See [QA report](../QA_REPORT.md) and
+[sanitized readiness evidence](../evidence/pr10-release-readiness.json). Local packaging,
+HTTP/auth, 300 backend tests, 15 component tests and eight new browser contract checks pass.
+Two browser checks verify the existing public HTTPS fixture site; the new entry is a preview.
+Linux lock typing and Docker evidence-copy defects are fixed. Fresh installation CI covers
+Ubuntu and Windows. Build from a fresh sdist to avoid ignored build-cache contamination.
+
+Exactly one real acceptance remains: installed app → genuine local model → proposal → approval
+→ downloaded patch. RAM failed admission; no inference was started. Never lower the 1,536 MiB
+start guard or 512 MiB running floor. Do not merge PR #10 until that acceptance and CI pass.
+WSL recovery remains deferred; preserve OpenClaw and all VMs. Sandbox execution and autonomous
+publication remain disabled advanced capabilities, separate from this proposal release.
+
 # Windows local-agent engineering — 1 November 2026 (Asia/Jakarta)
 
 Development branch: feat/windows-local-agent, based on 80f91b8. The owner dispatcher now connects

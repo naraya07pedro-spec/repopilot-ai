@@ -4,7 +4,8 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend .
-COPY evidence/live-bug.json evidence/feature.json evidence/failure.json /app/evidence/
+# The Dockerfile-specific ignore file admits only approved public recordings.
+COPY evidence/ /app/evidence/
 RUN npm run build
 FROM node:22-alpine
 WORKDIR /app/frontend

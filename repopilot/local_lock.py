@@ -23,9 +23,8 @@ class WorkspaceLease:
         self.stream.seek(0)
         try:
             if os.name == "nt":
-                import msvcrt
-
-                msvcrt.locking(self.stream.fileno(), msvcrt.LK_NBLCK, 1)
+                windows_lock = import_module("msvcrt")
+                windows_lock.locking(self.stream.fileno(), windows_lock.LK_NBLCK, 1)
             else:
                 linux_lock = import_module("fcntl")
                 linux_lock.flock(self.stream.fileno(), linux_lock.LOCK_EX | linux_lock.LOCK_NB)

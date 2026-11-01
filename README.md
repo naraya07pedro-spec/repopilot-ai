@@ -2,6 +2,11 @@
 
 **Your coding task. Your model. A patch you can review.**
 
+Release candidate: [PR #10](https://github.com/naraya07pedro-spec/repopilot-ai/pull/10).
+Install from `codex/usable-agent-release` while review is pending. The new entry page is
+tested as a preview; the deployed Pages site remains the earlier fixture-evidence release
+until real-model acceptance and release checks pass. No merge/deployment is implied here.
+
 RepoPilot is a local-first coding agent for focused Python changes. Select source files,
 describe a task, invoke your model, review a structured proposal and export an approved patch.
 It saves checkpoints, validates output, makes bounded correction attempts and waits for you.
@@ -26,7 +31,7 @@ Requires Python 3.12+, Git and an already installed local model/runtime supporti
 JSON output. Run this inside a new virtual environment:
 
 ```sh
-python -m pip install "git+https://github.com/naraya07pedro-spec/repopilot-ai.git@main"
+python -m pip install "git+https://github.com/naraya07pedro-spec/repopilot-ai.git@codex/usable-agent-release"
 repopilot local --repo /path/to/your/repository --model YOUR_INSTALLED_MODEL
 ```
 

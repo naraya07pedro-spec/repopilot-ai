@@ -56,11 +56,22 @@ def create_local_app(
     run_micro: int = 0,
     daily_micro: int = 0,
 ) -> FastAPI:
+    session_token = token or secrets.token_urlsafe(32)
+    if len(session_token) < 32:
+        raise ValueError("local_session_token_too_short")
     repository = LocalRepository(root)
     repository.revision()  # Fail with an actionable error before accepting traffic.
     if any(p.is_symlink() or p.is_junction() for p in (data.absolute(), *data.absolute().parents)):
         raise PolicyError("data_directory_reparse_point")
     data.mkdir(parents=True, exist_ok=True)
+    for name in (
+        "local-agent.db",
+        "local-agent.db-wal",
+        "local-agent.db-shm",
+        "local-agent.db-journal",
+    ):
+        if (data / name).is_symlink() or (data / name).is_junction():
+            raise PolicyError("database_reparse_point")
     lease = WorkspaceLease(data)
     store = Store(f"sqlite:///{data.resolve() / 'local-agent.db'}")
     migrate(store.engine)
@@ -71,9 +82,6 @@ def create_local_app(
     agent = LocalAgent(store.engine, None, None, registry.planners)
     agent.repository = repository
     agent.recover()
-    session_token = token or secrets.token_urlsafe(32)
-    if len(session_token) < 32:
-        raise ValueError("local_session_token_too_short")
     origin = f"http://127.0.0.1:{port}"
     pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix="repopilot-model")
     slots = threading.BoundedSemaphore(1)
