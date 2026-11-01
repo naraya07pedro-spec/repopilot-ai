@@ -79,7 +79,7 @@ class BudgetedPlanner:
         }
 
     def plan(
-        self, snapshot: dict[str, Any], run_micro: int | None = None
+        self, snapshot: dict[str, Any], run_micro: int | None = None, *, retry_http: bool = True
     ) -> tuple[Plan, dict[str, Any]]:
         url, payload = self.adapter.request(snapshot)
         encoded = json.dumps(payload).encode()
@@ -100,7 +100,7 @@ class BudgetedPlanner:
         limit = self.run_micro if run_micro is None else min(run_micro, self.run_micro)
         if self.profile.paid and reservation * 2 > limit:
             raise PolicyError("run_budget_exhausted")
-        for attempt in range(2):
+        for attempt in range(2 if retry_http else 1):
             if reservation:
                 self.reserve(reservation)
             try:
@@ -141,6 +141,7 @@ class BudgetedPlanner:
                 if (
                     str(exc) in {"provider_http_429", "provider_http_502", "provider_http_503"}
                     and attempt == 0
+                    and retry_http
                 ):
                     time.sleep(0.2)
                     continue

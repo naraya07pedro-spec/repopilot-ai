@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import sys
 import uuid
 from pathlib import Path
 
@@ -13,8 +14,15 @@ from repopilot.store import Store
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="RepoPilot trusted fixture execution")
-    parser.add_argument("command", choices=["demo", "live", "export-fixtures", "publish"])
+    if len(sys.argv) > 1 and sys.argv[1] == "local":
+        from repopilot.local_cli import main as local_main
+
+        local_main(sys.argv[2:])
+        return
+    parser = argparse.ArgumentParser(
+        description="RepoPilot: use 'local --help' for the real-model proposal workspace."
+    )
+    parser.add_argument("command", choices=["local", "demo", "live", "export-fixtures", "publish"])
     parser.add_argument("--scenario", choices=list(CATALOG), default="bug")
     parser.add_argument("--data", type=Path, default=Path(".repopilot"))
     parser.add_argument("--output", type=Path)
