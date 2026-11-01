@@ -1,5 +1,12 @@
 # Local isolation alternatives — 1 November 2026
 
+Current prerequisite work is recorded in [Hyper-V worker readiness](hyperv-worker-readiness.md).
+The owner reopened read-only preparation and made a future Administrator request conditional
+on verified readiness. No VM operation is authorized. The new host admission check denies RAM
+pressure, and the full 512 MiB candidate allowance is unqualified in a 512 MiB guest. The
+following records the earlier evaluation/code-only checkpoint; its no-download statements
+describe that earlier checkpoint, not the newer media-integrity work.
+
 The owner authorized evaluating alternatives on the existing 8 GiB Windows PC. WSL recovery
 remains deferred; OpenClaw, existing VMs/disks, Windows security settings and main are preserved.
 The verified local model and owner dispatcher are reused unchanged. No worker has passed live

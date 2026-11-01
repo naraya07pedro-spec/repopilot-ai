@@ -1,0 +1,265 @@
+{
+  "schema": "hyperv_worker_preparation_v1",
+  "measured_at_epoch": 1793508086.4141626,
+  "base_commit": "5cd565ac3d57e2f5aa37854d51b043200c7d01f8",
+  "branch": "feat/hyperv-worker-evaluation",
+  "host": {
+    "caption": "Microsoft Windows 11 Pro",
+    "version": "10.0.26200",
+    "build": "26200",
+    "visible_ram_bytes": 8453820416,
+    "cpu_name": [
+      "AMD Ryzen 5 4500 6-Core Processor"
+    ],
+    "logical_processors": 12,
+    "virtualization_firmware_enabled": [
+      true
+    ],
+    "hypervisor_present": true,
+    "features": [],
+    "optional_feature_query": "unconfirmed_query_failed_or_timed_out_no_retry",
+    "vmms": "Running",
+    "elevated": false,
+    "partitions": [
+      {
+        "DriveLetter": "C",
+        "DiskNumber": 0,
+        "PartitionNumber": 3
+      },
+      {
+        "DriveLetter": "D",
+        "DiskNumber": 0,
+        "PartitionNumber": 5
+      }
+    ],
+    "disks": [
+      {
+        "FriendlyName": "RX7 2.5 512GB",
+        "MediaType": "SSD",
+        "BusType": "SATA",
+        "Size": 512110190592
+      }
+    ],
+    "hyperv_commands": [
+      {
+        "Name": "Get-VM",
+        "Source": "Hyper-V"
+      },
+      {
+        "Name": "New-VM",
+        "Source": "Hyper-V"
+      },
+      {
+        "Name": "Set-VMComPort",
+        "Source": "Hyper-V"
+      },
+      {
+        "Name": "Remove-VM",
+        "Source": "Hyper-V"
+      }
+    ],
+    "VM_inventory": "not_attempted_prior_session_permission_denial_preserved",
+    "VM_operations": false,
+    "WSL_operations": false
+  },
+  "initial_feature_inventory": {
+    "source": "successful_read_only_inventory_in_this_turn_before_bounded_followups",
+    "Microsoft-Hyper-V-All": 1,
+    "Microsoft-Hyper-V-Management-PowerShell": 1,
+    "later_bounded_feature_queries": "timed_out_preserved_not_reinterpreted_as_success"
+  },
+  "resource_window": {
+    "seconds": 30.734529495239258,
+    "samples": 16,
+    "available_ram_bytes_min": 393441280,
+    "available_ram_bytes_max": 759173120,
+    "commit_headroom_bytes_min": 8064004096,
+    "commit_percent_max": 76.43731695170666,
+    "CPU_percent_max": 61.85632549268914,
+    "C_free_bytes_last": 5362016256,
+    "D_free_bytes_last": 138260979712,
+    "admission": {
+      "resource_checks_passed": false,
+      "reasons": [
+        "available_ram_below_2048_MiB"
+      ],
+      "vm_operations_authorized": false,
+      "production_execution_enabled": false
+    },
+    "known_model_executable_names_found": [],
+    "model_absence_scope": "known_executable_names_only_exclusive_runtime_lease_still_required"
+  },
+  "reference_media": {
+    "local_path": "D:\\Projects\\repopilot-local\\hyperv-worker\\media\\alpine-virt-3.24.3-x86_64.iso",
+    "bytes": 70254592,
+    "sha256": "cdc1bc0efc64d8d611bf3733f54868172a545888dfd726f518bf279bcb0ff1af",
+    "url": "https://dl-cdn.alpinelinux.org/alpine/v3.24/releases/x86_64/alpine-virt-3.24.3-x86_64.iso",
+    "publisher_SHA256_rechecked_over_HTTPS": true,
+    "signature_verified": false,
+    "boot_tested": false,
+    "file_entries_listed_readonly": 123,
+    "Python_pytest_Ruff_APKs_present": false,
+    "kernel_configuration": {
+      "kernel_config_path": "boot/config-6.18.58-0-virt",
+      "sha256": "aea855e9e485bd68db9dd9a01a787f67d9a0cd10c30b3be835e916b1d25968d8",
+      "configuration": {
+        "CONFIG_CGROUPS": "y",
+        "CONFIG_MEMCG": "y",
+        "CONFIG_CGROUP_PIDS": "y",
+        "CONFIG_CFS_BANDWIDTH": "y",
+        "CONFIG_NAMESPACES": "y",
+        "CONFIG_USER_NS": "y",
+        "CONFIG_PID_NS": "y",
+        "CONFIG_NET_NS": "y",
+        "CONFIG_TMPFS": "y",
+        "CONFIG_SQUASHFS": "m",
+        "CONFIG_HYPERV": "y",
+        "CONFIG_HYPERV_STORAGE": "m",
+        "CONFIG_HYPERV_BALLOON": "m",
+        "CONFIG_ATA_PIIX": "y"
+      },
+      "kernel_features_observed_in_live_guest": false
+    },
+    "download_elapsed_seconds": 537.593,
+    "initial_90_second_partial_retained_bytes": 11534336,
+    "complete_worker_image": false
+  },
+  "controller": {
+    "admission_and_watchdog_decision_policy_implemented": true,
+    "qualification_plan_prepared": true,
+    "independent_watchdog_implemented": false,
+    "trusted_guest_launcher_implemented": false,
+    "serial_transport_implemented": false,
+    "exclusive_runtime_lease_implemented": false,
+    "lifecycle_template_reviewed_not_executed": true,
+    "unconditional_code_only_guard": true,
+    "Start_also_blocks_unbuilt_controller": true,
+    "creation_intent_persisted_before_New_VM_in_template": true,
+    "cleanup_exact_GUID_ID_and_folder_only": true,
+    "no_recursive_file_deletion": true,
+    "live_teardown_verified": false,
+    "live_crash_recovery_verified": false
+  },
+  "capacity": {
+    "guest_memory_mib": 512,
+    "virtual_processors": 1,
+    "candidate_memory_mib": 512,
+    "OS_tools_controller_reservation_mib": 128,
+    "safety_margin_mib": 64,
+    "fits_static_reservation": false,
+    "reservation_is_measured": false,
+    "guest_fit_verified": false,
+    "existing_contract_default_supported": false,
+    "reason": "candidate_plus_guest_reservation_exceeds_fixed_VM_RAM"
+  },
+  "probe_preparation": {
+    "preserved_catalog_sha256": "c6d5f5acb91d0f57dd1de2918caaabd90cbb4d2788a57fb38c8964396e6f55a0",
+    "main_cases": 6,
+    "separate_cancellation_phases": 1,
+    "payloads_or_limits_changed": false,
+    "live_probes_executed": 0,
+    "synthetic_checks_are_isolation_proof": false
+  },
+  "verification": {
+    "new_and_code_only_tests_passed": 26,
+    "initial_full_suite": {
+      "passed": 324,
+      "failed": 1,
+      "skipped": 5,
+      "coverage_percent": 95.67,
+      "seconds": 317.22,
+      "failure": "existing_test_plan_tampering_missing_digest_after_preparation_TimeoutExpired",
+      "failed_test_sqlite_database_inspected_readonly": true
+    },
+    "focused_C_retry": "same_TimeoutExpired_before_check_results",
+    "focused_D_retry": {
+      "passed": 1,
+      "seconds": 2.12,
+      "application_code_timeouts_and_limits_changed": false
+    },
+    "final_full_suite": {
+      "passed": 325,
+      "failed": 0,
+      "skipped": 5,
+      "warnings": 1,
+      "coverage_percent": 95.67,
+      "seconds": 169.23,
+      "TEMP_and_TMP": "D:/Projects/repopilot-local/tmp",
+      "new_model_dispatcher_or_timeout_changes": false
+    },
+    "ruff_check": "passed",
+    "ruff_format_files": 93,
+    "mypy_modules": 28,
+    "core_unchanged_from_8c638c1": [
+      "repopilot/owner_dispatch.py",
+      "repopilot/model_adapters.py",
+      "repopilot/private_publish.py",
+      "repopilot/worker_contract.py"
+    ]
+  },
+  "local_raw_evidence": {
+    "root": "D:\\Projects\\repopilot-local\\hyperv-evaluation-2026-11-01",
+    "files_sha256": {
+      "host-preflight-v1.json": "4b2e8e7bbe51f7282319057398ac876822df15de938ade4251ce70ddf791f45d",
+      "host-preflight-v2.json": "98f5b9f8a5dd1429b3d0f6e82256cb2f41899b0e246b5fdc9313bc00036081f6",
+      "capability-inventory-v3.json": "92f9a26a482b8878f885dca41e646f6dd9d5b8221ae0cc6db10bf9de85b4d2bf",
+      "qualification-plan-v1.json": "7303ff2e86cde824fab6ef3019629d939f7c793df13d2938e767d1c89df5bf1c",
+      "alpine-iso-file-list.txt": "ff86a258cd41cb210d9335f2a1d4697afcd1f7febd964b5a911f6c7af3729aa1",
+      "alpine-kernel-config.txt": "aea855e9e485bd68db9dd9a01a787f67d9a0cd10c30b3be835e916b1d25968d8",
+      "alpine-kernel-features.json": "5b0a3d4ab57b1edb120a531d5a4bce85cebd738ea1a5384443c1082bbfe999bc",
+      "preparation-tests.log": "2c9daaad1781a538faa1432a79bd2bae763b1586cc239d23ed7b9ad1ebf9b1e5",
+      "preparation-tests.xml": "d3be4749b7e1f8ceb3155c92952a91aacdffbb9ec23dfca0762d4ef101dde0ff",
+      "preparation-focused-final.xml": "d90a24e04c64633f72755e4438065c43daa7c7b945059d7788d43456540e8ce7",
+      "preparation-existing-D-retry.xml": "073833b7ff14e3993f2e270bd4485fb729c36ce6fff04c87631e2554dbb45412",
+      "preparation-tests-D-final.log": "b26dac9dcfa8ce41bed7a8fa21665de3b5f08bc491e22bdb4b96ee27096fc90f",
+      "preparation-tests-D-final.xml": "7b6e3e24f8b45762d4cbdf4a882132f7363a929207b5a1ed030aae225cf33c92",
+      "failed-C-test-database-copies.json": "f95f15599287bf966269cddbf808df24749dcecbd4eb3dbfb2533f75159f1f2b"
+    },
+    "failed_C_test_DB_copies": [
+      {
+        "copy": "failed-C-test-plan-tampering-pytest-6.db",
+        "bytes": 16384,
+        "sha256": "b9cd087d5c406cc246e9697fca0520704863d8b93d88a9b884fa012940852166",
+        "source_retained": true
+      },
+      {
+        "copy": "failed-C-test-plan-tampering-pytest-7.db",
+        "bytes": 16384,
+        "sha256": "289b60c8a8d19528ef2ff1ce0943745ffbb4e9c8e2ff867c1a16f83151958753",
+        "source_retained": true
+      }
+    ]
+  },
+  "authorization_ready": false,
+  "authorization_request_sent": false,
+  "readiness_blockers": [
+    "sustained_available_host_RAM_below_2048_MiB",
+    "worker_image_and_offline_tool_manifest_not_built",
+    "trusted_guest_serial_controller_and_independent_watchdog_not_implemented",
+    "full_default_512_MiB_candidate_memory_not_qualified_in_512_MiB_guest"
+  ],
+  "VM_operations_performed": false,
+  "UAC_launched": false,
+  "WSL_operations_performed": false,
+  "OpenClaw_interrupted": false,
+  "security_controls_or_features_changed": false,
+  "heavy_software_installed": false,
+  "models_or_dispatcher_rebuilt": false,
+  "production_private_execution_enabled": false,
+  "full_model_isolation_draft_PR_acceptance": false,
+  "sources": {
+    "edition": "https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/get-started/install-hyper-v?pivots=windows",
+    "requirements": "https://learn.microsoft.com/en-us/windows-server/virtualization/hyper-v/system-requirements-for-hyper-v-on-windows",
+    "remove_VM": "https://learn.microsoft.com/en-us/powershell/module/hyper-v/remove-vm",
+    "integration_services": "https://learn.microsoft.com/en-us/powershell/module/hyper-v/disable-vmintegrationservice",
+    "Alpine_stock_setup": "https://docs.alpinelinux.org/user-handbook/0.1a/Installing/setup_alpine.html"
+  },
+  "reviewed_code_sha256": {
+    "scripts/hyperv_probe_vm.ps1": "415306d9635042043c8e6d7392dbd5f602037842d8612f3ce7cd1c819c8ce5ae",
+    "scripts/hyperv_preflight.py": "404dca790387135870038bedb1a30804aa82022293e073a493ece54688022fe2",
+    "scripts/hyperv_readonly_inventory.ps1": "18ce7a53c9f1fc2e6619e2b3f82f57d86468630e93e842090fa2e88646ad3e49",
+    "scripts/prepare_hyperv_media.py": "622166f8dfa95e50b3cfe0e76b68f8009fa33b8ae4b6c6b2348d6a988bb271f2",
+    "repopilot/hyperv_preparation.py": "979067b0ef171abe1f5345f53e37b7e4c517d6c8df10749e32a03c24c4a94c68",
+    "repopilot/worker_probes.json": "c6d5f5acb91d0f57dd1de2918caaabd90cbb4d2788a57fb38c8964396e6f55a0"
+  }
+}

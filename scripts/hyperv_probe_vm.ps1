@@ -23,6 +23,10 @@ $rpPlan = [ordered]@{
     isolated_execution_validated = $false
     owner_decision = 'code_only_no_elevated_VM_operations'
     vm_operations_enabled = $false
+    start_available_ram_mib_min = 2048
+    host_pressure_watchdog_implemented = $false
+    trusted_guest_controller_implemented = $false
+    candidate_default_memory_fits_guest = $false
 }
 if ($Mode -eq 'Plan') { $rpPlan | ConvertTo-Json; exit 0 }
 # No flag, environment variable or Administrator token bypasses this decision.
@@ -64,6 +68,13 @@ function Assert-RpSettings($Vm, [string]$ExpectedFolder) {
         @(Get-VMHardDiskDrive -VM $Vm).Count -ne 0) {
         throw 'VM effective settings differ from the bounded diskless proposal.'
     }
+    if ($Vm.AutomaticStartAction.ToString() -ne 'Nothing' -or
+        $Vm.AutomaticStopAction.ToString() -ne 'TurnOff' -or
+        $Vm.CheckpointType.ToString() -ne 'Disabled' -or
+        @(Get-VMSnapshot -VM $Vm).Count -ne 0 -or
+        @(Get-VMIntegrationService -VM $Vm | Where-Object { $_.Enabled }).Count -ne 0) {
+        throw 'Automatic start, checkpoints or integration channels are not disabled.'
+    }
 }
 if ($Mode -eq 'Create') {
     $rpMedia = Assert-RpChild $IsoPath
@@ -74,6 +85,11 @@ if ($Mode -eq 'Create') {
     $rpFolder = Assert-RpChild (Join-Path $rpRoot $rpTag)
     New-Item -ItemType Directory -Path $rpFolder -ErrorAction Stop | Out-Null
     $rpStatePath = Join-Path $rpFolder 'owned-vm.json'
+    # A crash during New-VM leaves a durable unique intent, not permission to retry.
+    # An intent without a confirmed VM ID needs read-only owner reconciliation.
+    [ordered]@{name=('RepoPilot-Isolation-' + $rpTag); folder=$rpFolder;
+        phase='intent_only_never_retry_automatically'} |
+        ConvertTo-Json | Set-Content -LiteralPath (Join-Path $rpFolder 'creation-intent.json') -Encoding UTF8
     $rpVm = New-VM -Name ('RepoPilot-Isolation-' + $rpTag) -Generation 1 -NoVHD `
         -MemoryStartupBytes 512MB -BootDevice CD -Path $rpFolder
     # Save identity immediately. On any failure, inspect this ID; never retry creation blindly.
@@ -85,6 +101,7 @@ if ($Mode -eq 'Create') {
         -AutomaticStopAction TurnOff -CheckpointType Disabled
     Set-VMProcessor -VM $rpVm -Count 1 -Maximum 100
     Get-VMNetworkAdapter -VM $rpVm | Remove-VMNetworkAdapter
+    Get-VMIntegrationService -VM $rpVm | Disable-VMIntegrationService
     $rpDvd = @(Get-VMDvdDrive -VM $rpVm)
     if ($rpDvd.Count -eq 0) { Add-VMDvdDrive -VM $rpVm -Path $rpMedia | Out-Null }
     elseif ($rpDvd.Count -eq 1) { Set-VMDvdDrive -VMDvdDrive $rpDvd[0] -Path $rpMedia }
@@ -100,7 +117,10 @@ if ([IO.Path]::GetFileName($rpStatePath) -ne 'owned-vm.json') { throw 'Invalid s
 $rpState = Get-Content -LiteralPath $rpStatePath -Raw | ConvertFrom-Json
 $rpFolder = Assert-RpChild $rpState.folder
 if ([IO.Path]::GetDirectoryName($rpStatePath) -ne $rpFolder -or
-    $rpState.name -notmatch '^RepoPilot-Isolation-[a-f0-9]{32}$') { throw 'State scope mismatch.' }
+    $rpState.name -notmatch '^RepoPilot-Isolation-[a-f0-9]{32}$' -or
+    [IO.Path]::GetFileName($rpFolder) -ne $rpState.name.Substring('RepoPilot-Isolation-'.Length)) {
+    throw 'State scope mismatch.'
+}
 $rpVm = Get-VM -Id ([Guid]$rpState.vm_id)
 if ($rpVm.Name -ne $rpState.name) { throw 'VM identity mismatch.' }
 Assert-RpSettings $rpVm $rpFolder
@@ -110,7 +130,9 @@ if ($Mode -eq 'Inspect') {
         validated_worker=$false} | ConvertTo-Json
 } elseif ($Mode -eq 'Start') {
     $rpMemory = Get-CimInstance Win32_OperatingSystem -OperationTimeoutSec 2
-    if ([long]$rpMemory.FreePhysicalMemory * 1024 -lt 1536MB) { throw 'Insufficient RAM headroom.' }
+    if ([long]$rpMemory.FreePhysicalMemory * 1024 -lt 2048MB) { throw 'Insufficient RAM headroom.' }
+    # Even a future authorization must not start this bare ISO as a qualified worker.
+    throw 'REPOPILOT_CONTROLLER_UNBUILT: watchdog, guest controller and worker image required.'
     $rpMedia = Assert-RpChild $rpState.iso
     if ((Get-FileHash -LiteralPath $rpMedia -Algorithm SHA256).Hash -ne $rpIsoHash) {
         throw 'Boot media changed.'

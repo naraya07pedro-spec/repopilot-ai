@@ -1,4 +1,13 @@
-# Local worker alternatives — 1 November 2026 (Asia/Jakarta)
+# Current: Hyper-V prerequisite preparation (1 November 2026)
+
+See [Hyper-V worker readiness](hyperv-worker-readiness.md) and
+`evidence/hyperv-worker-preparation-2026-11-01.json` for current measurements and blockers.
+No VM operation, WSL diagnostic, OpenClaw interruption or worker activation is authorized.
+The lifecycle script retains its unconditional code-only block. Host RAM admission failed;
+image/controller/watchdog and a qualified memory profile remain prerequisites. Do not repeat
+the Administrator request before they are ready. Reuse the verified local model/dispatcher.
+
+# Earlier local worker alternatives checkpoint — 1 November 2026 (Asia/Jakarta)
 
 The owner chose **"Prepare code only; no elevated VM operations."** Do not launch UAC,
 create/start/inspect/stop/remove VMs through an elevated process, or repeat the authorization
