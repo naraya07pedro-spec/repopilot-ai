@@ -43,5 +43,8 @@
   "host_secure_boot_changes": false,
   "boot_media_downloaded": false,
   "guest_worker_image_built": false,
-  "live_security_probes_executed": 0
+  "live_security_probes_executed": 0,
+  "owner_decision": "Prepare code only; no elevated VM operations",
+  "elevated_operations_authorized": false,
+  "vm_operations_enabled": false
 }

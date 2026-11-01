@@ -1,5 +1,5 @@
 # Dedicated prototype lifecycle only. This is NOT an enabled RepoPilot worker.
-# Plan is read-only and does not load Hyper-V. Mutating modes require owner UAC approval.
+# Owner decision: code preparation only. Plan is read-only and does not load Hyper-V.
 param(
     [ValidateSet('Plan','Create','Start','Inspect','Cleanup')][string]$Mode = 'Plan',
     [string]$IsoPath = '',
@@ -21,8 +21,13 @@ $rpPlan = [ordered]@{
     secure_boot_note = 'New Generation 1 guest uses BIOS; host Secure Boot is not changed.'
     guest_worker_tools_built = $false
     isolated_execution_validated = $false
+    owner_decision = 'code_only_no_elevated_VM_operations'
+    vm_operations_enabled = $false
 }
 if ($Mode -eq 'Plan') { $rpPlan | ConvertTo-Json; exit 0 }
+# No flag, environment variable or Administrator token bypasses this decision.
+# The remaining lifecycle template is retained for review, not authorized execution.
+throw 'REPOPILOT_VM_OPERATIONS_DISABLED: owner selected code-only preparation.'
 $rpIdentity = [Security.Principal.WindowsIdentity]::GetCurrent()
 $rpPrincipal = [Security.Principal.WindowsPrincipal]::new($rpIdentity)
 if (-not $rpPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {

@@ -47,13 +47,26 @@
   "prototype": {
     "proposal": "deploy/hyperv-worker.proposal.json",
     "lifecycle_script": "scripts/hyperv_probe_vm.ps1",
-    "only_executed_mode": "Plan",
     "powershell_ast": "passed",
     "installed_command_parameters": "checked",
     "mutating_modes_tested": false,
-    "elevated_authorization": "pending_owner_reply",
+    "elevated_authorization": "declined_code_only_preparation",
     "guest_worker_image_built": false,
-    "guest_controller_built": false
+    "guest_controller_built": false,
+    "only_executed_lifecycle_body": "Plan",
+    "non_plan_modes": "unconditionally_blocked_before_token_module_or_VM_checks",
+    "vm_operations_enabled": false,
+    "fresh_owner_instruction_required_to_reopen": true,
+    "code_only_guard_test": {
+      "host": "unprivileged_Windows_PowerShell",
+      "plan": "returned_data",
+      "create": "blocked",
+      "start": "blocked",
+      "inspect": "blocked",
+      "cleanup": "blocked",
+      "hyperv_module_loaded": false,
+      "VM_operations_executed": 0
+    }
   },
   "github_app_configuration_presence": {
     "GITHUB_APP_ID": false,
@@ -116,6 +129,17 @@
     "ruff_check": "passed",
     "ruff_format_files": 85,
     "mypy_modules": 27,
-    "core_source_unchanged_from_8c638c1": true
-  }
+    "core_source_unchanged_from_8c638c1": true,
+    "code_only_followup": {
+      "passed": 300,
+      "environment_skips": 5,
+      "coverage_percent": 95.55,
+      "duration_seconds": 228.58,
+      "ruff_check": "passed",
+      "ruff_format_files": 87,
+      "mypy_modules": 27,
+      "live_isolation_probes_run": 0
+    }
+  },
+  "owner_decision": "Prepare code only; no elevated VM operations"
 }

@@ -1,5 +1,15 @@
 # Local worker alternatives — 1 November 2026 (Asia/Jakarta)
 
+The owner chose **"Prepare code only; no elevated VM operations."** Do not launch UAC,
+create/start/inspect/stop/remove VMs through an elevated process, or repeat the authorization
+question unless the owner reopens that decision. The prototype script now unconditionally
+blocks every mode except Plan before checking tokens or loading Hyper-V, including when called
+by an Administrator. No command-line or environment opt-in opens it. Continue code-only work;
+all production worker/publication gates remain closed.
+The Windows CLI guard test passed: Plan returned data; all other mode names stopped at the
+guard with Hyper-V unloaded. Code-only follow-up: 300 passed, five environment skips, 95.55%
+coverage, Ruff/format and mypy passed. No VM operation or live isolation probe occurred.
+
 Branch feat/hyperv-worker-evaluation continues from 8c638c1. Model/dispatcher implementations
 are unchanged. WSL recovery remains deferred and no WSL diagnostic or OpenClaw interruption ran.
 Native Hyper-V and management tools are enabled, but this session's Get-VM is permission-denied.
@@ -8,7 +18,7 @@ See [the alternatives, proposal and blockers](windows-worker-alternatives.md).
 
 A diskless 512 MiB / one-vCPU Hyper-V Linux prototype is proposed with no host shares, disks or
 NICs. Only Plan mode/AST parsing ran; no UAC/VM operation or OS image download occurred.
-Elevated prototype authorization is pending. Guest/controller hardening and live probes remain
+Elevated prototype authorization was declined. Guest/controller hardening and live probes remain
 unfinished. No VM configuration or synthetic receipt enables execution.
 
 The six PR #8 stress payloads are preserved byte-for-byte in a pinned packaged catalog. New

@@ -5,6 +5,18 @@ remains deferred; OpenClaw, existing VMs/disks, Windows security settings and ma
 The verified local model and owner dispatcher are reused unchanged. No worker has passed live
 isolation acceptance. Private execution and publication remain disabled.
 
+## Owner decision: code preparation only
+
+The owner chose **"Prepare code only; no elevated VM operations."** UAC and elevated VM work
+are not authorized. No OS image/tool payload download or live VM test is being started.
+The lifecycle template now blocks Create, Start, Inspect and Cleanup unconditionally before
+token checks, module loading, filesystem checks or VM APIs. Plan remains available. This block
+also applies to an Administrator; there is no CLI/environment bypass. The remaining template
+is retained as reviewable code only. Revisit authorization only if the owner reopens the decision.
+The Windows CLI guard test passed for Plan and all four blocked modes, with Hyper-V remaining
+unloaded. Follow-up regression checks passed: 300 tests, five environment skips, 95.55%
+coverage; Ruff/format and mypy passed. No live isolation probe ran.
+
 ## Actual eligibility snapshot
 
 The read-only Windows inventory found Hyper-V and its PowerShell management module enabled,
@@ -54,14 +66,15 @@ guest has no Secure Boot capability; host Secure Boot is unchanged. This explici
 limitation is not signed-boot attestation. Existing guest firmware/security is untouched.
 Production image/boot policy still requires review.
 
-scripts/hyperv_probe_vm.ps1 defaults to Plan. Only Plan and AST parsing ran; declared command
-parameters were checked against the installed module. Create/Start/Inspect/Cleanup have **not**
-been executed or live-validated. The template scopes operations to a new GUID-named VM and
+scripts/hyperv_probe_vm.ps1 defaults to Plan. Earlier Plan/AST checks and command-parameter
+inspection passed. The current CLI guard test invokes all five mode names, but non-Plan modes
+stop at the code-only block without loading Hyper-V. Their lifecycle bodies have **not** been
+executed or live-validated. The retained template scopes operations to a new GUID-named VM and
 configuration directory, checks no-network/no-disk settings, and retains ISO/state/evidence.
 It does not run jobs, enable a gate or claim isolation. Unexpected failures require inspection;
 never blindly repeat VM creation or broaden cleanup.
 
-The owner was asked to authorize per-run Administrator UAC for the bounded prototype. No UAC,
+The owner declined per-run Administrator UAC and selected code-only preparation. No UAC,
 VM creation/start/stop, feature/security change, WSL restart or paid operation ran. No persistent
 administrator-group membership or service installation is proposed.
 
@@ -99,10 +112,10 @@ and live evidence; no privilege, cgroup, network or resource-limit bypass was in
 
 ## Remaining blockers and owner-only actions
 
-1. Authorize the bounded elevated prototype; Windows denies this session Hyper-V management.
-   This excludes existing-VM changes and Windows/WSL restarts.
-2. Make enough RAM headroom available without interrupting OpenClaw. The agent will not close
-   unrelated applications or weaken guards.
+1. Elevated prototype work is deferred by the owner. A new owner instruction is required to
+   reopen it; do not repeat the approval request. Windows denies this session VM management.
+2. Any future authorized live test will need enough RAM headroom without interrupting OpenClaw.
+   No application closure or guard reduction is part of the current code-only work.
 3. Engineering must still build/harden the guest and controller, run all live probes, and prove
    cancellation, cleanup and crash recovery. The new assertion tests do not complete this work.
 4. This process has no GITHUB_APP_ID, GITHUB_INSTALLATION_ID or GITHUB_APP_PRIVATE_KEY_FILE
