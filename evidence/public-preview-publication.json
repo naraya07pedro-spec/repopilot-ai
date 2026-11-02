@@ -1,0 +1,18 @@
+{
+  "public_download_status": 200,
+  "bytes": 1110428,
+  "sha256": "38b8240432cb3b331aa9a9619daffc9a596068b5d37dd7b6f002e00fc1962bbd",
+  "all_inner_checksums_passed": true,
+  "source_commit": "218df1a3b934e4dc1be3ab1410bc313296ba93fd",
+  "stable_site_sha256": "7e21ed5a540aba4e15482fccf5edc810dcf2cd31d326b37f299e5f22e451bceb",
+  "preview_url": "https://naraya07pedro-spec.github.io/repopilot-ai-preview/",
+  "release_url": "https://github.com/naraya07pedro-spec/repopilot-ai/releases/tag/v0.2.0-preview.1",
+  "prerelease": true,
+  "public_browser_checks": {
+    "390px": "passed",
+    "1440px": "passed"
+  },
+  "model_started": false,
+  "private_execution_enabled": false,
+  "default_site_replaced": false
+}

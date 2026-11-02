@@ -11,7 +11,15 @@ You can evaluate the UI and connect your own existing model. Model quality and s
 generation are not guaranteed. No weights, runtime, paid service or sandbox is installed.
 Generated code is never executed, applied or autonomously published.
 
-## Download the exact tested candidate
+## Durable experimental prerelease
+
+Download [v0.2.0-preview.1](https://github.com/naraya07pedro-spec/repopilot-ai/releases/tag/v0.2.0-preview.1).
+The versioned ZIP and its SHA-256 sidecar do not depend on expiring Actions artifacts.
+It pins verified checkpoint 218df1a3b934e4dc1be3ab1410bc313296ba93fd.
+The separate static preview host is https://naraya07pedro-spec.github.io/repopilot-ai-preview/.
+This host has no model/backend and does not replace the default website.
+
+## CI candidate artifacts
 
 Open PR #10's **Verify** workflow for the desired commit in
 [GitHub Actions](https://github.com/naraya07pedro-spec/repopilot-ai/actions/workflows/verify.yml).

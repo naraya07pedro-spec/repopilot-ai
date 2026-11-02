@@ -1,5 +1,18 @@
 # PR #10 implementation report
 
+## Public implementation-preview publication
+
+The separate [HTTPS preview](https://naraya07pedro-spec.github.io/repopilot-ai-preview/)
+and [experimental prerelease](https://github.com/naraya07pedro-spec/repopilot-ai/releases/tag/v0.2.0-preview.1)
+are externally verified. Unauthenticated installer download returned HTTP 200; ZIP and six
+internal checksums passed. Public Chromium checks passed at 390 and 1440 px, including
+installer/setup links, honest preview notice, onboarding, no private requests or overflow.
+A mobile navigation rule hiding download links was fixed and reverified. TypeScript,
+15 component tests and the public production build passed. The default site content hash
+is unchanged. No inference, private endpoint or code execution was enabled. The durable
+installer pins verified 218df1a; frontend publication is a separate static-only change.
+See evidence/public-preview-publication.json. Earlier undeployed statements below are historical.
+
 ## Preview distribution follow-up — 2 November 2026
 
 The architecture and provider/dispatcher implementation are preserved. The public Next.js

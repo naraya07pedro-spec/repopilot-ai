@@ -9,7 +9,8 @@ Install from `codex/usable-agent-release` while review is pending. This is an **
 preview**: the complete installed-app → genuine model → approved patch acceptance remains
 unverified. Tested software can be distributed as a labeled preview independently of the
 evaluation PC's RAM. The deployed Pages site still hosts the earlier fixture release;
-the new entry is a tested static artifact, not a claimed deployment.
+the new entry is separately published at [the experimental preview URL](https://naraya07pedro-spec.github.io/repopilot-ai-preview/).
+[Permanent preview installer and checksums](https://github.com/naraya07pedro-spec/repopilot-ai/releases/tag/v0.2.0-preview.1).
 
 RepoPilot is a local-first coding agent for focused Python changes. Select source files,
 describe a task, invoke your model, review a structured proposal and export an approved patch.
