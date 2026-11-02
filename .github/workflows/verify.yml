@@ -23,6 +23,8 @@ jobs:
       TEST_POSTGRES_URL: postgresql+psycopg://repopilot:fixture-ci-only@localhost:5432/repopilot_test
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -45,6 +47,8 @@ jobs:
         working-directory: frontend
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
@@ -70,7 +74,7 @@ jobs:
       - name: Retain tested Pages preview (no deployment)
         uses: actions/upload-artifact@v4
         with:
-          name: public-preview-pages-${{ github.sha }}
+          name: public-preview-pages-${{ github.event.pull_request.head.sha || github.sha }}
           path: frontend/public-site/out
           if-no-files-found: error
           retention-days: 30
@@ -96,6 +100,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - run: docker compose build
       - run: docker compose up -d --wait
       - run: |
@@ -112,9 +118,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Verify branch commit used for candidate provenance
+        env:
+          EXPECTED_SOURCE_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python -c "import os, subprocess; actual = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(); assert actual == os.environ['EXPECTED_SOURCE_COMMIT'], 'Candidate source commit differs from PR head'"
       - name: Build distribution without editable source imports
         run: python -m pip wheel --no-deps --wheel-dir wheelhouse .
       - name: Install wheel in a fresh environment and verify local HTTP workspace
@@ -132,7 +144,7 @@ jobs:
         if: runner.os == 'Linux'
         uses: actions/upload-artifact@v4
         with:
-          name: repopilot-ai-preview-${{ github.sha }}
+          name: repopilot-ai-preview-${{ github.event.pull_request.head.sha || github.sha }}
           path: ${{ runner.temp }}/repopilot-preview
           if-no-files-found: error
           retention-days: 30

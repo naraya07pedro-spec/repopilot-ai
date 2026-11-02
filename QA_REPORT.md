@@ -26,6 +26,9 @@ Cleanup now accepts a nonzero taskkill result only when bounded wait confirms la
 the existing listener-closed check still must pass. Failed live cleanup never broadens targets.
 The corrected probe passed outside the checkout. The original failure evidence is retained.
 The latest main-only baseline clarification is integrated without modifying main itself.
+Artifact inspection caught PR builds using GitHub's temporary merge SHA; CI now pins the
+actual branch head and checks provenance before producing named downloads. The final run
+is the canonical check of that correction, not the earlier green run.
 
 The public viewport checks cover 360/390/768/1366/1440/1920 px, reduced motion, setup controls,
 preview labeling, no localhost/API requests, no horizontal overflow and no browser exceptions.

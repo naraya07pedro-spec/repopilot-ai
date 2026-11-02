@@ -23,7 +23,9 @@ Downloads need online dependencies; Actions artifacts may need sign-in and expir
 The preview preserves the existing palette, system typography, sections, CSS transitions and
 responsive reflow. Changes are a static verification notice and corrected onboarding text;
 no media, frameworks, motion dependencies, model weights or backend services were added.
-See [preview installation](docs/preview-release.md). The five existing CI jobs remain;
+See [preview installation](docs/preview-release.md). PR CI explicitly checks out and names artifacts by the actual release-branch head, rather
+than GitHub's temporary merge SHA; an admission assertion verifies installer provenance.
+The five existing CI jobs remain;
 download packaging runs only after installed-package verification succeeds.
 
 The fresh Windows source install also exposed and fixed an installer-test exit race: a failed
