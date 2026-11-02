@@ -67,6 +67,13 @@ jobs:
       - run: npm run test:browser
       - name: Verify release setup and local workspace browser contracts
         run: npx playwright test -c playwright.release.config.ts
+      - name: Retain tested Pages preview (no deployment)
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-preview-pages-${{ github.sha }}
+          path: frontend/public-site/out
+          if-no-files-found: error
+          retention-days: 30
       - name: Build public site at domain root for Netlify
         run: npm run build:public
         env:
@@ -118,3 +125,14 @@ jobs:
         with:
           name: installed-package-${{ runner.os }}
           path: evidence/ci-installed-*.json
+      - name: Prepare checksummed preview installer after installed-package verification
+        if: runner.os == 'Linux'
+        run: python scripts/package_preview.py wheelhouse/repopilot_ai-0.2.0-py3-none-any.whl "${{ runner.temp }}/repopilot-preview"
+      - name: Retain reproducible preview installer (no release publication)
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: repopilot-ai-preview-${{ github.sha }}
+          path: ${{ runner.temp }}/repopilot-preview
+          if-no-files-found: error
+          retention-days: 30

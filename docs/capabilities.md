@@ -2,6 +2,9 @@
 
 The release boundary is **task → genuine model → unexecuted proposal → human review → patch**.
 It is a bounded proposal agent, not a claim of unrestricted autonomous software engineering.
+This implementation preview has automated UI/API and orchestration coverage. The full
+installed-app → genuine model → exact approval → patch acceptance remains unverified;
+it is not a prerequisite for preview development/distribution. See [preview scope](preview-release.md).
 
 | Capability | Implementation / verification |
 | --- | --- |

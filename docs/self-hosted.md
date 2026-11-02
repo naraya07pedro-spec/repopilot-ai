@@ -1,8 +1,10 @@
 # Self-hosted proposal edition
 
-This is the PR #10 release candidate. Commands below select that existing release branch,
-not the older `main` package. A real model-through-workspace acceptance remains a merge gate;
-transport/browser contract tests and the earlier model-only recording do not replace it.
+This is the PR #10 **implementation preview**. Installation and the proposal workflow have
+automated coverage; the full installed-app → genuine local model → approved patch acceptance
+remains unverified. You can evaluate it with your own runtime. The evaluation PC's RAM limit
+does not prevent preview development or distribution. No stable-release acceptance is claimed.
+See [checksummed candidate downloads and exact-commit reproduction](preview-release.md).
 
 RepoPilot runs a stateful task → real model → code proposal → human review → patch export
 workflow. It reads selected Python files and never executes, applies or publishes model code.
@@ -11,22 +13,29 @@ GitHub publication components remain disabled advanced capabilities.
 
 ## Install
 
-Use Windows 11 or Linux with Python 3.12+, Git and a local model runtime you already control.
+Use Windows 11 or Linux with Python 3.12 (CI-tested), Git and a local model runtime you control.
 The Python package bundles the workspace UI; Node, WSL, Hyper-V and Docker are unnecessary.
-Choose a new environment directory rather than replacing an existing project's environment.
+The commands clone into a **new** `repopilot-preview` folder, refusing to overwrite an existing
+one, and install the cloned revision using its audited dependency constraints. The included
+starter is committed source with one intentional bug. No starter code is executed.
 
 ```powershell
-python -m venv .venv-repopilot
-.\.venv-repopilot\Scripts\python.exe -m pip install "git+https://github.com/naraya07pedro-spec/repopilot-ai.git@codex/usable-agent-release"
-.\.venv-repopilot\Scripts\repopilot.exe local --repo C:\path\to\your\repository --model YOUR_INSTALLED_MODEL
+git clone --branch codex/usable-agent-release --single-branch https://github.com/naraya07pedro-spec/repopilot-ai.git repopilot-preview
+if ($LASTEXITCODE -ne 0) { throw "Clone failed; choose a new folder." }
+cd repopilot-preview
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -c requirements.lock .
+.\.venv\Scripts\repopilot.exe local --repo examples/mean --model YOUR_INSTALLED_MODEL
 ```
 
 Linux:
 
 ```sh
-python3 -m venv .venv-repopilot
-.venv-repopilot/bin/python -m pip install "git+https://github.com/naraya07pedro-spec/repopilot-ai.git@codex/usable-agent-release"
-.venv-repopilot/bin/repopilot local --repo /path/to/your/repository --model YOUR_INSTALLED_MODEL
+git clone --branch codex/usable-agent-release --single-branch https://github.com/naraya07pedro-spec/repopilot-ai.git repopilot-preview &&
+cd repopilot-preview &&
+python3 -m venv .venv &&
+.venv/bin/python -m pip install -c requirements.lock . &&
+.venv/bin/repopilot local --repo examples/mean --model YOUR_INSTALLED_MODEL
 ```
 
 The launcher prints a private session link to `http://127.0.0.1:8765/`. Open that link on the
@@ -34,8 +43,16 @@ same machine. Its token stays in that browser session and is removed from the ad
 Never share the link. Nothing binds to a LAN/public interface, enables CORS or creates a tunnel.
 If the port is occupied, choose `--port 8766`. Stop with Ctrl+C; other applications are untouched.
 
-For the included starter, clone this repository and use `--repo PATH/TO/repopilot-ai/examples/mean`.
-The starter inherits the parent Git revision. Do not run its code through RepoPilot.
+Replace `YOUR_INSTALLED_MODEL` with an already installed Ollama model; it is a placeholder,
+not a bundled model. To inspect onboarding without a runtime, launch with a model name and
+view the UI/files/history. No inference occurs until generation; runtime checks report
+connection errors honestly. Do not mistake discovery or a visible UI for real-model acceptance.
+
+For your own project, replace `examples/mean` with its absolute path, quoted if it contains
+spaces. It must have an existing Git commit. The starter inherits the clone's parent Git
+revision. The downloaded source ZIP has no Git history and cannot replace that checkout.
+The branch may advance: use the exact-commit instructions in the download guide to reproduce
+a particular successful CI run. Existing venvs and other repositories need no modification.
 
 ## Connect an existing runtime
 
@@ -46,8 +63,10 @@ or silently select another model. See [Ollama documentation](https://docs.ollama
 For llama.cpp or another schema-compatible local server:
 
 ```sh
-repopilot local --repo /path/to/repository --provider compatible --endpoint http://127.0.0.1:8080/v1 --model YOUR_SERVED_MODEL_ALIAS
+.venv/bin/repopilot local --repo examples/mean --provider compatible --endpoint http://127.0.0.1:8080/v1 --model YOUR_SERVED_MODEL_ALIAS
 ```
+
+On Windows use `.\.venv\Scripts\repopilot.exe` in place of `.venv/bin/repopilot`.
 
 The server must support JSON-schema chat completions and report usage. llama.cpp's
 [server documentation](https://github.com/ggml-org/llama.cpp/tree/master/tools/server)
@@ -133,6 +152,10 @@ local-model acceptance is not claimed. No model runtime/OS feature is installed 
 | Workspace already running | Use the existing launcher or stop that launcher; do not delete the lock file |
 | Session required | Open the new private link printed by the current launcher |
 | Model busy | Task is saved queued; choose Resume after the current request finishes |
+| Python command missing or below 3.12 | Install/select Python 3.12, then create a new venv; `python --version` (Windows) or `python3 --version` (Linux) shows the selected interpreter |
+| `git` not found | Install Git and open a new terminal before cloning/launching |
+| Linux venv/ensurepip unavailable | Install your distribution's matching Python venv package, then retry in a new environment |
+| Clone destination already exists | Choose a new folder name; do not delete an existing workspace to follow this guide |
 
 The old trusted-fixture console and authenticated GitHub App owner workspace remain available
 as separate existing interfaces. Neither enables unsafe execution for this edition.

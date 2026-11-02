@@ -1,4 +1,12 @@
 # Current release candidate: PR #10
+The latest follow-up finishes **preview** onboarding/distribution independently of personal-PC
+inference: fresh-folder clone + constrained installation + committed starter, explicit preview
+notices, and CI installer/static-export artifacts with source provenance/checksums. See
+[preview installation](preview-release.md). The branch is still `codex/usable-agent-release`;
+do not redesign, enable execution or automatically merge. The complete genuine-model journey
+remains unverified, but does not block source development or an honestly labeled preview.
+
+The following paragraph records the previous checkpoint; use current PR checks for final counts.
 Continue `codex/usable-agent-release`; do not rebuild the verified local model, dispatcher or
 redesign the architecture. See [QA report](../QA_REPORT.md) and
 [sanitized readiness evidence](../evidence/pr10-release-readiness.json). Local packaging,

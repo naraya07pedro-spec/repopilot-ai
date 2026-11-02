@@ -83,6 +83,8 @@ def main() -> None:
             "--no-input",
             "--index-url",
             "https://pypi.org/simple",
+            "--constraint",
+            str(Path(__file__).resolve().parents[1] / "requirements.lock"),
             str(wheel),
         ],
         cwd=root,

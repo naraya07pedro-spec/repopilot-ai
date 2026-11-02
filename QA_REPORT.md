@@ -1,5 +1,34 @@
 # PR #10 QA report
 
+## Preview distribution follow-up — 2 November 2026
+
+**Preview software: CONDITIONAL PASS for the documented experimental scope.** It can be
+distributed independently of personal-PC inference, with the unverified full real-model
+journey visible in onboarding/public UI/docs. Stable acceptance remains NOT MERGE READY.
+No merge, new deployment, public Release or real-model acceptance is claimed by this report.
+Final remote checks and download artifacts belong to the exact head shown on PR #10.
+
+| Changed-scope check | Executed result |
+| --- | --- |
+| Ruff lint / format; mypy | Passed, 30 typed package modules |
+| Full Windows backend regression | 304 passed, five existing environment skips, 93.77% coverage, 142.66 s; included first four packaging checks |
+| Final packaging boundary tests | Five passed after adding the untracked-source rejection case |
+| Frontend | 15 component tests, typecheck, private build and public production export passed |
+| Browser integration | Eight passed: six public viewports, two synthetic local proposal/approval/real-download contracts |
+| Final compatible-runtime command | Six public viewport checks passed after correcting the venv executable; no private-flow rerun needed |
+| Security boundaries | No inference, generated-code execution, sandbox or autonomous publication enabled |
+| Exact final CI / fresh install | Consult the final PR checks and installed-package evidence; remote results are not preclaimed here |
+
+The public viewport checks cover 360/390/768/1366/1440/1920 px, reduced motion, setup controls,
+preview labeling, no localhost/API requests, no horizontal overflow and no browser exceptions.
+Native screenshots were inspected; existing dark/system-font composition and mobile ordering
+remain intact. Earlier real-model recordings and synthetic browser transports remain separate.
+The full genuine-model acceptance is still unverified; the RAM guards remain 1,536/512 MiB.
+No application/service was closed to create headroom. No WSL, Hyper-V or administrator operation
+was used. Below is retained historical evidence from the preceding checkpoint.
+
+## Prior checkpoint verification
+
 **Release verdict: NOT MERGE READY — real-model acceptance remains blocked by RAM.**
 Independent local gates pass. Current remote CI results are the checks attached to
 [PR #10](https://github.com/naraya07pedro-spec/repopilot-ai/pull/10); this report does not

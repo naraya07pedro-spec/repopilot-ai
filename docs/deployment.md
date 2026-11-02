@@ -6,7 +6,11 @@ pending by owner request. Pages remains the verified public host.
 
 ## Public evidence site
 
-The static Next.js app in `frontend/public-site` includes exactly three approved recordings.
+The static Next.js app in `frontend/public-site` includes three approved fixture recordings
+and a separately labeled earlier real-model-only recording. The candidate displays a visible
+implementation-preview notice and states that full model-through-workspace acceptance is
+unverified. It can be published truthfully as a preview without running inference on the
+owner's PC. The current PR does not claim a new deployment or a stable release.
 It has no API routes, credentials, login, model calls or code execution. The separate owner
 Next.js app must never be substituted into this static deployment.
 
@@ -15,6 +19,10 @@ Next.js app must never be substituted into this static deployment.
 3. The workflow builds with `PUBLIC_BASE_PATH=/repopilot-ai`, uploads `frontend/public-site/out`,
    and deploys with Pages and OIDC permissions. Observe environment restrictions normally.
 4. Verify the deployment's returned HTTPS URL, asset requests and interactive evidence tabs.
+
+Each successful Verify run also retains `public-preview-pages-COMMIT_SHA`, the tested export
+for this Pages base path, and a checksummed installer bundle. See [preview downloads](preview-release.md).
+These are downloadable CI artifacts, not automatically published sites or GitHub Releases.
 
 [Public URL](https://naraya07pedro-spec.github.io/repopilot-ai/) verified on 28 October 2026:
 HTTP 200, all eight script/style assets 200, and owner/API routes 404.

@@ -2,8 +2,10 @@
 
 Start with [PR #10](https://github.com/naraya07pedro-spec/repopilot-ai/pull/10), the current
 [capability matrix](capabilities.md), and its CI checks. The public Pages URL still hosts the
-previous fixture viewer until this candidate passes real-model acceptance and release review.
+previous fixture viewer. The candidate can be distributed as an explicitly labeled preview
+independently of personal-PC inference; stable acceptance remains unverified.
 The new product entry is tested in a static preview; it is not claimed deployed yet.
+Download the exact tested [preview artifacts](preview-release.md) from its successful CI run.
 
 ## One-minute product tour
 

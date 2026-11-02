@@ -10,10 +10,12 @@ test("public entry offers an actual local setup and no localhost/API request",()
  const fetchSpy=vi.spyOn(globalThis,"fetch");
  render(<ProductEntry records={[bug,feature,failure]} recording={recording}/>);
  expect(screen.getByRole("link",{name:/Try RepoPilot/}).getAttribute("href")).toBe("#try");
+ expect(screen.getByLabelText("Preview verification status").textContent).toContain("remains unverified");
  expect(screen.getByText(/RECORDING \/ NOT LIVE/)).toBeTruthy();
  expect(screen.queryByText(/public site never connects/)).toBeNull();
  fireEvent.click(screen.getByRole("button",{name:/Linux \/ shell/}));
- expect(screen.getByText(/\.venv\/bin\/repopilot local/)).toBeTruthy();
+ expect(screen.getByText(/\.venv\/bin\/repopilot local/).textContent).toContain("--repo examples/mean");
+ expect(screen.getByText(/git clone --branch/).textContent).toContain("-c requirements.lock .");
  fireEvent.click(screen.getByRole("button",{name:/Connect your model/}));
  expect(screen.getByText(/YOUR_SERVED_MODEL_ALIAS/)).toBeTruthy();
  fireEvent.click(screen.getByRole("button",{name:/Review and export/}));

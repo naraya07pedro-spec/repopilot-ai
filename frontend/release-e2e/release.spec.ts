@@ -12,12 +12,16 @@ for(const width of [360,390,768,1366,1440,1920]){
   await page.getByRole("link",{name:/Try RepoPilot/}).click();
   const commands=page.locator(".setup-panel pre");
   await expect(commands).toContainText('.\\.venv\\Scripts\\python.exe -m pip install');
-  await expect(commands).toContainText("@codex/usable-agent-release");
+  await expect(commands).toContainText("git clone --branch codex/usable-agent-release");
+  await expect(commands).toContainText("-c requirements.lock .");
+  await expect(commands).toContainText("--repo examples/mean");
+  await expect(page.getByLabel("Preview verification status")).toContainText("remains unverified");
   await page.getByRole("button",{name:"Linux / shell"}).click();
   await expect(commands).toContainText(".venv/bin/python -m pip install");
   await expect(commands).toContainText(".venv/bin/repopilot local");
   await page.getByRole("button",{name:/Connect your model/}).click();
   await expect(page.getByText(/YOUR_SERVED_MODEL_ALIAS/)).toBeVisible();
+  await expect(page.locator(".setup-panel pre")).toContainText(".venv/bin/repopilot local --repo examples/mean --provider compatible");
   await page.getByRole("button",{name:/Review and export/}).click();
   await expect(page.getByText(/public site never connects/)).toBeVisible();
   await expect(page.getByText("RECORDING / NOT LIVE")).toBeVisible();
@@ -33,6 +37,7 @@ for(const width of [390,1440]){
   await page.goto("http://127.0.0.1:8875/#session=browser-contract-only-session-0123456789");
   await expect(page.getByRole("heading",{name:"What should change?"})).toBeVisible();
   expect(page.url()).not.toContain("session=");
+  await expect(page.getByText(/full installed-app → genuine model → patch acceptance remains unverified/)).toBeVisible();
   await page.getByRole("button",{name:"Check runtime"}).click();
   await expect(page.getByText(/Runtime reached · model found/)).toBeVisible();
   await page.getByLabel("Task and acceptance criteria").fill("Fix the fractional mean and preserve the function otherwise.");

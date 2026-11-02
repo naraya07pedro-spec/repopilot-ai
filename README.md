@@ -3,9 +3,11 @@
 **Your coding task. Your model. A patch you can review.**
 
 Release candidate: [PR #10](https://github.com/naraya07pedro-spec/repopilot-ai/pull/10).
-Install from `codex/usable-agent-release` while review is pending. The new entry page is
-tested as a preview; the deployed Pages site remains the earlier fixture-evidence release
-until real-model acceptance and release checks pass. No merge/deployment is implied here.
+Install from `codex/usable-agent-release` while review is pending. This is an **implementation
+preview**: the complete installed-app → genuine model → approved patch acceptance remains
+unverified. Tested software can be distributed as a labeled preview independently of the
+evaluation PC's RAM. The deployed Pages site still hosts the earlier fixture release;
+the new entry is a tested static artifact, not a claimed deployment.
 
 RepoPilot is a local-first coding agent for focused Python changes. Select source files,
 describe a task, invoke your model, review a structured proposal and export an approved patch.
@@ -18,8 +20,9 @@ It saves checkpoints, validates output, makes bounded correction attempts and wa
 
 ## Two ways to explore
 
-**Public product entry:** open the website, follow the local setup, inspect the labeled real
-CPU-model recording, or explore the older issue-to-PR fixture evidence. The public site has
+**Public product entry preview:** inspect the new static artifact/setup instructions or open
+the existing website's older fixture evidence. The candidate entry also labels an earlier real
+CPU-model recording. The public site has
 no live backend/model connection and never contacts your localhost or asks for credentials.
 
 **Self-hosted workspace:** run the Python package against a repository and model runtime you
@@ -27,24 +30,33 @@ control. It includes its own local UI; no Node, WSL, VM, GitHub App or paid key 
 
 ## Quick start
 
-Requires Python 3.12+, Git and an already installed local model/runtime supporting structured
-JSON output. Run this inside a new virtual environment:
+Requires Python 3.12 (CI-tested), Git and an existing local model/runtime supporting structured
+JSON output. Use the [Windows/Linux first-run commands](docs/self-hosted.md) to clone into a
+new folder, install with `-c requirements.lock .`, and open the committed `examples/mean` starter.
+For Linux:
 
 ```sh
-python -m pip install "git+https://github.com/naraya07pedro-spec/repopilot-ai.git@codex/usable-agent-release"
-repopilot local --repo /path/to/your/repository --model YOUR_INSTALLED_MODEL
+git clone --branch codex/usable-agent-release --single-branch https://github.com/naraya07pedro-spec/repopilot-ai.git repopilot-preview &&
+cd repopilot-preview &&
+python3 -m venv .venv &&
+.venv/bin/python -m pip install -c requirements.lock . &&
+.venv/bin/repopilot local --repo examples/mean --model YOUR_INSTALLED_MODEL
 ```
 
-On Windows, `--repo D:\Projects\your-repository` works. The default provider is native Ollama
+On Windows use `.\.venv\Scripts\python.exe` and `.\.venv\Scripts\repopilot.exe`. For your own
+committed repository use `--repo "D:\path\to\your-repository"`. The default provider is native Ollama
 at `http://127.0.0.1:11434`. For a compatible llama.cpp server:
 
 ```sh
-repopilot local --repo /path/to/repository --provider compatible --endpoint http://127.0.0.1:8080/v1 --model YOUR_SERVED_MODEL_ALIAS
+.venv/bin/repopilot local --repo examples/mean --provider compatible --endpoint http://127.0.0.1:8080/v1 --model YOUR_SERVED_MODEL_ALIAS
 ```
 
 Open the private session link printed by the launcher on the same machine. RepoPilot never
 installs a runtime or downloads a model automatically. [Windows/Linux virtual-environment
 commands, model profiles and troubleshooting](docs/self-hosted.md).
+For a pinned wheel, source archive, checksums and provenance, see the
+[preview download guide](docs/preview-release.md). Actions downloads may require GitHub sign-in
+and expire after 30 days; no PyPI/GitHub Release publication is claimed.
 
 1. Select the Python files the task may read and edit.
 2. Choose a model and optionally an explicit fallback. Check runtime availability.
