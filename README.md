@@ -1,5 +1,7 @@
 # RepoPilot AI
 
+> **Baseline and preview:** `main` documents the reviewed fixture baseline. This branch is the self-hosted proposal preview in [draft PR #10](https://github.com/naraya07pedro-spec/repopilot-ai/pull/10), with Windows/Linux fresh-install CI coverage. Full genuine-model acceptance remains unverified. Model-generated code execution and autonomous publication remain disabled.
+
 **Your coding task. Your model. A patch you can review.**
 
 Release candidate: [PR #10](https://github.com/naraya07pedro-spec/repopilot-ai/pull/10).

@@ -26,6 +26,12 @@ no media, frameworks, motion dependencies, model weights or backend services wer
 See [preview installation](docs/preview-release.md). The five existing CI jobs remain;
 download packaging runs only after installed-package verification succeeds.
 
+The fresh Windows source install also exposed and fixed an installer-test exit race: a failed
+taskkill is tolerated only after bounded wait confirms that same owned launcher exited, and
+the listener must still be closed. There is no broader process targeting. Three regression
+tests preserve these boundaries. The newer main baseline clarification is retained in the
+preview README while main remains untouched.
+
 The deployed Pages URL still hosts the older fixture viewer. The new static export can be
 published as a clearly labeled preview, but this follow-up does not merge or deploy it.
 Stable-release acceptance remains an unmet gate; execution/publication remain disabled.

@@ -19,6 +19,35 @@ import urllib.request
 from pathlib import Path
 
 
+def stop_owned_launcher(process, *, windows: bool = os.name == "nt") -> None:
+    """Stop only the Popen launcher created by this test; never broaden cleanup."""
+    if process.poll() is None:
+        if windows:
+            taskkill = Path(os.environ["SystemRoot"]) / "System32/taskkill.exe"
+            result = subprocess.run(
+                [str(taskkill), "/PID", str(process.pid), "/T", "/F"],
+                capture_output=True,
+                timeout=10,
+                check=False,
+            )
+            if result.returncode:
+                # The launcher can exit between poll() and taskkill. Accept that race
+                # only after wait() confirms exit; the caller also verifies no listener.
+                try:
+                    process.wait(timeout=3)
+                except subprocess.TimeoutExpired:
+                    raise RuntimeError(
+                        "test_owned_tree_cleanup_failed_no_broader_cleanup_attempted"
+                    ) from None
+        else:
+            process.terminate()
+    try:
+        process.wait(timeout=8)
+    except subprocess.TimeoutExpired:
+        process.kill()
+        process.wait(timeout=3)
+
+
 def run(output: Path) -> dict:
     import repopilot
 
@@ -168,25 +197,7 @@ def run(output: Path) -> dict:
                 "test_process_tree_cleanup_verified": True,
             }
         finally:
-            if process.poll() is None:
-                if os.name == "nt":
-                    # Only the live Popen process created above and its children. Windows
-                    # console/venv launchers may spawn a Python child; killing just the
-                    # launcher can otherwise leave the test listener and its lease alive.
-                    taskkill = Path(os.environ["SystemRoot"]) / "System32/taskkill.exe"
-                    subprocess.run(
-                        [str(taskkill), "/PID", str(process.pid), "/T", "/F"],
-                        capture_output=True,
-                        timeout=10,
-                        check=True,
-                    )
-                else:
-                    process.terminate()
-            try:
-                process.wait(timeout=8)
-            except subprocess.TimeoutExpired:
-                process.kill()
-                process.wait(timeout=3)
+            stop_owned_launcher(process)
             missing_runtime.close()
             with socket.socket() as listener:
                 listener.settimeout(0.5)

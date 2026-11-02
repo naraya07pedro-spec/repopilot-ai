@@ -17,7 +17,15 @@ Final remote checks and download artifacts belong to the exact head shown on PR 
 | Browser integration | Eight passed: six public viewports, two synthetic local proposal/approval/real-download contracts |
 | Final compatible-runtime command | Six public viewport checks passed after correcting the venv executable; no private-flow rerun needed |
 | Security boundaries | No inference, generated-code execution, sandbox or autonomous publication enabled |
-| Exact final CI / fresh install | Consult the final PR checks and installed-package evidence; remote results are not preclaimed here |
+| Fresh Windows source install | Fresh official-branch clone, new venv, constrained install and pip check passed; installed launcher/assets/auth/missing-runtime errors and listener cleanup passed, no inference |
+| Installer cleanup regression | Three tests passed: exited launcher, taskkill race with confirmed exit, and live cleanup failure without broader termination |
+| Exact final CI | Consult the final PR checks and installed-package evidence; remote results are not preclaimed here |
+
+A local fresh-install probe exposed a taskkill exit race after the test-owned launcher exited.
+Cleanup now accepts a nonzero taskkill result only when bounded wait confirms launcher exit;
+the existing listener-closed check still must pass. Failed live cleanup never broadens targets.
+The corrected probe passed outside the checkout. The original failure evidence is retained.
+The latest main-only baseline clarification is integrated without modifying main itself.
 
 The public viewport checks cover 360/390/768/1366/1440/1920 px, reduced motion, setup controls,
 preview labeling, no localhost/API requests, no horizontal overflow and no browser exceptions.

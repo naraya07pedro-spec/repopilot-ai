@@ -18,4 +18,6 @@ frontend/release-e2e/release.spec.ts
 repopilot/web/index.html
 scripts/check_distribution.py
 scripts/package_preview.py
+scripts/smoke_installed_local.py
+tests/test_installer_cleanup.py
 tests/test_preview_distribution.py
