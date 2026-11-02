@@ -24,10 +24,16 @@ class PrivatePublisher:
             raise PolicyError("publication_requires_verified_run")
         if self.service.approval_digest(data) != data.get("approval_digest"):
             raise PolicyError("publication_approval_changed")
+        if (
+            self.service.selected(data.get("model_profile")).binding(data["selection"]["run_micro"])
+            != data["selection"]
+        ):
+            raise PolicyError("publication_model_configuration_changed")
         job = VerificationJob.model_validate(data["worker_job"])
         receipt = ExecutionReceipt.model_validate(data["worker_receipt"])
         if (
             receipt.outcome != "completed"
+            or digest(receipt.model_dump()) != data.get("worker_receipt_digest")
             or job.run_id != identity
             or job.approval_digest != data["approval_digest"]
             or receipt.run_id != identity
@@ -192,6 +198,8 @@ class PrivatePublisher:
         pr = pulls[0]
         if (
             pr["head"]["sha"] != artifact["commit_sha"]
+            or pr.get("draft") is not True
+            or pr.get("state") != "open"
             or pr["head"]["repo"]["full_name"] != repo
             or pr["base"]["ref"] != artifact["base_ref"]
             or f"<!-- repopilot-publication:{artifact['digest']} -->" not in (pr.get("body") or "")

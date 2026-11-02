@@ -1,0 +1,197 @@
+{
+  "date": "2026-11-01",
+  "timezone": "Asia/Jakarta",
+  "evidence_kind": "real_local_inference_no_mock_provider",
+  "task_kind": "explicitly_guided_one_file_builtin_fixture_not_live_GitHub_App",
+  "model_provenance": {
+    "model": "Qwen2.5-Coder-0.5B-Instruct",
+    "quantization": "Q4_0",
+    "owner_approved": true,
+    "revision": "ebb2015119c907b064c512bf053e945850b5875f",
+    "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-0.5B-Instruct-GGUF/resolve/ebb2015119c907b064c512bf053e945850b5875f/qwen2.5-coder-0.5b-instruct-q4_0.gguf",
+    "bytes": 428730240,
+    "sha256": "9739055e046d62a937e5b7879012209ef40ebea8a1569a96028de491f3f091d5",
+    "verified": true,
+    "download_seconds": 67.641
+  },
+  "successful_trial": {
+    "initial_available_ram_bytes": 1212100608,
+    "backend": "CPU-only",
+    "runtime_pid": 26656,
+    "generated_code_executed": false,
+    "private_execution_enabled": false,
+    "wsl_commands_invoked": false,
+    "memory_floor_bytes": 536870912,
+    "ready_seconds": 4.468,
+    "local_model_discovery_confirmed": true,
+    "status": "awaiting_approval",
+    "request_seconds": 11.0,
+    "failure_category": null,
+    "usage": {
+      "provider": "compatible",
+      "model": "repopilot-local",
+      "execution_kind": "real_model",
+      "prompt_tokens": 262,
+      "completion_tokens": 212,
+      "estimated_cost_micro_usd": 0,
+      "reserved_micro_usd": 0,
+      "attempts": 1,
+      "pricing_source": "local endpoint; no external API billing"
+    },
+    "profile": {
+      "id": "pc-qwen05",
+      "provider": "compatible",
+      "model": "repopilot-local",
+      "structured_output": "json_schema",
+      "context_tokens": 8192,
+      "output_tokens": 1536,
+      "context_bytes": 6000,
+      "request_timeout_seconds": 120,
+      "endpoint": "http://127.0.0.1:18434/v1",
+      "input_rate": 0,
+      "output_rate": 0
+    },
+    "source_kind": "fixed_public_fixture_snapshot_not_live_GitHub_App",
+    "schema_validated_plan": true,
+    "approval_granted": false,
+    "edited_paths": [
+      "app.py"
+    ],
+    "expected_fractional_fix_present": true,
+    "gpu_counter_setup_errors": {},
+    "runtime_exit_code": 1,
+    "elapsed_seconds": 15.797,
+    "guard_triggers": [],
+    "min_available_ram_bytes": 863236096,
+    "peak_working_set_bytes": 726618112,
+    "peak_private_bytes": 410042368,
+    "cpu_seconds": 22.0,
+    "approx_observed_whole_machine_cpu_percent": 11.61
+  },
+  "actual_model_plan": {
+    "interpretation": "Replace the // operator with the / operator in the app.py file.",
+    "acceptance_criteria": [
+      "The code should not contain any errors or warnings."
+    ],
+    "relevant_files": [
+      "app.py"
+    ],
+    "proposed_changes": [
+      "Replace // with / in the app.py file."
+    ],
+    "tests": [
+      "Run the following command: python3 app.py",
+      "Ensure that the output is 1.5."
+    ],
+    "risks": [
+      "There is no need to modify the base_sha and base_ref variables."
+    ],
+    "assumptions": [
+      "The code must be completely functional."
+    ],
+    "edits": [
+      {
+        "path": "app.py",
+        "content": "def mean(values):\n    if not values:\n        raise ValueError(\"values must not be empty\")\n    return sum(values) / len(values)\n"
+      }
+    ]
+  },
+  "actual_diff": "--- a/app.py\n+++ b/app.py\n@@ -1,4 +1,4 @@\n def mean(values):\n     if not values:\n         raise ValueError(\"values must not be empty\")\n-    return sum(values) // len(values)\n+    return sum(values) / len(values)\n",
+  "static_expected_edit_bytes_match": true,
+  "approval_digest_present": true,
+  "approval_granted": false,
+  "worker_job_or_receipt_created": false,
+  "generated_code_executed": false,
+  "pr_created": false,
+  "earlier_and_successful_trials": [
+    {
+      "trial": "qwen-smoke-1",
+      "backend": "Vulkan",
+      "status": "not_ready",
+      "failure_category": null,
+      "guard_triggers": [
+        "available_ram_floor"
+      ],
+      "elapsed_seconds": 3.953,
+      "minimum_available_ram_bytes": 536666112,
+      "sampled_peak_working_set_bytes": 618799104,
+      "gpu_initialization_samples": [
+        {
+          "dedicated_bytes": 411607040.0,
+          "shared_bytes": 200298496.0,
+          "engine_percent": 14.162933547556488,
+          "max_engine_percent": 14.162933547556488
+        }
+      ],
+      "generated_code_executed": false
+    },
+    {
+      "trial": "qwen-cpu-smoke-2",
+      "backend": "CPU-only",
+      "status": "failed",
+      "failure_category": "provider_incomplete_or_refused",
+      "guard_triggers": [],
+      "elapsed_seconds": 41.109,
+      "minimum_available_ram_bytes": 780967936,
+      "sampled_peak_working_set_bytes": 709074944,
+      "gpu_initialization_samples": [],
+      "generated_code_executed": false
+    },
+    {
+      "trial": "qwen-cpu-smoke-3",
+      "backend": "CPU-only",
+      "status": "failed",
+      "failure_category": "private_no_change",
+      "guard_triggers": [],
+      "elapsed_seconds": 22.266,
+      "minimum_available_ram_bytes": 902881280,
+      "sampled_peak_working_set_bytes": 710324224,
+      "gpu_initialization_samples": [],
+      "generated_code_executed": false
+    },
+    {
+      "trial": "qwen-cpu-smoke-4",
+      "backend": "CPU-only",
+      "status": "not_ready",
+      "failure_category": null,
+      "guard_triggers": [
+        "available_ram_floor"
+      ],
+      "elapsed_seconds": 7.156,
+      "minimum_available_ram_bytes": 504705024,
+      "sampled_peak_working_set_bytes": 751652864,
+      "gpu_initialization_samples": [],
+      "generated_code_executed": false
+    },
+    {
+      "trial": "qwen-cpu-smoke-5",
+      "backend": "CPU-only",
+      "status": "awaiting_approval",
+      "failure_category": null,
+      "guard_triggers": [],
+      "elapsed_seconds": 15.797,
+      "minimum_available_ram_bytes": 863236096,
+      "sampled_peak_working_set_bytes": 726618112,
+      "gpu_initialization_samples": [],
+      "generated_code_executed": false
+    }
+  ],
+  "limitations": [
+    "Single guided fixture, not autonomous coding quality or real GitHub intake.",
+    "Earlier schema-valid no-change output shows that schema validation is not correctness.",
+    "No isolated test or real model draft PR acceptance occurred.",
+    "Successful inference used CPU-only; GPU measurements are initialization-only.",
+    "Memory is shared with existing apps and headroom fluctuates.",
+    "No complete concurrent frontend/API/model/worker capacity test."
+  ],
+  "preview_cli_validation": {
+    "contract_tests": 4,
+    "paid_profiles_denied": true,
+    "proxy_inheritance_denied": true,
+    "existing_output_directories_refused": true,
+    "generated_python_files_written": false,
+    "subprocess_execution_forbidden_in_test": true,
+    "live_wrapper_preflight": "refused_below_initial_memory_threshold",
+    "live_result_uses_same_production_adapter_planner_service": true
+  }
+}

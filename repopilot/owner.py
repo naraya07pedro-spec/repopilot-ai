@@ -20,6 +20,7 @@ from repopilot.model_adapters import ModelProfile
 from repopilot.model_registry import ModelRegistry, load_profiles
 from repopilot.models import Approval
 from repopilot.owner_auth import OwnerAuth
+from repopilot.owner_dispatch import OwnerDispatcher
 from repopilot.policy import PolicyError
 from repopilot.private_planner import BudgetedPlanner
 from repopilot.private_publish import PrivatePublisher
@@ -174,6 +175,7 @@ class OwnerRuntime:
         )
         self.worker = DisabledWorker()
         self.publisher = PrivatePublisher(self.service, self.worker.require_available)
+        self.dispatcher = OwnerDispatcher(self.service, pool, slots)
 
         def origin(request: Request) -> None:
             if cfg.mode == "public":
@@ -325,7 +327,10 @@ class OwnerRuntime:
         )
         def cancel(identity: str) -> dict[str, Any]:
             run(identity)
-            return self.service.stop(identity, "cancelled")
+            try:
+                return self.dispatcher.cancel(identity)
+            except PolicyError as exc:
+                raise HTTPException(409, str(exc)) from None
 
         @app.post(
             "/api/owner/runs/{identity}/reject", dependencies=[Depends(origin), Depends(authorized)]
@@ -336,14 +341,16 @@ class OwnerRuntime:
 
         @app.post(
             "/api/owner/runs/{identity}/execute",
+            status_code=202,
             dependencies=[Depends(origin), Depends(authorized)],
         )
-        def execute(identity: str) -> None:
+        def execute(identity: str) -> dict[str, Any]:
             run(identity)
             try:
-                self.worker.require_available()
+                return self.dispatcher.execute(identity)
             except PolicyError as exc:
-                raise HTTPException(409, str(exc)) from None
+                status = 429 if str(exc) == "owner_execution_capacity" else 409
+                raise HTTPException(status, str(exc)) from None
 
         @app.get("/api/owner/runs/{identity}/publication", dependencies=[Depends(authorized)])
         def publication(identity: str) -> dict[str, Any]:

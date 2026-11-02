@@ -86,6 +86,33 @@ def make_planner(store, p, handler):
     )
 
 
+def test_local_timeout_is_explicit_bounded_and_in_approval_binding(store):
+    p = profile("compatible", request_timeout_seconds=120)
+    seen = []
+
+    def handler(request):
+        seen.append(request.extensions["timeout"])
+        return httpx.Response(200, json=response("compatible"))
+
+    planner = make_planner(store, p, handler)
+    _, usage = planner.plan(snapshot())
+    assert seen[0]["read"] == 120
+    assert planner.binding()["profile"]["request_timeout_seconds"] == 120
+    assert usage["estimated_cost_micro_usd"] == 0
+    for invalid in (0, 121):
+        with pytest.raises(ValueError):
+            profile("compatible", request_timeout_seconds=invalid)
+
+
+@pytest.mark.parametrize("field", ["tool_calls", "function_call"])
+def test_compatible_tool_requests_are_rejected_even_with_valid_plan(store, field):
+    data = response("compatible")
+    data["choices"][0]["message"][field] = {"name": "must_never_run"}
+    planner = make_planner(store, profile("compatible"), lambda _: httpx.Response(200, json=data))
+    with pytest.raises(PolicyError, match="unexpected_content"):
+        planner.plan(snapshot())
+
+
 @pytest.mark.parametrize("provider", PROVIDERS)
 def test_wire_contract_and_normalized_usage(store, provider):
     p = profile(provider)

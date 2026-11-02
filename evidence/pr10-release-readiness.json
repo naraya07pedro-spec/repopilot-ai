@@ -1,0 +1,116 @@
+{
+  "release_branch": "codex/usable-agent-release",
+  "pull_request": 10,
+  "parent_checkpoint": "d1bbc39cdb0b451378215f33e9b43882353c6f14",
+  "recorded_at_utc": "2026-11-01T17:10:40.902634+00:00",
+  "local_verification": {
+    "backend": {
+      "passed": 300,
+      "skipped": 5,
+      "coverage_percent": 93.81,
+      "seconds": 136.08
+    },
+    "ruff": "passed",
+    "format": "passed",
+    "mypy_platforms": [
+      "win32",
+      "linux"
+    ],
+    "frontend_component_tests": 15,
+    "typescript": "passed",
+    "public_production_build": "passed",
+    "release_browser_checks": 8,
+    "live_HTTPS_browser_checks": 2
+  },
+  "fresh_Windows_install": {
+    "status": "passed",
+    "platform": "win32",
+    "python": "3.12.14",
+    "installed_package": "D:\\Projects\\repopilot-local\\release-pr10-2026-11-01\\fresh-windows\\venv\\Lib\\site-packages\\repopilot\\__init__.py",
+    "legacy_console_encoding": "cp1252",
+    "assets": {
+      "/": {
+        "bytes": 5186,
+        "sha256": "c56d3811a0bb545d207df7de992ab361b69b23906bc4596bacad62d7c8781825"
+      },
+      "/workspace.js": {
+        "bytes": 10933,
+        "sha256": "431f997456cc16cb6a8b9cf70abebe2610327114e57bf39c936de8169dc29831"
+      },
+      "/workspace.css": {
+        "bytes": 7077,
+        "sha256": "0d9cf18a014e0dc4f8ff360a60f0c19d49ff7b7e9839271670b38f524c56b21b"
+      }
+    },
+    "authentication_verified": true,
+    "missing_runtime_error_verified": true,
+    "model_invoked": false,
+    "code_executed": false,
+    "sandbox_or_publication_enabled": false,
+    "test_process_tree_cleanup_verified": true
+  },
+  "distribution": {
+    "clean_wheel_sha256": "e125586f42f410f541ac3308bf1649e84a5a492c647841a5abd6078a3c34d89e",
+    "package_source_files_compared": 34,
+    "rejected_initial_stale_wheel_retained": true,
+    "rejected_files": [
+      "repopilot/isolation_probes.py",
+      "repopilot/worker_probes.json"
+    ],
+    "build_method": "wheel_from_new_sdist_with_TEMP_and_UV_CACHE_DIR_on_D"
+  },
+  "public_site": {
+    "url": "https://naraya07pedro-spec.github.io/repopilot-ai/",
+    "status": 200,
+    "bytes": 35236,
+    "sha256": "7e21ed5a540aba4e15482fccf5edc810dcf2cd31d326b37f299e5f22e451bceb",
+    "checked_at_epoch": 1793552358.4025712,
+    "fixture_site": true,
+    "new_release_deployed": false
+  },
+  "memory_admission": {
+    "minimum_start_available_mib": 1536,
+    "running_floor_mib": 512,
+    "samples": [
+      {
+        "at_epoch": 1793552554.457164,
+        "available_bytes": 999809024,
+        "total_visible_bytes": 8453820416
+      },
+      {
+        "at_epoch": 1793552554.957517,
+        "available_bytes": 939974656,
+        "total_visible_bytes": 8453820416
+      },
+      {
+        "at_epoch": 1793552555.457893,
+        "available_bytes": 1052291072,
+        "total_visible_bytes": 8453820416
+      }
+    ],
+    "admission_passed": false,
+    "model_started": false,
+    "guard_bypassed": false,
+    "reason": "insufficient_RAM_real_model_acceptance_not_started"
+  },
+  "remaining_acceptance": "installed_application_real_local_model_proposal_exact_approval_downloadable_patch",
+  "real_model_acceptance_completed": false,
+  "merge_ready": false,
+  "new_public_frontend_deployed": false,
+  "CI": "See current PR #10 checks; no remote result is preclaimed by this local record",
+  "browser_model_transport": "explicitly_synthetic_contract_only_not_live_AI",
+  "OpenClaw_WSL_HyperV_or_security_configuration_changed": false,
+  "untrusted_code_executed": false,
+  "private_execution_enabled": false,
+  "autonomous_publication_enabled": false,
+  "local_artifacts": "D:\\Projects\\repopilot-local\\release-pr10-2026-11-01",
+  "artifact_sha256": {
+    "backend-final.log": "c954a74142e3b10ec11138956a5e81d7b05c7ff6ba2a8e7569ca4040660c9a36",
+    "backend-final.xml": "f11809423982cfdb8a7b9aee1c58ef1115a1f759f712fd75e65c262fac6430eb",
+    "fresh-windows-install.log": "c0c98fb389917313d80856e8f963bd8140a06f8a15560a41a0b9ef4d6c023f8d",
+    "release-browser.log": "04d2375bd0451aa00e14a630c8a7f15e5ed1bed202ac0700474cfa533b599f21",
+    "public-live-browser.log": "c611f2fb6e7743e30dce8762c9cf58d4b50f4182a11da86843c8b529a75a6d0a",
+    "final-memory-admission.json": "69a210902ddf022a1d3eca0b6011aa3872d55adc4dfdf746f4ca75dc14eda46e",
+    "fresh-console-cleanup/installed-smoke.json": "c807ac02b864d9ab8d5fc36e665d81199b18edf08fd331fcc1171f7d4bc3cab0"
+  }
+}

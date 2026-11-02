@@ -1,0 +1,31 @@
+import {afterEach,expect,test,vi} from "vitest";
+import {cleanup,fireEvent,render,screen} from "@testing-library/react";
+import ProductEntry from "./product-entry";
+import bug from "../public-site/data/bug.json";
+import feature from "../public-site/data/feature.json";
+import failure from "../public-site/data/failure.json";
+import recording from "../public-site/data/local-agent.json";
+afterEach(cleanup);
+test("public entry offers an actual local setup and no localhost/API request",()=>{
+ const fetchSpy=vi.spyOn(globalThis,"fetch");
+ render(<ProductEntry records={[bug,feature,failure]} recording={recording}/>);
+ expect(screen.getByRole("link",{name:/Try RepoPilot/}).getAttribute("href")).toBe("#try");
+ expect(screen.getByLabelText("Preview verification status").textContent).toContain("remains unverified");
+ expect(screen.getByText(/RECORDING \/ NOT LIVE/)).toBeTruthy();
+ expect(screen.queryByText(/public site never connects/)).toBeNull();
+ fireEvent.click(screen.getByRole("button",{name:/Linux \/ shell/}));
+ expect(screen.getByText(/\.venv\/bin\/repopilot local/).textContent).toContain("--repo examples/mean");
+ expect(screen.getByText(/git clone --branch/).textContent).toContain("-c requirements.lock .");
+ fireEvent.click(screen.getByRole("button",{name:/Connect your model/}));
+ expect(screen.getByText(/YOUR_SERVED_MODEL_ALIAS/)).toBeTruthy();
+ fireEvent.click(screen.getByRole("button",{name:/Review and export/}));
+ expect(screen.getByText(/public site never connects/)).toBeTruthy();
+ expect(fetchSpy).not.toHaveBeenCalled();fetchSpy.mockRestore();
+});
+test("real-model recording and deterministic fixture tests are explicitly separate",()=>{
+ render(<ProductEntry records={[bug,feature,failure]} recording={recording}/>);
+ fireEvent.click(screen.getByRole("tab",{name:"What this proves"}));
+ expect(screen.getByText("Model output was not executed or tested")).toBeTruthy();
+ expect(screen.getByRole("status").textContent).toContain("Recorded execution");
+ expect(screen.getByText(/older recordings use deterministic/)).toBeTruthy();
+});

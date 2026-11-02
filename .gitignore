@@ -239,3 +239,6 @@ frontend/playwright-report/
 frontend/test-results/
 .netlify/
 frontend/test-results-root/
+frontend/playwright-release-report/
+frontend/test-results-release/
+frontend/test-results-live-pr10/

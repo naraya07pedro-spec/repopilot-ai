@@ -1,0 +1,17 @@
+{
+  "model": "Qwen2.5-Coder-0.5B-Instruct",
+  "quantization": "Q4_0",
+  "owner_approved": true,
+  "revision": "ebb2015119c907b064c512bf053e945850b5875f",
+  "url": "https://huggingface.co/Qwen/Qwen2.5-Coder-0.5B-Instruct-GGUF/resolve/ebb2015119c907b064c512bf053e945850b5875f/qwen2.5-coder-0.5b-instruct-q4_0.gguf",
+  "bytes": 428730240,
+  "sha256": "9739055e046d62a937e5b7879012209ef40ebea8a1569a96028de491f3f091d5",
+  "verified": true,
+  "download_seconds": 67.641,
+  "inference_status": "real_CPU_guided_fixture_plan_saved_at_awaiting_approval",
+  "available_ram_mib_at_resource_check": 690,
+  "minimum_initial_available_ram_bytes": 1073741824,
+  "generated_code_executed": false,
+  "private_execution_enabled": false,
+  "later_success_evidence": "qwen-local-inference-2026-11-01.json"
+}

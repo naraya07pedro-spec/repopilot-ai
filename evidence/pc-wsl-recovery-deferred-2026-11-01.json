@@ -1,0 +1,24 @@
+{
+  "decision_date": "2026-11-01",
+  "timezone": "Asia/Jakarta",
+  "owner_response": "Keep OpenClaw running; defer recovery",
+  "targeted_maintenance_authorized": false,
+  "recovery_executed": false,
+  "new_wsl_clients_started": 0,
+  "existing_processes_or_services_stopped": false,
+  "distro_or_disk_operations_performed": false,
+  "private_execution_enabled": false,
+  "verified_ci": {
+    "commit": "86df711239810a17e68fc132328de6fcae2fdd9d",
+    "run_id": 41221678889,
+    "url": "https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41221678889",
+    "jobs": {
+      "backend": "success",
+      "frontend": "success",
+      "container": "success"
+    },
+    "source": "GitHub workflow job metadata",
+    "validates_local_linux_health_or_sandbox_isolation": false
+  },
+  "continuation_scope": "Windows-only engineering and verification; no interruption unless the owner reopens the decision"
+}

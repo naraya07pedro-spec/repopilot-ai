@@ -9,3 +9,14 @@ for (const [name,source] of [["bug","live-bug"],["feature","feature"],["failure"
  writeFileSync(new URL(name+".json",destination),raw);
 }
 console.log("Prepared three approved public recordings in "+fileURLToPath(destination));
+let local;
+try {
+ local=JSON.parse(readFileSync(new URL("../../evidence/local-agent-acceptance-public.json",import.meta.url),"utf8"));
+ if(local.evidence_kind!=="real_local_agent_http_acceptance"||!local.patch_export_verified||local.tests_executed)throw Error("Invalid local acceptance evidence");
+} catch(error) {
+ if(error.code!=="ENOENT")throw error;
+ const earlier=JSON.parse(readFileSync(new URL("../../evidence/qwen-local-inference-2026-11-01.json",import.meta.url),"utf8"));
+ if(earlier.evidence_kind!=="real_local_inference_no_mock_provider")throw Error("Real inference evidence required");
+ local={evidence_kind:earlier.evidence_kind,recorded_at:earlier.date,model:earlier.model_provenance.model,quantization:earlier.model_provenance.quantization,task:earlier.actual_model_plan.interpretation,diff:earlier.actual_diff,checkpoint:"awaiting_approval",patch_export_verified:false,tests_executed:false,usage:earlier.successful_trial.usage,events:[],source:"evidence/qwen-local-inference-2026-11-01.json"};
+}
+writeFileSync(new URL("local-agent.json",destination),JSON.stringify(local));

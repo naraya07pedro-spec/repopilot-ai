@@ -9,13 +9,16 @@ export type Evidence = {
 };
 const root="https://github.com/naraya07pedro-spec/repopilot-ai";
 const labels=["Bug fix","Feature","Rejected regression"];
-export default function PublicDemo({records}:{records:Evidence[]}) {
+export default function PublicDemo({records,embedded=false}:{records:Evidence[];embedded?:boolean}) {
  const [selected,setSelected]=useState(0); const [tab,setTab]=useState("Timeline");
  const run=records[selected];
- return <main>
+ const Container=embedded?"div":"main";
+ return <Container className={embedded?"embedded-evidence":""}>
+ {!embedded&&<>
   <header className="topbar"><a className="brand" href="#top"><span className="logo">R/</span>RepoPilot AI</a><nav aria-label="Main"><a href="#demo">Explore evidence</a><a href={root}>GitHub ↗</a><a href={root+"/blob/main/docs/architecture.md"}>Architecture ↗</a></nav><span className="scope">PUBLIC / READ ONLY</span></header>
   <section className="hero" id="top"><div><p className="eyebrow">ISSUE → PLAN → CHANGE → TEST → REVIEW</p><h1>Inspect the change.<br/><span>Follow the evidence.</span></h1><p className="lede">A real GitHub issue became a tested, one-line fix and a reviewable pull request. Explore its plan, code diff, failed baseline, and passing checks.</p><div className="hero-actions"><a className="button primary" href="#demo">Explore recorded execution ↓</a><a className="text-link" href={root+"/pull/2"}>Read the actual pull request ↗</a></div></div>
   <aside className="boundary"><span className="small-label">WHAT THIS DEMONSTRATES</span><div className="contract-line"><span>01</span><strong>Actual GitHub Issue #1 → PR #2</strong></div><div className="contract-line"><span>02</span><strong>Independent test processes and Git commits</strong></div><div className="contract-line"><span>03</span><strong>Explicit approval and failure boundaries</strong></div><p>These are recordings of audited fixture runs with a deterministic provider. This public site never executes code, requests credentials, or calls a model.</p></aside></section>
+ </>}
   <section id="demo"><div className="section-heading"><div><p className="eyebrow">GUIDED EVIDENCE VIEWER</p><h2>Three outcomes. Every check inspectable.</h2></div></div>
   <div className="scenarios" role="group" aria-label="Recorded scenarios">{records.map((r,i)=><button key={r.id} className={"scenario "+(selected===i?"selected":"")} aria-pressed={selected===i} onClick={()=>{setSelected(i);setTab("Timeline");}}><span className="small-label">RECORDING / 0{i+1}</span><strong>{labels[i]}</strong><span>{r.issue?.title}</span></button>)}</div>
   <div className="notice" role="status">Recorded execution • {run.created_at} • {run.provider}. Selecting a recording does not start a new run.</div>
@@ -28,7 +31,8 @@ export default function PublicDemo({records}:{records:Evidence[]}) {
   {tab==="Tests"&&run.checks.map((c,i)=><article className="check" key={i}><div className="check-title"><h3>{c.name}</h3><span className={"status "+(c.exit_code===0?"verified":"failed")}>exit {c.exit_code}</span><span className="muted">{c.duration_seconds}s recorded</span></div><code className="command">{c.command.join(" ")}</code><pre>{c.output}</pre></article>)}
   {tab==="Pull request"&&(run.pr?<><h3>{run.pr.title}</h3><pre>{run.pr.body}</pre>{selected===0?<a className="button primary" href={root+"/pull/2"}>Open real draft PR #2 ↗</a>:<p className="notice">This feature run prepared an offline PR artifact. No published feature PR is claimed.</p>}<p><a className="text-link" href={"data:application/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(run.pr,null,2))} download={run.id+".pr.json"}>Download recorded PR artifact</a></p></>:<div className="empty"><h3>No PR was prepared.</h3><p>The candidate failed verification. Its failure was preserved.</p></div>)}
   </div></div></section>
-  <section id="history"><div className="section-heading"><h2>Verify the provenance.</h2></div><p>These are seeded demonstration repositories, not customer projects. General AI repository execution requires the private workspace and a reviewed isolated worker; that V2 capability is not presented as complete.</p><div className="hero-actions"><a className="button ghost" href={root+"/issues/1"}>Actual issue ↗</a><a className="button ghost" href={root+"/blob/main/docs/evidence.md"}>Execution evidence ↗</a><a className="button ghost" href={root+"/actions"}>CI results ↗</a><a className="button ghost" href={root+"/blob/main/docs/security.md"}>Security model ↗</a></div></section>
+  {!embedded&&<><section id="history"><div className="section-heading"><h2>Verify the provenance.</h2></div><p>These are seeded demonstration repositories, not customer projects. General AI repository execution requires the private workspace and a reviewed isolated worker; that V2 capability is not presented as complete.</p><div className="hero-actions"><a className="button ghost" href={root+"/issues/1"}>Actual issue ↗</a><a className="button ghost" href={root+"/blob/main/docs/evidence.md"}>Execution evidence ↗</a><a className="button ghost" href={root+"/actions"}>CI results ↗</a><a className="button ghost" href={root+"/blob/main/docs/security.md"}>Security model ↗</a></div></section>
   <footer><span className="brand">R/ RepoPilot AI</span><p>Public evidence only. No login, API token, payment, or code execution.</p></footer>
- </main>;
+ </>}
+ </Container>;
 }

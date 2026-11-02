@@ -1,0 +1,100 @@
+{
+  "mode": "offline_saved_evidence_only",
+  "wsl_or_service_commands_invoked": false,
+  "raw_memory_or_event_messages_emitted": false,
+  "crash_input": "read",
+  "saved_crash_records": 6,
+  "init_sigabrt_records": 6,
+  "init_abort_with_broken_pipe_records": 6,
+  "failure_pattern": "consistent_with_wsl_init_interop_abort",
+  "admin_collections": [
+    {
+      "folder": "admin-20261031-214737-a226bec8",
+      "event_input": "read",
+      "event_queries": {
+        "Microsoft-Windows-Hyper-V-Compute-Admin": {
+          "status": "no_matching_events",
+          "event_count": 0
+        },
+        "Microsoft-Windows-Hyper-V-Hypervisor-Admin": {
+          "status": "no_matching_events",
+          "event_count": 0
+        },
+        "Microsoft-Windows-Hyper-V-Worker-Admin": {
+          "status": "no_matching_events",
+          "event_count": 0
+        },
+        "Microsoft-Windows-Host-Network-Service-Admin": {
+          "status": "no_matching_events",
+          "event_count": 0
+        }
+      },
+      "pending_input": "read",
+      "pending_client_pid": 24704,
+      "deadline_exceeded": true,
+      "client_arguments_saved": false,
+      "completion_input": "missing",
+      "collection_complete": false,
+      "state": "incomplete_waiting_on_wsl_client"
+    }
+  ],
+  "current_linux_health": "not_verified_by_saved_evidence",
+  "recovery_executed": false,
+  "limitations": [
+    "No matching event entries is limited to the collector's filters, not proof of health.",
+    "A pending snapshot is not a live process check.",
+    "Missing client arguments prevents identifying the precise stalled WSL subcommand.",
+    "No recovery or interruption is authorized by an input evidence file."
+  ],
+  "measured_at": "2026-10-31T23:03:00.8797418+07:00",
+  "source_base": "227050aa8668dc6817ddcacafa73e9a57704fb7c",
+  "owner_report": {
+    "collector_parent_pid": 28432,
+    "parent_terminated_reported_by_owner": true,
+    "collector_must_not_be_rerun": true,
+    "interruption_approval": false
+  },
+  "process_snapshot": {
+    "parent_pid_28432_present": false,
+    "pending_child_pid": 24704,
+    "pending_child_present": true,
+    "pending_child_command_line_readable": false,
+    "pending_child_modified": false,
+    "openclaw_windows_pid": 15700,
+    "openclaw_running": true
+  },
+  "collector_defect": "A 25-second deadline was followed by an unbounded WaitForExit() in the prior revision.",
+  "diagnostic_actions": {
+    "new_wsl_clients_started": 0,
+    "live_collector_rerun": false,
+    "services_restarted": false,
+    "distro_or_windows_restart": false,
+    "raw_dump_memory_copied": false,
+    "private_execution_enabled": false
+  },
+  "saved_input_hashes": [
+    {
+      "file": "local-event-messages.json",
+      "bytes": 1285,
+      "sha256": "92A5B8D9A6E2A50A812B641430B1B8749897E414424FA0EFCE597EBD613C9F1D"
+    },
+    {
+      "file": "pending-client.json",
+      "bytes": 153,
+      "sha256": "4CEFDBDB48E1270EBA1B0C60F1EA5021808710F5F4B462DAE48936D82D6BCF26"
+    }
+  ],
+  "process_snapshot_source": "Read-only Windows metadata observed during this follow-up; not a Linux health check.",
+  "validation": {
+    "ruff": "passed",
+    "format": "passed",
+    "mypy": "passed, 25 application modules",
+    "backend_passed": 253,
+    "backend_skipped": 5,
+    "coverage_percent": 95.41,
+    "diagnostic_tests_passed": 9,
+    "offline_analysis_against_saved_files": "passed",
+    "retired_powershell": "parsed only, never executed",
+    "new_live_wsl_commands": 0
+  }
+}

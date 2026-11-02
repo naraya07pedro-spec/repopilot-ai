@@ -1,4 +1,101 @@
-# WSL2 operational follow-up — 31 October 2026
+# Current release candidate: PR #10
+The latest follow-up finishes **preview** onboarding/distribution independently of personal-PC
+inference: fresh-folder clone + constrained installation + committed starter, explicit preview
+notices, and CI installer/static-export artifacts with source provenance/checksums. See
+[preview installation](preview-release.md). The branch is still `codex/usable-agent-release`;
+do not redesign, enable execution or automatically merge. The complete genuine-model journey
+remains unverified, but does not block source development or an honestly labeled preview.
+
+The following paragraph records the previous checkpoint; use current PR checks for final counts.
+Continue `codex/usable-agent-release`; do not rebuild the verified local model, dispatcher or
+redesign the architecture. See [QA report](../QA_REPORT.md) and
+[sanitized readiness evidence](../evidence/pr10-release-readiness.json). Local packaging,
+HTTP/auth, 300 backend tests, 15 component tests and eight new browser contract checks pass.
+Two browser checks verify the existing public HTTPS fixture site; the new entry is a preview.
+Linux lock typing and Docker evidence-copy defects are fixed. Fresh installation CI covers
+Ubuntu and Windows. Build from a fresh sdist to avoid ignored build-cache contamination.
+
+Exactly one real acceptance remains: installed app → genuine local model → proposal → approval
+→ downloaded patch. RAM failed admission; no inference was started. Never lower the 1,536 MiB
+start guard or 512 MiB running floor. Do not merge PR #10 until that acceptance and CI pass.
+WSL recovery remains deferred; preserve OpenClaw and all VMs. Sandbox execution and autonomous
+publication remain disabled advanced capabilities, separate from this proposal release.
+
+# Windows local-agent engineering — 1 November 2026 (Asia/Jakarta)
+
+Development branch: feat/windows-local-agent, based on 80f91b8. The owner dispatcher now connects
+execute/cancel routes to the existing approval-bound ledger/transport behind the default closed
+worker gate. Component tests join provider planning, approval, text staging, synthetic receipts
+and synthetic draft publication; they do not execute candidate source or prove sandbox isolation.
+Provider timeouts are explicit and approval-bound; publication rechecks receipt/model bindings
+and an open draft PR. No experimental PR #8 runtime was imported or merged.
+
+A checksum-verified portable llama.cpp Vulkan binary on D: starts and detects the RX 580.
+Existing Llama 3.2 weights pass their manifest SHA-256 check, but a guarded loading trial ended
+before readiness as free RAM fell below 512 MiB. No live generation succeeded, no inference GPU
+utilization was measured, and no new weights were downloaded for that trial. The owner then
+approved a smaller Qwen 0.5B model: 428,730,240 bytes downloaded to D: with a verified pinned
+SHA-256. After the owner freed memory, CPU-only structured generation succeeded on an explicitly
+guided one-file fixture: 11.0 seconds, 262 prompt / 212 completion tokens, real schema-valid edit
+saved at awaiting_approval. Static bytes match the // -> / fix; no approval, execution or PR
+occurred. Earlier incomplete/no-change outputs and GPU/context memory-guard aborts remain evidence.
+No apps were closed by the agent and the guards were not lowered. Private execution/publication
+remain disabled. See [the milestone and exact limitations](windows-local-agent-milestone.md).
+Local Windows checks: 273 passed, five environment skips, 95.44% coverage; Ruff/format (80 files)
+and mypy (26 modules) passed. The additional model/worker/GitHub workflow tests are synthetic.
+GitHub Verify run 41230279122 passed all three application jobs for exact commit 2da0e9b.
+scripts/preview_local_fixture.py provides a repeatable local-only JSON review without worker,
+candidate-code execution or publication. This wrapper is contract-tested; the live smoke used
+the underlying production adapter/planner/service with fixed public data, not a GitHub App Issue.
+Final local checks after the wrapper: 277 passed, five environment skips, 95.44% coverage;
+Ruff/format (83 files), mypy (26 modules), and the shipped profile's context admission passed.
+
+## Owner decision — 1 November 2026 (Asia/Jakarta)
+
+The owner explicitly chose **"Keep OpenClaw running; defer recovery."** No maintenance
+interruption is approved. Preserve OpenClaw, all WSL clients/services, distro registration,
+virtual disks and credentials. Do not rerun the retired collector, start a recovery attempt,
+or repeat the approval request unless the owner reopens the decision. Continue Windows-only work.
+
+Remote [Verify run 41221678889](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41221678889)
+for diagnostic commit 86df711239810a17e68fc132328de6fcae2fdd9d completed successfully:
+backend, frontend and container jobs all passed. These checks do not validate this PC's Linux
+broker or the experimental sandbox. Recovery and live private execution remain unverified/disabled;
+PR #8 remains unmerged. The diagnostic branch is chore/pc-wsl-diagnosis; main is preserved.
+
+## PC WSL evidence follow-up — 31 October 2026
+
+The owner terminated the hung Administrator PowerShell collector (PID 28432). Do not rerun it.
+Saved output records WSL client PID 24704 beyond the deadline; the prior collector then waited
+without a timeout. No completed admin-result.json or successful Linux validation was saved.
+Four administrative event queries had no matches under their filters, not permission denial.
+Six saved real-core reports identify PID 2 init SIGABRTs with Broken pipe at SocketChannel.h:183.
+The live initiating client/current Linux broker state remain unverified. A later Windows-only
+metadata check completed in 9.641 seconds: WslService and VM services report Running; OpenClaw's
+current-user client chain maps to its distro. The diagnostic leftovers are PIDs 24704 and 7536,
+also current-user owned, with unreadable arguments. No process was terminated by that check.
+
+The live collector is retired. scripts/analyze_wsl_evidence.py reads saved JSON only and starts
+no process. scripts/inspect_wsl_windows_metadata.py separately reads fixed Windows metadata with
+15-second and two-second cleanup deadlines; its timeout can end only its own metadata worker,
+never an existing WSL/OpenClaw process. OpenClaw's process/registration and PR #8 remain preserved;
+no WSL client, restart, distro operation or configuration change was performed in this follow-up.
+The proposed recovery targets only OpenClawGateway during a separately approved maintenance
+window, after saving work. It has not run. See [diagnosis](pc-wsl-diagnosis.md) and
+[the exact approval-gated proposal](pc-wsl-recovery-proposal.md).
+
+There is no evidence that OpenClaw blocks recovery. Exiting its launcher is a job-preservation
+and reconnect precaution; terminating the distro would necessarily interrupt its Linux workload.
+The proposal leaves registration/disk/configuration intact. Resume through the original distro
+and normal OpenClaw launcher; unsaved process memory is not recoverable by that resume step.
+
+The desktop remains the 8 GiB Ryzen 5 4500 PC; PR #9 merged at 3545a025. The earlier approved
+cache cleanup reclaimed about 5.07 GiB. Do not reuse the historical laptop measurements below.
+Private execution/publication remain disabled. Windows-only engineering and checks continue.
+The ownership follow-up passed 257 backend tests (five environment skips), 95.41% coverage,
+Ruff/format and mypy. Thirteen diagnostic tests passed. No new WSL client or model was started.
+
+## Historical laptop WSL2 operational follow-up — 31 October 2026
 
 Branch: release/v3-portfolio / PR #9; recovered source a8ac5c56c90924c5621fb6914253d82241e136bb.
 That exact remote head passed [CI 41169808465](https://github.com/naraya07pedro-spec/repopilot-ai/actions/runs/41169808465):

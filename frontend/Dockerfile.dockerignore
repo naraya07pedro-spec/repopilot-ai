@@ -5,6 +5,8 @@
 !evidence/live-bug.json
 !evidence/feature.json
 !evidence/failure.json
+!evidence/qwen-local-inference-2026-11-01.json
+!evidence/local-agent-acceptance-public.json
 frontend/node_modules
 frontend/.next*
 frontend/public-site/.next
