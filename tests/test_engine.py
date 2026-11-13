@@ -230,6 +230,7 @@ def test_changed_acceptance_rejected(engine, store):
     engine.prepare(data["id"])
     assert store.get(data["id"])["failure_category"] == "plan_acceptance_mismatch"
 
+
 def test_recovery_covers_old_runs_beyond_public_list_limit(store):
     # A public GET deliberately returns only 100 items; restart recovery must
     # still inspect every unfinished persisted run, including older rows.
