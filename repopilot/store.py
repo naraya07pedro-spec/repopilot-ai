@@ -156,7 +156,20 @@ class Store:
 
     def recover(self) -> None:
         # Single service process only. Interrupted work never silently retries.
-        for data in self.list():
-            if data["status"] in {"queued", "planning", "running", "approved"}:
-                data["failure_category"] = "process_interrupted"
-                self.save(data, "interrupted")
+        # The public list API is intentionally limited to 100 entries; recovery
+        # must not inherit that presentation limit or strand older pending runs.
+        pending = ("queued", "planning", "running", "approved")
+        while True:
+            with self.engine.connect() as conn:
+                ids = list(
+                    conn.execute(
+                        select(runs.c.id).where(runs.c.status.in_(pending)).limit(100)
+                    ).scalars()
+                )
+            if not ids:
+                break
+            for identity in ids:
+                data = self.get(identity)
+                if data["status"] in pending:
+                    data["failure_category"] = "process_interrupted"
+                    self.save(data, "interrupted")
