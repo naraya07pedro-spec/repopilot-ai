@@ -229,3 +229,39 @@ def test_changed_acceptance_rejected(engine, store):
     data = admitted(store)
     engine.prepare(data["id"])
     assert store.get(data["id"])["failure_category"] == "plan_acceptance_mismatch"
+
+
+def test_recovery_covers_old_runs_beyond_public_list_limit(store):
+    # A public GET deliberately returns only 100 items; restart recovery must
+    # still inspect every unfinished persisted run, including older rows.
+    identifiers = []
+    for index in range(125):
+        data, fresh = store.create(f"restart-{index}", {"scenario": "bug"}, True)
+        assert fresh
+        identifiers.append(data["id"])
+    assert len(store.list(public_only=True)) == 100
+
+    for index, status in [
+        (1, "planning"),
+        (2, "running"),
+        (3, "approved"),
+        (4, "verified"),
+        (5, "failed"),
+        (6, "awaiting_approval"),
+    ]:
+        data = store.get(identifiers[index])
+        store.save(data, status)
+
+    store.recover()
+    for index, identity in enumerate(identifiers):
+        actual = store.get(identity)
+        if index in (4, 5, 6):
+            assert actual["status"] in {"verified", "failed", "awaiting_approval"}
+            assert "failure_category" not in actual
+        else:
+            assert actual["status"] == "interrupted"
+            assert actual["failure_category"] == "process_interrupted"
+    # Restarting again does not mutate completed recovery records.
+    before = [store.get(identity) for identity in identifiers]
+    store.recover()
+    assert [store.get(identity) for identity in identifiers] == before
