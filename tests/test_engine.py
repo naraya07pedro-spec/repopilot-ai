@@ -240,8 +240,14 @@ def test_recovery_covers_old_runs_beyond_public_list_limit(store):
         identifiers.append(data["id"])
     assert len(store.list(public_only=True)) == 100
 
-    for index, status in [(1, "planning"), (2, "running"), (3, "approved"),
-                          (4, "verified"), (5, "failed"), (6, "awaiting_approval")]:
+    for index, status in [
+        (1, "planning"),
+        (2, "running"),
+        (3, "approved"),
+        (4, "verified"),
+        (5, "failed"),
+        (6, "awaiting_approval"),
+    ]:
         data = store.get(identifiers[index])
         store.save(data, status)
 
