@@ -1,6 +1,7 @@
 import json
 import uuid
 from datetime import UTC, datetime
+from heapq import nlargest
 from typing import Any
 
 from sqlalchemy import (
@@ -114,12 +115,23 @@ class Store:
         }
 
     def list(self, public_only: bool = False) -> list[dict[str, Any]]:
-        query = select(runs.c.id)
+        # Read each persisted row once; do not issue N extra queries to show
+        # the newest 100. The schema has no indexed created_at column, so
+        # this still scans matching rows; it is not cursor-based pagination.
+        query = select(runs.c.payload, runs.c.status, runs.c.public, runs.c.cancelled)
         if public_only:
             query = query.where(runs.c.public.is_(True))
         with self.engine.connect() as conn:
-            ids: list[str] = list(conn.execute(query).scalars().all())
-        return sorted((self.get(i) for i in ids), key=lambda r: r["created_at"], reverse=True)[:100]
+            records = (
+                {
+                    **json.loads(row["payload"]),
+                    "status": row["status"],
+                    "public": row["public"],
+                    "cancel_requested": row["cancelled"],
+                }
+                for row in conn.execute(query).mappings()
+            )
+            return nlargest(100, records, key=lambda data: data["created_at"])
 
     def save(self, data: dict[str, Any], status: str | None = None) -> None:
         fields: dict[str, Any] = {"payload": json.dumps(data)}
