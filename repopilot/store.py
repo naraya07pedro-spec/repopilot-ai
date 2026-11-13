@@ -161,7 +161,7 @@ class Store:
         pending = ("queued", "planning", "running", "approved")
         while True:
             with self.engine.connect() as conn:
-                ids = list(
+                ids: list[str] = list(
                     conn.execute(
                         select(runs.c.id).where(runs.c.status.in_(pending)).limit(100)
                     ).scalars()
